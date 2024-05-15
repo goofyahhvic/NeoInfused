@@ -1,0 +1,16 @@
+.vs/
+.vscode/
+
+bin/
+bin-int/
+!external/bin/
+obj/
+
+*.sln
+*.vcxproj
+*.filters
+*.user
+
+Makefile
+**/Makefile
+/Makefile

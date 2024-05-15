@@ -1,5 +1,5 @@
 #include "Neo_PCH.hpp"
-#include "./Neo_App.hpp"
+#include "NeoInfused/Neo_App.hpp"
 
 namespace neo {
     App* App::sm_This;

@@ -1,5 +1,5 @@
 #include "Neo_PCH.hpp"
-#include "./Neo_EntityHandler.hpp"
+#include "NeoInfused/ECS/Neo_EntityHandler.hpp"
 
 namespace neo {
     std::vector<Entity> EntityHandler::entity_registry, EntityHandler::destroyed_entities;

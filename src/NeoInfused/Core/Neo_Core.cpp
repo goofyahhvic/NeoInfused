@@ -1,8 +1,8 @@
 #include "Neo_PCH.hpp"
-#include "./Neo_Core.hpp"
+#include "NeoInfused/Core/Neo_Core.hpp"
 
-#include "Engine/Neo_App.hpp"
-#include "Engine/Sprite/Neo_SpriteRegistry.hpp"
+#include "NeoInfused/Neo_App.hpp"
+#include "NeoInfused/Sprite/Neo_SpriteRegistry.hpp"
 
 namespace neo {
     using namespace core;

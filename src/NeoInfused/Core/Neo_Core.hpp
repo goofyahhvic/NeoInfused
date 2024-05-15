@@ -1,8 +1,8 @@
 #if !defined(NEO_CORE_HPP)
 #define NEO_CORE_HPP
 
-#include "./Neo_Color.hpp"
-#include "./Neo_Time.hpp"
+#include "NeoInfused/Core/Neo_Color.hpp"
+#include "NeoInfused/Core/Neo_Time.hpp"
 
 #if defined(NEO_PLATFORM_LINUX)
 

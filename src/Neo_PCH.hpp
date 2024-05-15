@@ -36,8 +36,8 @@
 #include <glm/glm.hpp>
 #include <EnTT/entt.hpp>
 
-#include "./Engine/Core/Neo_Color.hpp"
-#include "./Engine/Core/Neo_Time.hpp"
-#include "./Engine/Core/Neo_Core.hpp"
+#include "NeoInfused/Core/Neo_Color.hpp"
+#include "NeoInfused/Core/Neo_Time.hpp"
+#include "NeoInfused/Core/Neo_Core.hpp"
 
 #endif // NEO_PCH_HPP

@@ -1,5 +1,5 @@
 #include "Neo_PCH.hpp"
-#include "./Neo_Time.hpp"
+#include "NeoInfused/Core/Neo_Time.hpp"
 
 namespace neo {
     namespace core {

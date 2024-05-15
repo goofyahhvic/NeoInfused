@@ -1,5 +1,5 @@
 #include "Neo_PCH.hpp"
-#include "./Neo_SpriteRegistry.hpp"
+#include "NeoInfused/Sprite/Neo_SpriteRegistry.hpp"
 
 namespace neo {
     std::vector<SpriteData*> SpriteRegistry::registry;

@@ -1,7 +1,7 @@
 #include "Neo_PCH.hpp"
-#include "./Neo_SpriteData.hpp"
+#include "NeoInfused/Sprite/Neo_SpriteData.hpp"
 
-#include "Engine/Neo_App.hpp"
+#include "NeoInfused/Neo_App.hpp"
 
 namespace neo {
     SpriteData* CreateSpriteData(float x, float y, float w, float h, const std::filesystem::path& path) {

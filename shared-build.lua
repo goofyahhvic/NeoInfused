@@ -6,7 +6,7 @@ INCLUDE_DIR["external"] = "external/include/"
 LIB_DIR["external"] = "external/lib/"
 
 project "NeoInfused"
-    location "%{prj.name}/"
+    location "./"
     targetname "%{prj.name}Lib"
     kind "SharedLib"
     staticruntime "off"
@@ -35,8 +35,6 @@ project "NeoInfused"
     includedirs {
         "src/",
         "include/",
-        "src/NeoInfused",
-        "include/NeoInfused",
         "%{INCLUDE_DIR.external}"
     }
 
