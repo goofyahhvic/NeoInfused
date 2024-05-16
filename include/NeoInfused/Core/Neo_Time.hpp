@@ -13,7 +13,7 @@ namespace neo {
             static std::string GetHoursMinutesSeconds(void);
 
         private:
-            static std::time_t sm_Seconds;
+            static std::time_t s_Seconds;
         };
 
     } // namespace core

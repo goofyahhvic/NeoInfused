@@ -15,22 +15,13 @@ namespace neo {
 
 #endif // NEO_PLATFORM_LINUX
 
-    App* core::GetApplication(void) { return App::Get(); }
-    size_t core::get_str_size(const char* str) {
-        size_t i = 1;
-        for (const char* it; *it != '\0'; it++) {
-            i++;
-        }
-        return i;
-    }
-
     int32_t Internal::Init(int argc, char* argv[]) {
         _argc = argc;
         _argv = argv;
 
 #if defined(NEO_PLATFORM_LINUX)
 
-        exec_name = "";
+        exec_name.clear();
         std::ifstream("/proc/self/comm") >> exec_name;
 
         exec_path = std::filesystem::canonical("/proc/self/exe").string();
@@ -39,7 +30,7 @@ namespace neo {
         exec_folder = exec_path.substr(0, index);
 
         if (exec_path.empty() || exec_folder.empty() || exec_name.empty()) {
-            error = String("Error in getting executable path!");
+            error = String("Error in getting executable path!\0");
             return NEO_FAILURE;
         }
 
@@ -47,6 +38,7 @@ namespace neo {
 
 
 #endif // NEO_PLATFORM_LINUX
+
         SpriteRegistry::Init();
 
         return NEO_SUCCESS;
