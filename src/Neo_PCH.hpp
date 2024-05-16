@@ -1,6 +1,11 @@
 #if !defined(NEO_PCH_HPP)
 #define NEO_PCH_HPP
 
+#include <cstdio>
+#include <cstdlib>
+#include <cmath>
+#include <cstring>
+#include <cstdbool>
 #include <cstdint>
 
 #include <iostream>

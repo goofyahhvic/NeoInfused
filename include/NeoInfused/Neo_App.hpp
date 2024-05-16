@@ -1,7 +1,7 @@
 #if !defined(NEO_APP_HPP)
 #define NEO_APP_HPP
 
-#include "./Sprite/Neo_SpriteHandle.hpp"
+#include "./Sprite/Neo_SpriteHandler.hpp"
 
 namespace neo {
     class App {
@@ -25,60 +25,60 @@ namespace neo {
     public:
         virtual void run(void);
     public: 
-        inline static App* Get(void) { return sm_This; }
+        inline static App* Get(void) { return App::s_This; }
 
-        inline const WindowData& get_window_data(void) const { return m_WindowData; }
+        inline const WindowData& get_window_data(void) const { return this->window_data; }
 
         void set_window_pos(int32_t x = SDL_WINDOWPOS_CENTERED, int32_t y = SDL_WINDOWPOS_CENTERED);
-        inline void set_window_pos(const WindowPos& pos) { this->set_window_pos(pos.x, pos.y); }
-        inline void set_window_pos(const WindowPosR& pos) { this->set_window_pos(pos.x, pos.y); }
+        inline void set_window_pos(const WindowPos& pos) { App::set_window_pos(pos.x, pos.y); }
+        inline void set_window_pos(const WindowPosR& pos) { App::set_window_pos(pos.x, pos.y); }
 
         void set_window_x(int32_t x);
         void set_window_y(int32_t y);
 
         void set_window_size(size_t w, size_t h);
-        inline void set_window_size(const WindowSize& size) { this->set_window_size(size.w, size.h); }
-        inline void set_window_size(const WindowSizeR& size)  { this->set_window_size(size.w, size.h); }
+        inline void set_window_size(const WindowSize& size) { App::set_window_size(size.w, size.h); }
+        inline void set_window_size(const WindowSizeR& size)  { App::set_window_size(size.w, size.h); }
 
         void set_window_width(size_t w); 
         void set_window_height(size_t h);
 
         void increase_window_size(size_t w, size_t h);
-        inline void increase_window_size(const WindowSize& size) { this->increase_window_size(size.w, size.h); }
-        inline void increase_window_size(const WindowSizeR& size)  { this->increase_window_size(size.w, size.h); }
+        inline void increase_window_size(const WindowSize& size) { App::increase_window_size(size.w, size.h); }
+        inline void increase_window_size(const WindowSizeR& size)  { App::increase_window_size(size.w, size.h); }
 
         void rename_window(const char* title);
-        inline void set_window_title(const char* title) { this->rename_window(title); }
+        inline void set_window_title(const char* title) { App::rename_window(title); }
 
-        inline int32_t get_window_x(void) { this->_get_window_pos(); return m_WindowData.x; }
-        inline int32_t get_window_y(void) { this->_get_window_pos(); return m_WindowData.y; }
+        inline int32_t get_window_x(void) { App::_get_window_pos(); return this->window_data.x; }
+        inline int32_t get_window_y(void) { App::_get_window_pos(); return this->window_data.y; }
 
-        inline WindowPos get_window_pos_c(void) { this->_get_window_pos(); return { m_WindowData.x, m_WindowData.y }; }
-        inline WindowPosR get_window_pos(void)    { this->_get_window_pos(); return { m_WindowData.x, m_WindowData.y }; }
+        inline WindowPos get_window_pos_c(void) { App::_get_window_pos(); return { this->window_data.x, this->window_data.y }; }
+        inline WindowPosR get_window_pos(void)  { App::_get_window_pos(); return { this->window_data.x, this->window_data.y }; }
 
-        inline void get_window_pos_r(int32_t& x, int32_t& y) { this->_get_window_pos(); x = m_WindowData.x; y = m_WindowData.y; }
-        inline void get_window_pos_p(int32_t* x, int32_t* y) { this->_get_window_pos(); *x = m_WindowData.x; *y = m_WindowData.y; }
+        inline void get_window_pos_r(int32_t& x, int32_t& y) { App::_get_window_pos(); x = this->window_data.x; y = this->window_data.y; }
+        inline void get_window_pos_p(int32_t* x, int32_t* y) { App::_get_window_pos(); *x = this->window_data.x; *y = this->window_data.y; }
 
-        inline size_t get_window_width(void)  { this->_get_window_size(); return m_WindowData.w; }
-        inline size_t get_window_height(void) { this->_get_window_size(); return m_WindowData.h; }
+        inline size_t get_window_width(void)  { App::_get_window_size(); return this->window_data.w; }
+        inline size_t get_window_height(void) { App::_get_window_size(); return this->window_data.h; }
 
-        inline WindowSize get_window_size_c(void) { this->_get_window_size(); return { m_WindowData.w, m_WindowData.h }; }
-        inline WindowSizeR get_window_size(void)    { this->_get_window_size(); return { m_WindowData.w, m_WindowData.h }; }
+        inline WindowSize get_window_size_c(void) { App::_get_window_size(); return { this->window_data.w, this->window_data.h }; }
+        inline WindowSizeR get_window_size(void)  { App::_get_window_size(); return { this->window_data.w, this->window_data.h }; }
 
-        inline void get_window_size_r(size_t& w, size_t& h) { this->_get_window_size(); w = m_WindowData.w; h = m_WindowData.h; }
-        inline void get_window_size_p(size_t* w, size_t* h) { this->_get_window_size(); *w = m_WindowData.w; *h = m_WindowData.h; }
+        inline void get_window_size_r(size_t& w, size_t& h) { App::_get_window_size(); w = this->window_data.w; h = this->window_data.h; }
+        inline void get_window_size_p(size_t* w, size_t* h) { App::_get_window_size(); *w = this->window_data.w; *h = this->window_data.h; }
 
-        inline WindowRect get_window_rect_c(void) { this->_get_window_rect(); return { m_WindowData.x, m_WindowData.y, m_WindowData.w, m_WindowData.h }; }
-        inline WindowRectR get_window_rect(void)   { this->_get_window_rect(); return { m_WindowData.x, m_WindowData.y, m_WindowData.w, m_WindowData.h }; }
+        inline WindowRect get_window_rect_c(void) { App::_get_window_rect(); return { this->window_data.x, this->window_data.y, this->window_data.w, this->window_data.h }; }
+        inline WindowRectR get_window_rect(void)  { App::_get_window_rect(); return { this->window_data.x, this->window_data.y, this->window_data.w, this->window_data.h }; }
 
-        inline void get_window_rect_r(int32_t& x, int32_t& y, size_t& w, size_t& h) { this->_get_window_rect(); x = m_WindowData.x; y = m_WindowData.y; w = m_WindowData.w; h = m_WindowData.h; }
-        inline void get_window_rect_p(int32_t* x, int32_t* y, size_t* w, size_t* h) { this->_get_window_rect(); *x = m_WindowData.x; *y = m_WindowData.y; *w = m_WindowData.w; *h = m_WindowData.h; }
+        inline void get_window_rect_r(int32_t& x, int32_t& y, size_t& w, size_t& h) { App::_get_window_rect(); x = this->window_data.x; y = this->window_data.y; w = this->window_data.w; h = this->window_data.h; }
+        inline void get_window_rect_p(int32_t* x, int32_t* y, size_t* w, size_t* h) { App::_get_window_rect(); *x = this->window_data.x; *y = this->window_data.y; *w = this->window_data.w; *h = this->window_data.h; }
 
-        inline SDL_Window* get_window(void) { return m_Window; }
-        inline SDL_Renderer* get_renderer(void) { return m_Renderer; }
+        inline SDL_Window* get_window(void)     { return this->window; }
+        inline SDL_Renderer* get_renderer(void) { return this->renderer; }
 
-        inline bool should_close(void) const { return m_Close; }
-        inline void close(bool value = true) { m_Close = value; }
+        inline bool should_close(void) const { return this->_should_close; }
+        inline void close(bool value = true) { this->_should_close = value; }
 
     protected:
         virtual void handle_event(SDL_Event* e);
@@ -93,14 +93,14 @@ namespace neo {
         void _get_window_size(void);
         void _get_window_rect(void);
     protected:
-        SDL_Window* m_Window;
-        SDL_Renderer* m_Renderer;
+        SDL_Window* window;
+        SDL_Renderer* renderer;
 
-        bool m_Close;
-        WindowData m_WindowData;
+        bool _should_close;
+        WindowData window_data;
 
     private:
-        static App* sm_This;
+        static App* s_This;
     };
     using WindowData  = App::WindowData;
 

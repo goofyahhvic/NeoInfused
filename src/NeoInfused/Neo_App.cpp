@@ -2,18 +2,18 @@
 #include "NeoInfused/Neo_App.hpp"
 
 namespace neo {
-    App* App::sm_This;
+    App* App::s_This;
 
     App::App(int32_t x, int32_t y, size_t w, size_t h, const char* title)
-        : m_Window(nullptr), m_Renderer(nullptr), m_Close(false) {
-        NEO_ASSERT(!sm_This, "Cannot create multiple instances of neo::App!");
-        sm_This = this;
+        : window(nullptr), renderer(nullptr), _should_close(false) {
+        NEO_ASSERT(!App::s_This, "Cannot create multiple instances of neo::App!");
+        App::s_This = this;
 
-        m_WindowData.x = x;
-        m_WindowData.y = y;
-        m_WindowData.w = w;
-        m_WindowData.h = h;
-        m_WindowData.title = std::string(title);
+        this->window_data.x = x;
+        this->window_data.y = y;
+        this->window_data.w = w;
+        this->window_data.h = h;
+        this->window_data.title = std::string(title);
 
         App::init_sdl();
     }
@@ -22,13 +22,13 @@ namespace neo {
     }
  
     void App::run(void) {
-        while (!m_Close) {
-            SDL_RenderClear(m_Renderer);
+        while (!this->_should_close) {
+            SDL_RenderClear(renderer);
 
             SDL_Event e;
             while (SDL_PollEvent(&e)) {
                 if (e.type == SDL_QUIT) {
-                    m_Close = true;
+                    this->_should_close = true;
                     goto EndLoop;
                 }
                 this->handle_event(&e);
@@ -36,7 +36,7 @@ namespace neo {
             this->update();
             this->draw();
             EndLoop:
-            SDL_RenderPresent(m_Renderer);
+            SDL_RenderPresent(renderer);
         }
     }
     void App::handle_event(SDL_Event* e) {}
@@ -50,89 +50,89 @@ namespace neo {
         NEO_ASSERT_FUNC(!SDL_Init(flags), "Failed to initialize SDL: {0}", SDL_GetError());
         
         flags = SDL_WINDOW_SHOWN;
-        m_Window = SDL_CreateWindow(
-            m_WindowData.title.c_str(),
-            m_WindowData.x, m_WindowData.y,
-            m_WindowData.w, m_WindowData.h,
+        this->window = SDL_CreateWindow(
+            this->window_data.title.c_str(),
+            this->window_data.x, this->window_data.y,
+            this->window_data.w, this->window_data.h,
             flags
         );
-        NEO_ASSERT(m_Window, "Failed to create SDL_Window: {0}", SDL_GetError());
+        NEO_ASSERT(this->window, "Failed to create SDL_Window: {0}", SDL_GetError());
 
         flags = SDL_RENDERER_ACCELERATED;
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
 
-        m_Renderer = SDL_CreateRenderer(m_Window, -1, flags);
-        NEO_ASSERT(m_Renderer, "Failed to create SDL_Renderer: {0}", SDL_GetError());
-        SDL_SetRenderDrawColor(m_Renderer, 0, 0, 0, 255);
+        this->renderer = SDL_CreateRenderer(this->window, -1, flags);
+        NEO_ASSERT(this->renderer, "Failed to create SDL_Renderer: {0}", SDL_GetError());
+        SDL_SetRenderDrawColor(this->renderer, 0, 0, 0, 255);
 
         IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
     }
     void App::cleanup_sdl(void) {
         IMG_Quit();
 
-        SDL_DestroyRenderer(m_Renderer);
-        SDL_DestroyWindow(m_Window);
+        SDL_DestroyRenderer(this->renderer);
+        SDL_DestroyWindow(this->window);
         SDL_Quit();
     }
 
     void App::set_window_pos(int32_t x, int32_t y) {
-        m_WindowData.x = x;
-        m_WindowData.y = y;
-        SDL_SetWindowPosition(m_Window, x, y);
+        this->window_data.x = x;
+        this->window_data.y = y;
+        SDL_SetWindowPosition(this->window, x, y);
     }
     void App::set_window_x(int32_t x) {
-        m_WindowData.x = x;
-        SDL_SetWindowPosition(m_Window, x, m_WindowData.y);
+        this->window_data.x = x;
+        SDL_SetWindowPosition(this->window, x, window_data.y);
     }
     void App::set_window_y(int32_t y) {
-        m_WindowData.y = y;
-        SDL_SetWindowPosition(m_Window, m_WindowData.x, y);
+        this->window_data.y = y;
+        SDL_SetWindowPosition(this->window, window_data.x, y);
     }
 
     void App::set_window_size(size_t w, size_t h) {
-        m_WindowData.w = w;
-        m_WindowData.h = h;
-        SDL_SetWindowSize(m_Window, w, h);
+        this->window_data.w = w;
+        this->window_data.h = h;
+        SDL_SetWindowSize(this->window, w, h);
     }
     void App::set_window_width(size_t w)  {
-        m_WindowData.w = w;
-        SDL_SetWindowSize(m_Window, w, m_WindowData.h);
+        this->window_data.w = w;
+        SDL_SetWindowSize(this->window, w, window_data.h);
     }
     void App::set_window_height(size_t h) {
-        m_WindowData.h = h;
-        SDL_SetWindowSize(m_Window, m_WindowData.w, h);
+        this->window_data.h = h;
+        SDL_SetWindowSize(this->window, window_data.w, h);
     }
     void App::increase_window_size(size_t w, size_t h) {
-        m_WindowData.w += w;
-        m_WindowData.h += h;
-        SDL_SetWindowSize(m_Window, m_WindowData.w, m_WindowData.h);
+        this->window_data.w += w;
+        this->window_data.h += h;
+        SDL_SetWindowSize(this->window, window_data.w, window_data.h);
     }
 
     void App::rename_window(const char* title) {
-        m_WindowData.title = std::string(title);
-        SDL_SetWindowTitle(m_Window, title);
+        this->window_data.title = std::string(title);
+        SDL_SetWindowTitle(this->window, title);
     }
 
     void App::_get_window_pos(void)  {
         int x, y = 0;
-        SDL_GetWindowPosition(m_Window, &x, &y);
-        m_WindowData.x = x;
-        m_WindowData.y = y;
+        SDL_GetWindowPosition(this->window, &x, &y);
+        this->window_data.x = x;
+        this->window_data.y = y;
     }
     void App::_get_window_size(void) {
         int w, h = 0;
-        SDL_GetWindowSize(m_Window, &w, &h);
-        m_WindowData.w = w;
-        m_WindowData.h = h;
+        SDL_GetWindowSize(this->window, &w, &h);
+        this->window_data.w = w;
+        this->window_data.h = h;
     }
     void App::_get_window_rect(void) {
         SDL_Rect rect {};
-        SDL_GetWindowPosition(m_Window, &rect.x, &rect.y);
-        SDL_GetWindowSize(m_Window, &rect.w, &rect.h);
-        m_WindowData.x = rect.x;
-        m_WindowData.y = rect.y;
-        m_WindowData.w = rect.w;
-        m_WindowData.h = rect.h;
+        SDL_GetWindowPosition(this->window, &rect.x, &rect.y);
+        SDL_GetWindowSize(this->window, &rect.w, &rect.h);
+        this->window_data.x = rect.x;
+        this->window_data.y = rect.y;
+        this->window_data.w = rect.w;
+        this->window_data.h = rect.h;
     }
 
 } // namespace neo

@@ -65,8 +65,6 @@
 
 #endif // NEO_CONFIG_DIST
 
-#define NEO_APP_RENDERER neo::core::GetApplication()->get_renderer()
-
 namespace neo {
     #if !defined(NEO_APP)
     #define NEO_APP
@@ -74,8 +72,6 @@ namespace neo {
     #endif // NEO_APP
     
     namespace core {
-        App* GetApplication(void);
-
         struct Size {
             size_t w, h;
         };
@@ -88,11 +84,9 @@ namespace neo {
 
 namespace neo {
     namespace core {
-
-        size_t get_str_size(const char* str);
         struct String {
             String(void) : data(""), size(1) {}
-            String(char* data) : data(data), size(get_str_size(data)) {}
+            String(char* data) : data(data), size(strlen(data)) {}
             String(char* data, size_t size) : data(data), size(size) {}
             ~String() = default;
 
@@ -101,7 +95,7 @@ namespace neo {
         };
         struct StringConst {
             StringConst(void) : data(""), size(1) {}
-            StringConst(const char* data) : data(data), size(get_str_size(data)) {}
+            StringConst(const char* data) : data(data), size(strlen(data)) {}
             StringConst(const char* data, size_t size) : data(data), size(size) {}
             ~StringConst() = default;
 
@@ -140,16 +134,16 @@ namespace neo {
 
     namespace core {
         inline int32_t init(int argc, char* argv[]) { return Internal::Init(argc, argv); }
-        inline void    terminate() { return Internal::Terminate(); }
+        inline void    terminate(void)              { return Internal::Terminate(); }
 
-        inline const char*   get_error(void) { return Internal::GetError().data; }
-        inline const String& get_error(void*) { return Internal::GetError(); }
+        inline const char* get_error(void)        { return Internal::GetError().data; }
+        inline String      get_error(void*)       { return Internal::GetError(); }
 
-        inline const char*   get_exec_path(void) { return Internal::GetExecutablePath().data; }
-        inline const String& get_exec_path(void*) { return Internal::GetExecutablePath(); }
+        inline const char* get_exec_path(void)    { return Internal::GetExecutablePath().data; }
+        inline String      get_exec_path(void*)   { return Internal::GetExecutablePath(); }
 
-        inline const char*   get_exec_folder(void) { return Internal::GetExecutableFolder().data; }
-        inline const String& get_exec_folder(void*) { return Internal::GetExecutableFolder(); }
+        inline const char* get_exec_folder(void)  { return Internal::GetExecutableFolder().data; }
+        inline String      get_exec_folder(void*) { return Internal::GetExecutableFolder(); }
 
     } // namespace core
 
