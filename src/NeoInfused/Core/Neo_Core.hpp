@@ -146,7 +146,7 @@ namespace neo {
         static int32_t Init(int argc, char* argv[]);
         static void    Terminate();
 
-        static inline const neo_core::String& GetError(void) { return error; }
+        static inline const neo_core::StringConst& GetError(void) { return error; }
 
         static inline neo_core::String GetExecutablePath(void)   { return { exec_path.data(),   exec_folder.size() }; }
         static inline neo_core::String GetExecutableFolder(void) { return { exec_folder.data(), exec_folder.size() }; }
@@ -157,7 +157,7 @@ namespace neo {
     private:
         static int _argc;
         static char** _argv;
-        static neo_core::String error;
+        static neo_core::StringConst error;
         static std::string exec_path, exec_folder, exec_name;
     };
 } // namespace neo
@@ -168,7 +168,7 @@ namespace neo_core {
     inline void    terminate(void)              { return Internal::Terminate(); }
 
     inline const char* get_error(void)        { return Internal::GetError().data; }
-    inline String      get_error(void*)       { return Internal::GetError(); }
+    inline StringConst get_error(void*)       { return Internal::GetError(); }
 
     inline const char* get_exec_path(void)    { return Internal::GetExecutablePath().data; }
     inline String      get_exec_path(void*)   { return Internal::GetExecutablePath(); }
