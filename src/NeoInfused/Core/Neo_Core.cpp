@@ -4,8 +4,6 @@
 #include "NeoInfused/Neo_App.hpp"
 #include "NeoInfused/Sprite/Neo_SpriteRegistry.hpp"
 
-#include <windows.h>
-
 namespace neo {
     using namespace neo_core;
     int              Internal::_argc;

@@ -30,7 +30,7 @@
     #include <fmt/format.h>
 #elif defined(NEO_PLATFORM_WINDOWS)
     #include <format>
-    #include <Windows.h>
+    #include <windows.h>
 #endif // NEO_PLATFORM_LINUX
 
 #include <SDL2/SDL.h>
