@@ -50,7 +50,7 @@ project "NeoInfused"
             "SDL2",
             "SDL2_image",
             "SDL2_ttf",
-            --"SDL2_mixer",
+            "SDL2_mixer",
             --"SDL2_net",
             "fmt"
         }
@@ -69,12 +69,11 @@ project "NeoInfused"
 
         links {
             "SDL2",
-            "SDL2main",
+            "SDL2test",
             "SDL2_image",
             "SDL2_ttf",
-            --"SDL2_mixer",
-            --"SDL2_net",
-            "SDL2test"
+            "SDL2_mixer"
+            --"SDL2_net"
         }
 
     filter "configurations:dbg"
