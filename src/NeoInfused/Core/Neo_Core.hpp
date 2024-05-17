@@ -69,12 +69,7 @@
 #define NEO_FAILURE -1
 
 namespace neo_core {
-#if defined(NEO_ID_16_BYTES)
-    #define NEO_ID    __uint128_t
-    #define NEO_INDEX __uint128_t
-    using id_t      = __uint128_t;
-    using index_t   = __uint128_t;
-#elif defined(NEO_ID_4_BYTES)
+#if defined(NEO_ID_4_BYTES)
     #define NEO_ID    uint32_t
     #define NEO_INDEX uint32_t
     using id_t      = uint32_t;
@@ -100,38 +95,33 @@ namespace neo_core {
     using id16_t     = uint16_t;
     using id32_t     = uint32_t;
     using id64_t     = uint64_t;
-    using id128_t    = __uint128_t;
 
     using index8_t   = uint8_t;
     using index16_t  = uint16_t;
     using index32_t  = uint32_t;
     using index64_t  = uint64_t;
-    using index128_t = __uint128_t;
 
     using u8         = uint8_t;
     using u16        = uint16_t;
     using u32        = uint32_t;
     using u64        = uint64_t;
-    using u128       = __uint128_t;
 
     using s8        = int8_t;
     using s16       = int16_t;
     using s32       = int32_t;
     using s64       = int64_t;
-    using s128      = __int128_t;
 
     using i8        = int8_t;
     using i16       = int16_t;
     using i32       = int32_t;
     using i64       = int64_t;
-    using i128      = __int128_t;
 
     using namespace neo;
     struct Size {
         size_t w, h;
     };
     struct String {
-        String(void) : data(""), size(1) {}
+        String(void) : data(nullptr), size(1) {}
         String(char* data) : data(data), size(strlen(data)) {}
         String(char* data, size_t size) : data(data), size(size) {}
         ~String() = default;
@@ -139,7 +129,7 @@ namespace neo_core {
         size_t size;
     };
     struct StringConst {
-        StringConst(void) : data(""), size(1) {}
+        StringConst(void) : data(nullptr), size(1) {}
         StringConst(const char* data) : data(data), size(strlen(data)) {}
         StringConst(const char* data, size_t size) : data(data), size(size) {}
         ~StringConst() = default;
@@ -168,12 +158,7 @@ namespace neo {
         static int _argc;
         static char** _argv;
         static neo_core::String error;
-#if defined(NEO_PLATFORM_LINUX)
         static std::string exec_path, exec_folder, exec_name;
-#elif defined(NEO_PLATFORM_WINDOWS)
-        
-#endif // NEO_PLATFORM_LINUX
-
     };
 } // namespace neo
 
@@ -193,12 +178,7 @@ namespace neo_core {
 } // namespace neo_core
 
 namespace neo {
-    #if defined(NEO_ID_16_BYTES)
-    #define NEO_ID    __uint128_t
-    #define NEO_INDEX __uint128_t
-    using id_t      = __uint128_t;
-    using index_t   = __uint128_t;
-#elif defined(NEO_ID_4_BYTES)
+#if defined(NEO_ID_4_BYTES)
     #define NEO_ID    uint32_t
     #define NEO_INDEX uint32_t
     using id_t      = uint32_t;
@@ -224,31 +204,26 @@ namespace neo {
     using id16_t     = uint16_t;
     using id32_t     = uint32_t;
     using id64_t     = uint64_t;
-    using id128_t    = __uint128_t;
 
     using index8_t   = uint8_t;
     using index16_t  = uint16_t;
     using index32_t  = uint32_t;
     using index64_t  = uint64_t;
-    using index128_t = __uint128_t;
 
     using u8         = uint8_t;
     using u16        = uint16_t;
     using u32        = uint32_t;
     using u64        = uint64_t;
-    using u128       = __uint128_t;
 
     using s8        = int8_t;
     using s16       = int16_t;
     using s32       = int32_t;
     using s64       = int64_t;
-    using s128      = __int128_t;
 
     using i8        = int8_t;
     using i16       = int16_t;
     using i32       = int32_t;
     using i64       = int64_t;
-    using i128      = __int128_t;
 } // namespace neo
 
 #endif // NEO_CORE_HPP

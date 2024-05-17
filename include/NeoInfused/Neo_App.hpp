@@ -13,11 +13,11 @@ namespace neo {
             std::string title;
         };
 
-        struct WindowPos { int32_t x, y; };
-        using  WindowSize = neo_core::Size;
+        struct WindowPos  { int32_t x, y; };
+        struct WindowSize { uint32_t w, h; };
         struct WindowRect { int32_t x, y; uint32_t w, h; };
 
-        struct WindowPosR { const int32_t &x, &y; };
+        struct WindowPosR  { const int32_t &x, &y; };
         struct WindowSizeR { const uint32_t &w, &h; };
         struct WindowRectR { const int32_t &x, &y; const uint32_t &w, &h; };
     public:

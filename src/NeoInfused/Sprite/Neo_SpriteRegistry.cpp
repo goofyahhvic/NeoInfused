@@ -12,7 +12,8 @@ namespace neo {
     void SpriteRegistry::Reset(void) {
         for (index_t i = 0; i < s_Registry.size(); i++) {
             if (s_Registry[i]) {
-                SpriteRegistry::DestroySprite(i);
+                SDL_DestroyTexture(SpriteRegistry::s_Registry[i]);
+                SpriteRegistry::s_Registry[i] = nullptr;
             }
         }
         SpriteRegistry::s_Registry.clear();
@@ -20,6 +21,7 @@ namespace neo {
 
     uint64_t SpriteRegistry::CreateSprite(const std::filesystem::path& path) {
         SDL_Texture* sprite = nullptr;
+#if defined(NEO_PLATFORM_LINUX)
         if (std::filesystem::exists(path)) {
             NEO_TRACE_LOG("Loading {0}", path.c_str());
             sprite = IMG_LoadTexture(App::Get()->get_renderer(), path.c_str());
@@ -31,6 +33,19 @@ namespace neo {
             sprite = SDL_CreateTextureFromSurface(App::Get()->get_renderer(), surface);
             SDL_FreeSurface(surface);
         }
+#elif defined (NEO_PLATFORM_WINDOWS)
+        if (std::filesystem::exists(path)) {
+            NEO_TRACE_LOG("Loading {0}", path.string().c_str());
+            sprite = IMG_LoadTexture(App::Get()->get_renderer(), path.string().c_str());
+        } else {
+            NEO_ERROR_LOG("File does not exist!: {0}", path.string().c_str());
+
+            SDL_Color color = { 0x00, 0xff, 0xff, 0x00 };
+            SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(&color, 1, 1, 8, 0, 0, 0, 0, 0);
+            sprite = SDL_CreateTextureFromSurface(App::Get()->get_renderer(), surface);
+            SDL_FreeSurface(surface);
+        }
+#endif // NEO_PLATFORM_LINUX
         index_t index = 0;
         index = SpriteRegistry::s_Registry.size();
         SpriteRegistry::s_Registry.push_back(sprite);

@@ -9,19 +9,17 @@ namespace neo {
     int              Internal::_argc;
     char**           Internal::_argv;
     neo_core::String Internal::error;
-#if defined(NEO_PLATFORM_LINUX)
     std::string Internal::exec_path, Internal::exec_folder, Internal::exec_name;
-#elif defined(NEO_PLATFORM_WINDOWS)
-
-#endif // NEO_PLATFORM_LINUX
 
     int32_t Internal::Init(int argc, char* argv[]) {
         _argc = argc;
         _argv = argv;
 
-#if defined(NEO_PLATFORM_LINUX)
-
+        exec_path.clear();
         exec_name.clear();
+        exec_folder.clear();
+
+#if defined(NEO_PLATFORM_LINUX)
         std::ifstream("/proc/self/comm") >> exec_name;
 
         exec_path = std::filesystem::canonical("/proc/self/exe").string();
@@ -35,8 +33,13 @@ namespace neo {
         }
 
 #elif defined(NEO_PLATFORM_WINDOWS)
-
-
+        char exec_path_buffer[MAX_PATH];
+        GetModuleFileNameA(nullptr, exec_path_buffer, MAX_PATH);
+        exec_path = std::string(exec_path_buffer);
+        
+        index_t index = exec_path.find_last_of('\\');
+        exec_folder = exec_path.substr(0, index+1);
+        exec_name = exec_path.substr(index+1);
 #endif // NEO_PLATFORM_LINUX
 
         SpriteRegistry::Init();
