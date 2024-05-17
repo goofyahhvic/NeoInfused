@@ -1,7 +1,7 @@
 #if !defined(NEO_SPRITE_REGISTRY_HPP)
 #define NEO_SPRITE_REGISTRY_HPP
 
-#include <cstdint>
+#include "NeoInfused/Core/Neo_Core.hpp"
 
 namespace neo {
     class SpriteRegistry {
@@ -9,17 +9,15 @@ namespace neo {
         ~SpriteRegistry() = default;
     public:
         static void Init(void);
-        static void Terminate(void);
+        static void Reset(void);
     public:
-        static uint64_t CreateSprite(const std::filesystem::path& path);
-        static void DestroySprite(uint64_t index);
+        static id_t CreateSprite(const std::filesystem::path& path);
+        static void DestroySprite(id_t id);
 
-        static inline SDL_Texture* GetSprite(uint64_t index) { return SpriteRegistry::s_Registry[index]; }
+        static inline SDL_Texture* GetSprite(id_t id) { return SpriteRegistry::s_Registry[id]; }
         static inline const std::vector<SDL_Texture*>& GetMainRegistry() { return SpriteRegistry::s_Registry; }
-        static inline const std::vector<uint64_t>& GetDestroyedSprites() { return SpriteRegistry::s_DestroyedSprites; }
     private:
         static std::vector<SDL_Texture*> s_Registry;
-        static std::vector<uint64_t> s_DestroyedSprites;
     };
 } // namespace neo
 

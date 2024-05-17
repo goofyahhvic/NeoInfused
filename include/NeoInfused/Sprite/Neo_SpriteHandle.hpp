@@ -1,11 +1,12 @@
 #if !defined(NEO_SPRITE_HANDLE_HPP)
 #define NEO_SPRITE_HANDLE_HPP
 
+#include "NeoInfused/Core/Neo_Core.hpp"
 #include "./Neo_SpriteRegistry.hpp"
 
 namespace neo {
     class SpriteHandle {
-        SpriteHandle(uint64_t id) : id(id) {};
+        SpriteHandle(id_t id) : id(id) {};
         friend class SpriteHandler;
     public:
         SpriteHandle() = default;
@@ -18,7 +19,7 @@ namespace neo {
         void draw(SDL_FRect&  rect);
         void draw(SDL_FRect&& rect);
     private:
-        uint64_t id;
+        id_t id;
     };
     using Sprite = SpriteHandle;
 } // namespace neo

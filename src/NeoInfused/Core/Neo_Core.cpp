@@ -5,10 +5,10 @@
 #include "NeoInfused/Sprite/Neo_SpriteRegistry.hpp"
 
 namespace neo {
-    using namespace core;
-    int         Internal::_argc;
-    char**      Internal::_argv;
-    String      Internal::error;
+    using namespace neo_core;
+    int              Internal::_argc;
+    char**           Internal::_argv;
+    neo_core::String Internal::error;
 #if defined(NEO_PLATFORM_LINUX)
     std::string Internal::exec_path, Internal::exec_folder, Internal::exec_name;
 #elif defined(NEO_PLATFORM_WINDOWS)
@@ -30,7 +30,7 @@ namespace neo {
         exec_folder = exec_path.substr(0, index);
 
         if (exec_path.empty() || exec_folder.empty() || exec_name.empty()) {
-            error = String("Error in getting executable path!\0");
+            error = neo_core::String("Error in getting executable path!\0");
             return NEO_FAILURE;
         }
 
@@ -45,6 +45,6 @@ namespace neo {
     }
 
     void Internal::Terminate() {
-        SpriteRegistry::Terminate();
+        SpriteRegistry::Reset();
     }
 } // namespace neo

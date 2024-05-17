@@ -4,7 +4,7 @@
 namespace neo {
     App* App::s_This;
 
-    App::App(int32_t x, int32_t y, size_t w, size_t h, const char* title)
+    App::App(int32_t x, int32_t y, uint32_t w, uint32_t h, const char* title)
         : window(nullptr), renderer(nullptr), _should_close(false) {
         NEO_ASSERT(!App::s_This, "Cannot create multiple instances of neo::App!");
         App::s_This = this;
@@ -89,20 +89,20 @@ namespace neo {
         SDL_SetWindowPosition(this->window, window_data.x, y);
     }
 
-    void App::set_window_size(size_t w, size_t h) {
+    void App::set_window_size(uint32_t w, uint32_t h) {
         this->window_data.w = w;
         this->window_data.h = h;
         SDL_SetWindowSize(this->window, w, h);
     }
-    void App::set_window_width(size_t w)  {
+    void App::set_window_width(uint32_t w)  {
         this->window_data.w = w;
         SDL_SetWindowSize(this->window, w, window_data.h);
     }
-    void App::set_window_height(size_t h) {
+    void App::set_window_height(uint32_t h) {
         this->window_data.h = h;
         SDL_SetWindowSize(this->window, window_data.w, h);
     }
-    void App::increase_window_size(size_t w, size_t h) {
+    void App::increase_window_size(uint32_t w, uint32_t h) {
         this->window_data.w += w;
         this->window_data.h += h;
         SDL_SetWindowSize(this->window, window_data.w, window_data.h);

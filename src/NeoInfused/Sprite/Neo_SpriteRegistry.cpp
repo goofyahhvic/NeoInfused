@@ -5,14 +5,17 @@
 
 namespace neo {
     std::vector<SDL_Texture*> SpriteRegistry::s_Registry;
-    std::vector<uint64_t> SpriteRegistry::s_DestroyedSprites;
 
     void SpriteRegistry::Init(void) {
         SpriteRegistry::s_Registry.clear();
-        SpriteRegistry::s_DestroyedSprites.clear();
     }
-    void SpriteRegistry::Terminate(void) {
-        Init();
+    void SpriteRegistry::Reset(void) {
+        for (index_t i = 0; i < s_Registry.size(); i++) {
+            if (s_Registry[i]) {
+                SpriteRegistry::DestroySprite(i);
+            }
+        }
+        SpriteRegistry::s_Registry.clear();
     }
 
     uint64_t SpriteRegistry::CreateSprite(const std::filesystem::path& path) {
@@ -28,21 +31,13 @@ namespace neo {
             sprite = SDL_CreateTextureFromSurface(App::Get()->get_renderer(), surface);
             SDL_FreeSurface(surface);
         }
-
-        uint64_t index = 0;
-        if (SpriteRegistry::s_DestroyedSprites.empty()) {
-            index = SpriteRegistry::s_Registry.size();
-            SpriteRegistry::s_Registry.push_back(sprite);
-            return index;
-        }
-        index = SpriteRegistry::s_DestroyedSprites[SpriteRegistry::s_DestroyedSprites.size()-1];
-        SpriteRegistry::s_Registry[index] = sprite;
-        SpriteRegistry::s_DestroyedSprites.pop_back();
+        index_t index = 0;
+        index = SpriteRegistry::s_Registry.size();
+        SpriteRegistry::s_Registry.push_back(sprite);
         return index;
     }
-    void SpriteRegistry::DestroySprite(uint64_t index) {
-        SDL_DestroyTexture(SpriteRegistry::s_Registry[index]);
-        SpriteRegistry::s_Registry[index] = nullptr;
-        SpriteRegistry::s_DestroyedSprites.push_back(index);
+    void SpriteRegistry::DestroySprite(id_t id) {
+        SDL_DestroyTexture(SpriteRegistry::s_Registry[id]);
+        SpriteRegistry::s_Registry[id] = nullptr;
     }
 } // namespace neo

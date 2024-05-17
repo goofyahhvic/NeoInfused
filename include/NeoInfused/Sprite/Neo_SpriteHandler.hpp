@@ -1,6 +1,7 @@
 #if !defined(NEO_SPRITE_HANDLER_HPP)
 #define NEO_SPRITE_HANDLER_HPP
 
+#include "NeoInfused/Core/Neo_Core.hpp"
 #include "./Neo_SpriteHandle.hpp"
 
 namespace neo {
