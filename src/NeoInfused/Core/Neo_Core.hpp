@@ -178,27 +178,39 @@ namespace neo_core {
 } // namespace neo_core
 
 namespace neo {
-#if defined(NEO_ID_4_BYTES)
+#if defined(NEO_ID32)
     #define NEO_ID    uint32_t
     #define NEO_INDEX uint32_t
     using id_t      = uint32_t;
     using index_t   = uint32_t;
-#elif defined(NEO_ID_2_BYTES)
+
+    #define NEO_ID_MAX    UINT32_MAX;
+    #define NEO_INDEX_MAX UINT32_MAX;
+#elif defined(NEO_ID16)
     #define NEO_ID    uint16_t
     #define NEO_INDEX uint16_t
     using id_t      = uint16_t;
     using index_t   = uint16_t;
-#elif defined(NEO_ID_1_BYTE)
+
+    #define NEO_ID_MAX    UINT16_MAX;
+    #define NEO_INDEX_MAX UINT16_MAX;
+#elif defined(NEO_ID8)
     #define NEO_ID    uint8_t
     #define NEO_INDEX uint8_t
     using id_t      = uint8_t;
     using index_t   = uint8_t;
+
+    #define NEO_ID_MAX    UINT8_MAX;
+    #define NEO_INDEX_MAX UINT8_MAX;
 #else
     #define NEO_ID    uint64_t
     #define NEO_INDEX uint64_t
     using id_t      = uint64_t;
     using index_t   = uint64_t;
-#endif // NEO_ID_16_BYTES
+
+    #define NEO_ID_MAX    UINT64_MAX;
+    #define NEO_INDEX_MAX UINT64_MAX;
+#endif
 
     using id8_t      = uint8_t;
     using id16_t     = uint16_t;

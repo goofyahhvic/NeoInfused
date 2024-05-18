@@ -2,7 +2,7 @@
 #include "NeoInfused/Core/Neo_Core.hpp"
 
 #include "NeoInfused/Neo_App.hpp"
-#include "NeoInfused/Sprite/Neo_SpriteRegistry.hpp"
+#include "NeoInfused/Sprite/Neo_TextureRegistry.hpp"
 
 namespace neo {
     using namespace neo_core;
@@ -41,12 +41,12 @@ namespace neo {
             return NEO_FAILURE;
         }
 
-        SpriteRegistry::Init();
+        TextureRegistry::Init();
 
         return NEO_SUCCESS;
     }
 
     void Internal::Terminate() {
-        SpriteRegistry::Reset();
+        TextureRegistry::Reset();
     }
 } // namespace neo

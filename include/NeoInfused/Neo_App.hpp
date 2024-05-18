@@ -2,7 +2,7 @@
 #define NEO_APP_HPP
 
 #include "NeoInfused/Core/Neo_Core.hpp"
-#include "./Sprite/Neo_SpriteHandler.hpp"
+#include "./Sprite/Neo_Sprite.hpp"
 
 namespace neo {
     class App {
@@ -54,7 +54,7 @@ namespace neo {
         inline int32_t get_window_x(void) { App::_get_window_pos(); return this->window_data.x; }
         inline int32_t get_window_y(void) { App::_get_window_pos(); return this->window_data.y; }
 
-        inline WindowPos get_window_pos_c(void) { App::_get_window_pos(); return { this->window_data.x, this->window_data.y }; }
+        inline WindowPos get_window_pos_copy(void) { App::_get_window_pos(); return { this->window_data.x, this->window_data.y }; }
         inline WindowPosR get_window_pos(void)  { App::_get_window_pos(); return { this->window_data.x, this->window_data.y }; }
 
         inline void get_window_pos_r(int32_t& x, int32_t& y) { App::_get_window_pos();  x = this->window_data.x;  y = this->window_data.y; }
@@ -63,14 +63,14 @@ namespace neo {
         inline uint32_t get_window_width(void)  { App::_get_window_size(); return this->window_data.w; }
         inline uint32_t get_window_height(void) { App::_get_window_size(); return this->window_data.h; }
 
-        inline WindowSize get_window_size_c(void) { App::_get_window_size(); return { this->window_data.w, this->window_data.h }; }
+        inline WindowSize get_window_size_copy(void) { App::_get_window_size(); return { this->window_data.w, this->window_data.h }; }
         inline WindowSizeR get_window_size(void)  { App::_get_window_size(); return { this->window_data.w, this->window_data.h }; }
 
         inline void get_window_size_r(uint32_t& w, uint32_t& h) { App::_get_window_size();  w = this->window_data.w;  h = this->window_data.h; }
         inline void get_window_size_p(uint32_t* w, uint32_t* h) { App::_get_window_size(); *w = this->window_data.w; *h = this->window_data.h; }
 
-        inline WindowRect get_window_rect_c(void) { App::_get_window_rect(); return { this->window_data.x, this->window_data.y, this->window_data.w, this->window_data.h }; }
-        inline WindowRectR get_window_rect(void)  { App::_get_window_rect(); return { this->window_data.x, this->window_data.y, this->window_data.w, this->window_data.h }; }
+        inline WindowRect get_window_rect_copy(void) { App::_get_window_rect(); return { this->window_data.x, this->window_data.y, this->window_data.w, this->window_data.h }; }
+        inline WindowRectR get_window_rect(void)     { App::_get_window_rect(); return { this->window_data.x, this->window_data.y, this->window_data.w, this->window_data.h }; }
 
         inline void get_window_rect_r(int32_t& x, int32_t& y, uint32_t& w, uint32_t& h) { App::_get_window_rect();  x = this->window_data.x;  y = this->window_data.y;  w = this->window_data.w;  h = this->window_data.h; }
         inline void get_window_rect_p(int32_t* x, int32_t* y, uint32_t* w, uint32_t* h) { App::_get_window_rect(); *x = this->window_data.x; *y = this->window_data.y; *w = this->window_data.w; *h = this->window_data.h; }
