@@ -18,23 +18,18 @@ namespace neo {
         exec_path.clear();
         exec_name.clear();
         exec_folder.clear();
-
 #if defined(NEO_PLATFORM_LINUX)
         exec_path = std::filesystem::canonical("/proc/self/exe").string();
-
         index_t index = exec_path.find_last_of('/');
-        exec_folder = exec_path.substr(0, index+1);
-        exec_name = exec_path.substr(index+1);
-
 #elif defined(NEO_PLATFORM_WINDOWS)
         char exec_path_buffer[MAX_PATH];
         GetModuleFileNameA(nullptr, exec_path_buffer, MAX_PATH);
+
         exec_path = std::string(exec_path_buffer);
-        
         index_t index = exec_path.find_last_of('\\');
+#endif // NEO_PLATFORM_LINUX
         exec_folder = exec_path.substr(0, index+1);
         exec_name = exec_path.substr(index+1);
-#endif // NEO_PLATFORM_LINUX
 
         if (exec_path.empty() || exec_folder.empty() || exec_name.empty()) {
             error = neo_core::StringConst("Error in getting executable path!");
