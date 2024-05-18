@@ -82,11 +82,11 @@ namespace neo {
     }
     void App::set_window_x(int32_t x) {
         this->window_data.x = x;
-        SDL_SetWindowPosition(this->window, x, window_data.y);
+        SDL_SetWindowPosition(this->window, x, this->window_data.y);
     }
     void App::set_window_y(int32_t y) {
         this->window_data.y = y;
-        SDL_SetWindowPosition(this->window, window_data.x, y);
+        SDL_SetWindowPosition(this->window, this->window_data.x, y);
     }
 
     void App::set_window_size(uint32_t w, uint32_t h) {
@@ -96,16 +96,16 @@ namespace neo {
     }
     void App::set_window_width(uint32_t w)  {
         this->window_data.w = w;
-        SDL_SetWindowSize(this->window, w, window_data.h);
+        SDL_SetWindowSize(this->window, w, this->window_data.h);
     }
     void App::set_window_height(uint32_t h) {
         this->window_data.h = h;
-        SDL_SetWindowSize(this->window, window_data.w, h);
+        SDL_SetWindowSize(this->window, this->window_data.w, h);
     }
     void App::increase_window_size(uint32_t w, uint32_t h) {
         this->window_data.w += w;
         this->window_data.h += h;
-        SDL_SetWindowSize(this->window, window_data.w, window_data.h);
+        SDL_SetWindowSize(this->window, this->window_data.w, this->window_data.h);
     }
 
     void App::rename_window(const char* title) {

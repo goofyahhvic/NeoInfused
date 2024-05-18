@@ -69,28 +69,31 @@
 #define NEO_FAILURE -1
 
 namespace neo_core {
-#if defined(NEO_ID_4_BYTES)
-    #define NEO_ID    uint32_t
-    #define NEO_INDEX uint32_t
+#if defined(NEO_ID32)
     using id_t      = uint32_t;
     using index_t   = uint32_t;
-#elif defined(NEO_ID_2_BYTES)
-    #define NEO_ID    uint16_t
-    #define NEO_INDEX uint16_t
+
+    #define NEO_ID_MAX    UINT32_MAX;
+    #define NEO_INDEX_MAX UINT32_MAX;
+#elif defined(NEO_ID16)
     using id_t      = uint16_t;
     using index_t   = uint16_t;
-#elif defined(NEO_ID_1_BYTE)
-    #define NEO_ID    uint8_t
-    #define NEO_INDEX uint8_t
+
+    #define NEO_ID_MAX    UINT16_MAX;
+    #define NEO_INDEX_MAX UINT16_MAX;
+#elif defined(NEO_ID8)
     using id_t      = uint8_t;
     using index_t   = uint8_t;
+
+    #define NEO_ID_MAX    UINT8_MAX;
+    #define NEO_INDEX_MAX UINT8_MAX;
 #else
-    #define NEO_ID    uint64_t
-    #define NEO_INDEX uint64_t
     using id_t      = uint64_t;
     using index_t   = uint64_t;
-#endif // NEO_ID_16_BYTES
 
+    #define NEO_ID_MAX    UINT64_MAX;
+    #define NEO_INDEX_MAX UINT64_MAX;
+#endif
     using id8_t      = uint8_t;
     using id16_t     = uint16_t;
     using id32_t     = uint32_t;
@@ -100,21 +103,6 @@ namespace neo_core {
     using index16_t  = uint16_t;
     using index32_t  = uint32_t;
     using index64_t  = uint64_t;
-
-    using u8         = uint8_t;
-    using u16        = uint16_t;
-    using u32        = uint32_t;
-    using u64        = uint64_t;
-
-    using s8        = int8_t;
-    using s16       = int16_t;
-    using s32       = int32_t;
-    using s64       = int64_t;
-
-    using i8        = int8_t;
-    using i16       = int16_t;
-    using i32       = int32_t;
-    using i64       = int64_t;
 
     using namespace neo;
     struct Size {
@@ -179,32 +167,24 @@ namespace neo_core {
 
 namespace neo {
 #if defined(NEO_ID32)
-    #define NEO_ID    uint32_t
-    #define NEO_INDEX uint32_t
     using id_t      = uint32_t;
     using index_t   = uint32_t;
 
     #define NEO_ID_MAX    UINT32_MAX;
     #define NEO_INDEX_MAX UINT32_MAX;
 #elif defined(NEO_ID16)
-    #define NEO_ID    uint16_t
-    #define NEO_INDEX uint16_t
     using id_t      = uint16_t;
     using index_t   = uint16_t;
 
     #define NEO_ID_MAX    UINT16_MAX;
     #define NEO_INDEX_MAX UINT16_MAX;
 #elif defined(NEO_ID8)
-    #define NEO_ID    uint8_t
-    #define NEO_INDEX uint8_t
     using id_t      = uint8_t;
     using index_t   = uint8_t;
 
     #define NEO_ID_MAX    UINT8_MAX;
     #define NEO_INDEX_MAX UINT8_MAX;
 #else
-    #define NEO_ID    uint64_t
-    #define NEO_INDEX uint64_t
     using id_t      = uint64_t;
     using index_t   = uint64_t;
 
@@ -221,21 +201,6 @@ namespace neo {
     using index16_t  = uint16_t;
     using index32_t  = uint32_t;
     using index64_t  = uint64_t;
-
-    using u8         = uint8_t;
-    using u16        = uint16_t;
-    using u32        = uint32_t;
-    using u64        = uint64_t;
-
-    using s8        = int8_t;
-    using s16       = int16_t;
-    using s32       = int32_t;
-    using s64       = int64_t;
-
-    using i8        = int8_t;
-    using i16       = int16_t;
-    using i32       = int32_t;
-    using i64       = int64_t;
 } // namespace neo
 
 #endif // NEO_CORE_HPP
