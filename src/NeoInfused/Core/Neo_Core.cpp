@@ -6,9 +6,9 @@
 
 namespace neo {
     using namespace neo_core;
-    int              Internal::_argc;
-    char**           Internal::_argv;
-    neo_core::String Internal::error;
+    int    Internal::_argc;
+    char** Internal::_argv;
+    neo_core::StringConst Internal::error;
     std::string Internal::exec_path, Internal::exec_folder, Internal::exec_name;
 
     int32_t Internal::Init(int argc, char* argv[]) {
@@ -37,7 +37,7 @@ namespace neo {
 #endif // NEO_PLATFORM_LINUX
 
         if (exec_path.empty() || exec_folder.empty() || exec_name.empty()) {
-            error = neo_core::String("Error in getting executable path!\0");
+            error = neo_core::StringConst("Error in getting executable path!");
             return NEO_FAILURE;
         }
 
