@@ -42,7 +42,8 @@ namespace neo {
         void draw(float dest_x, float dest_y, float dest_w, float dest_h) const;
         void draw(const SDL_FRect* dest_rect, const SDL_Rect* src_rect = nullptr) const;
 
-        inline const SDL_Texture* get_texture(void) { return TextureRegistry::GetTexture(TextureHandle::id); }
+        inline id_t get_id(void) const { return TextureHandle::id; }
+        inline const SDL_Texture* get_texture(void) const { return TextureRegistry::GetTexture(TextureHandle::id); }
     private:
         id_t id;
     };
