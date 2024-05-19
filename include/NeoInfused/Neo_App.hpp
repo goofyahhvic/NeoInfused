@@ -3,7 +3,7 @@
 
 #include "NeoInfused/Core/Neo_Core.hpp"
 #include "./Sprite/Neo_Sprite.hpp"
-#include "./Layer/Neo_LayerStack.hpp"
+#include "./Layer/Neo_Layer.hpp"
 
 namespace neo {
     class App {
@@ -100,7 +100,7 @@ namespace neo {
         bool _should_close;
         WindowData window_data;
 
-        LayerStack layers;
+        std::deque<Layer*> layers;
     private:
         static App* s_This;
     };
