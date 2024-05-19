@@ -3,6 +3,7 @@
 
 #include "NeoInfused/Core/Neo_Core.hpp"
 #include "./Sprite/Neo_Sprite.hpp"
+#include "./Layer/Neo_LayerStack.hpp"
 
 namespace neo {
     class App {
@@ -82,10 +83,9 @@ namespace neo {
         inline void close(bool value = true) { this->_should_close = value; }
 
     protected:
-        virtual void handle_event(SDL_Event* e);
         virtual void update(void);
         virtual void draw(void);
-
+        virtual void handle_event(SDL_Event* e);
     private:
         void init_sdl(void);
         void cleanup_sdl(void);
@@ -100,6 +100,7 @@ namespace neo {
         bool _should_close;
         WindowData window_data;
 
+        LayerStack layers;
     private:
         static App* s_This;
     };

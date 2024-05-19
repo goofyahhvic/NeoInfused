@@ -5,7 +5,7 @@ namespace neo {
     App* App::s_This;
 
     App::App(int32_t x, int32_t y, uint32_t w, uint32_t h, const char* title)
-        : window(nullptr), renderer(nullptr), _should_close(false) {
+        : window(nullptr), renderer(nullptr), _should_close(false), layers() {
         NEO_ASSERT(!App::s_This, "Cannot create multiple instances of neo::App!");
         App::s_This = this;
 
@@ -39,9 +39,30 @@ namespace neo {
             SDL_RenderPresent(renderer);
         }
     }
-    void App::handle_event(SDL_Event* e) {}
-    void App::update(void) {}
-    void App::draw(void) {}
+    void App::handle_event(SDL_Event* e) {
+        for (auto layer : layers) {
+            if (layer->enabled()) {
+                if (layer->handle_event(e))
+                    continue;
+                else
+                    break;
+            }
+        }
+    }
+    void App::update(void) {
+        for (auto layer : layers) {
+            if (layer->enabled()) {
+                layer->update();
+            }
+        }
+    }
+    void App::draw(void) {
+        for (auto layer : layers) {
+            if (layer->enabled()) {
+                layer->draw();
+            }
+        }
+    }
 
     void App::init_sdl(void) {
         int flags;
