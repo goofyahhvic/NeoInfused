@@ -4,19 +4,40 @@
 #include "NeoInfused/Neo_App.hpp"
 
 namespace neo {
-    std::vector<SDL_Texture*> TextureRegistry::m_Registry;
+    SDL_Texture** TextureRegistry::m_Arena;
+    uint32_t TextureRegistry::m_ArenaSize, TextureRegistry::m_ArenaInsertIndex;
 
-    void TextureRegistry::Init(void) {
-        m_Registry.clear();
+    void TextureRegistry::Alloc(uint32_t arena_size) {
+        m_Arena = (SDL_Texture**) malloc(arena_size*8);
+        m_ArenaSize = arena_size;
+        m_ArenaInsertIndex = 0;
     }
-    void TextureRegistry::Reset(void) {
-        for (index_t i = 0; i < m_Registry.size(); i++) {
-            if (m_Registry[i]) {
-                SDL_DestroyTexture(m_Registry[i]);
-                m_Registry[i] = nullptr;
+    void TextureRegistry::ReAlloc(uint32_t new_arena_size) {
+        if (m_ArenaInsertIndex > new_arena_size) {
+            throw std::runtime_error("[TextureRegistry]: Cannot realloc size smaller than the insert index!");
+        }
+        m_Arena = (SDL_Texture**) realloc(m_Arena, new_arena_size);
+        m_ArenaSize = new_arena_size;
+    }
+    void TextureRegistry::DestroyAll(void) {
+        for (index32_t i = 0; i < m_ArenaInsertIndex; i++) {
+            if (m_Arena[i]) {
+                SDL_DestroyTexture(m_Arena[i]);
+                m_Arena[i] = nullptr;
             }
         }
-        m_Registry.clear();
+        m_ArenaInsertIndex = 0;
+    }
+    void TextureRegistry::Free(void) {
+        TextureRegistry::DestroyAll();
+        free(m_Arena);
+        m_Arena = nullptr;
+        m_ArenaSize = 0;
+    }
+    index32_t TextureRegistry::_PushTexture(SDL_Texture* texture) {
+        m_Arena[m_ArenaInsertIndex] = texture;
+        m_ArenaInsertIndex++;
+        return m_ArenaInsertIndex-1;
     }
 
     SDL_Texture* TextureRegistry::_LoadTexture(const std::filesystem::path& path) {
@@ -38,8 +59,10 @@ namespace neo {
             return nullptr;
         }
 #if defined(NEO_PLATFORM_LINUX)
+        NEO_TRACE_LOG("Loading {0}", path.c_str());
         return IMG_LoadTexture(App::Get()->get_renderer(), path.c_str());
 #elif defined(NEO_PLATFORM_WINDOWS)
+        NEO_TRACE_LOG("Loading {0}", path.string().c_str());
         return IMG_LoadTexture(App::Get()->get_renderer(), path.string().c_str());
 #endif // NEO_PLATFORM_LINUX
     }
@@ -66,82 +89,84 @@ namespace neo {
         }
     }
     
-    id_t TextureRegistry::_PushTexture(SDL_Texture* texture) {
-        index_t index = m_Registry.size();
-        m_Registry.push_back(texture);
-        return index;
-    }
-
-    id_t TextureRegistry::CreateTexture(const std::filesystem::path& path) {
+    index32_t TextureRegistry::CreateTexture(const std::filesystem::path& path) {
         return TextureRegistry::_PushTexture(TextureRegistry::_LoadTextureN(path));
     }
-    id_t TextureRegistry::CreateTexture(void) {
+    index32_t TextureRegistry::CreateTexture(void) {
         return TextureRegistry::_PushTexture(nullptr);
     }
-    id_t TextureRegistry::CreateTextureB(const std::filesystem::path& path) {
+    index32_t TextureRegistry::CreateTextureB(const std::filesystem::path& path) {
         return TextureRegistry::_PushTexture(TextureRegistry::_LoadTextureB(path));
     }
 
-    void TextureRegistry::DestroyTexture(const id_t id) {
-        SDL_DestroyTexture(TextureRegistry::m_Registry[id]);
-        TextureRegistry::m_Registry[id] = nullptr;
+    index32_t TextureRegistry::DestroyTexture(const index32_t id) {
+        SDL_DestroyTexture(m_Arena[id]);
+        m_Arena[id] = nullptr;
+        return id;
     }
 
-    void TextureRegistry::SetTexture(const id_t id, const std::filesystem::path& path) {
+    index32_t TextureRegistry::SetTexture(const index32_t id, const std::filesystem::path& path) {
         if (!std::filesystem::exists(path)) {
 #if defined(NEO_PLATFORM_LINUX)
-            NEO_TRACE_LOG("Loading {0}", path.c_str());
+            NEO_TRACE_LOG("File does not exist!: {0}", path.c_str());
 #elif defined(NEO_PLATFORM_WINDOWS)
-            NEO_TRACE_LOG("Loading {0}", path.string().c_str());
+            NEO_TRACE_LOG("File does not exist!: {0}", path.string().c_str());
 #endif // NEO_PLATFORM_LINUX
-            return;
+            return UINT32_MAX;
         }
-        SDL_DestroyTexture(TextureRegistry::m_Registry[id]);
-        m_Registry[id] = TextureRegistry::_LoadTexture(path); 
+        SDL_DestroyTexture(m_Arena[id]);
+        m_Arena[id] = TextureRegistry::_LoadTexture(path); 
+        return id;
     }
-    void TextureRegistry::SetTextureB(const id_t id, const std::filesystem::path& path) {
-        SDL_DestroyTexture(m_Registry[id]);
-        m_Registry[id] = TextureRegistry::_LoadTextureB(path); 
+    index32_t TextureRegistry::SetTextureB(const index32_t id, const std::filesystem::path& path) {
+        SDL_DestroyTexture(m_Arena[id]);
+        m_Arena[id] = TextureRegistry::_LoadTextureB(path); 
+        return id;
     }
-    void TextureRegistry::SetTextureN(const id_t id, const std::filesystem::path& path) {
-        SDL_DestroyTexture(m_Registry[id]);
-        m_Registry[id] = TextureRegistry::_LoadTextureN(path); 
+    index32_t TextureRegistry::SetTextureN(const index32_t id, const std::filesystem::path& path) {
+        SDL_DestroyTexture(m_Arena[id]);
+        m_Arena[id] = TextureRegistry::_LoadTextureN(path); 
+        return id;
     }
 
-    void TextureRegistry::SetNullTexture(const id_t id, const std::filesystem::path& path) {
+    index32_t TextureRegistry::SetNullTexture(const index32_t id, const std::filesystem::path& path) {
         if (!std::filesystem::exists(path)) {
 #if defined(NEO_PLATFORM_LINUX)
             NEO_ERROR_LOG("File does not exist!: {0}", path.c_str());
 #elif defined(NEO_PLATFORM_WINDOWS)
             NEO_ERROR_LOG("File does not exist!: {0}", path.string().c_str());
 #endif // NEO_PLATFORM_LINUX
-            return;
+            return UINT32_MAX;
         }
-        m_Registry[id] = TextureRegistry::_LoadTexture(path); 
+        m_Arena[id] = TextureRegistry::_LoadTexture(path); 
+        return id;
     }
-    void TextureRegistry::SetNullTextureB(const id_t id, const std::filesystem::path& path) {
-        m_Registry[id] = TextureRegistry::_LoadTextureB(path); 
+    index32_t TextureRegistry::SetNullTextureB(const index32_t id, const std::filesystem::path& path) {
+        m_Arena[id] = TextureRegistry::_LoadTextureB(path);
+        return id;
     }
-    void TextureRegistry::SetNullTextureN(const id_t id, const std::filesystem::path& path) {
-        m_Registry[id] = TextureRegistry::_LoadTextureN(path); 
+    index32_t TextureRegistry::SetNullTextureN(const index32_t id, const std::filesystem::path& path) {
+        m_Arena[id] = TextureRegistry::_LoadTextureN(path);
+        return id;
     }
 
-    id_t TextureRegistry::FindFirstOf(SDL_Texture* texture) {
-        index_t i = 0;
-        for (auto it = m_Registry.begin(); it != m_Registry.end(); it++) {
-            if (*it == texture)
+    index32_t TextureRegistry::FindFirstOf(SDL_Texture* texture) {
+        SDL_Texture* it = m_Arena[0];
+        for (index32_t i = 0; i < m_ArenaInsertIndex; i++) {
+            NEO_TRACE_LOG("[FindFirstOf] i: {0}", i);
+            if (it == texture)
                 return i;
-            i++;
+            it = m_Arena[i+1];
         }
-        return NEO_ID_MAX;
+        return UINT32_MAX;
     }
-    id_t TextureRegistry::FindLastOf(SDL_Texture* texture) {
-        index_t i = m_Registry.size()-1;
-        for (auto it = m_Registry.rbegin(); it != m_Registry.rend(); it++) {
-            if (*it == texture)
-                return i;
-            i--;
+    index32_t TextureRegistry::FindLastOf(SDL_Texture* texture) {
+        SDL_Texture* it = m_Arena[m_ArenaInsertIndex-1];
+        for (index32_t i = m_ArenaInsertIndex; i > 0; i--) {
+            if (it == texture)
+                return (index32_t) i-1;
+            it = m_Arena[i-2];
         }
-        return NEO_ID_MAX;
+        return UINT32_MAX;
     }
 } // namespace neo

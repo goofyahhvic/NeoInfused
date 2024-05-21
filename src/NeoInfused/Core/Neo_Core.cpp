@@ -10,6 +10,7 @@ namespace neo {
     std::string Core::m_ExecPath, Core::m_ExecDir;
 
     void Core::Init(int argc, char* argv[]) {
+        NEO_INFO_LOG("Initializing NeoInfused!");
         Core::m_Argc = argc;
         Core::m_Argv = argv;
 
@@ -29,7 +30,7 @@ namespace neo {
             throw std::runtime_error("Error in getting executable path!");
         }
 
-        TextureRegistry::Init();
+        TextureRegistry::Alloc();
 
         NEO_ASSERT_FUNC(!SDL_Init(SDL_INIT_EVERYTHING), "Failed to initialize SDL: {0}", SDL_GetError());
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
@@ -37,8 +38,9 @@ namespace neo {
     }
 
     void Core::Terminate(void) {
+        NEO_INFO_LOG("Terminating NeoInfused, Goodbye!");
         IMG_Quit();
         SDL_Quit();
-        TextureRegistry::Reset();
+        TextureRegistry::Free();
     }
 } // namespace neo
