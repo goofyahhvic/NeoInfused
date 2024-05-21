@@ -65,10 +65,7 @@
 
 #endif // NEO_CONFIG_DIST
 
-#define NEO_SUCCESS 0
-#define NEO_FAILURE -1
-
-namespace neo_core {
+namespace neo {
 #if defined(NEO_ID32)
     using id_t      = uint32_t;
     using index_t   = uint32_t;
@@ -104,103 +101,23 @@ namespace neo_core {
     using index32_t  = uint32_t;
     using index64_t  = uint64_t;
 
-    using namespace neo;
-    struct Size {
-        size_t w, h;
-    };
-    struct String {
-        String(void) : data(nullptr), size(1) {}
-        String(char* data) : data(data), size(strlen(data)) {}
-        String(char* data, size_t size) : data(data), size(size) {}
-        ~String() = default;
-        char* data;
-        size_t size;
-    };
-    struct StringConst {
-        StringConst(void) : data(nullptr), size(1) {}
-        StringConst(const char* data) : data(data), size(strlen(data)) {}
-        StringConst(const char* data, size_t size) : data(data), size(size) {}
-        ~StringConst() = default;
-        const char* data;
-        size_t size;
-    };
-} // namespace neo_core
-
-namespace neo {
-    class Internal {
-        Internal(void) = default;
-        ~Internal(void) = default;
+    class Core {
+        Core(void) = default;
+        ~Core(void) = default;
     public:
-        static int32_t Init(int argc, char* argv[]);
-        static void    Terminate();
+        static void Init(int argc, char* argv[]);
+        static void Terminate();
 
-        static inline const neo_core::StringConst& GetError(void) { return error; }
+        static inline const std::string& GetExecPath(void) { return m_ExecPath; }
+        static inline const std::string& GetExecDir(void) { return m_ExecDir; }
 
-        static inline neo_core::String GetExecutablePath(void)   { return { exec_path.data(),   exec_folder.size() }; }
-        static inline neo_core::String GetExecutableFolder(void) { return { exec_folder.data(), exec_folder.size() }; }
-
-        static int    argc(void) { return _argc; }
-        static char** argv(void) { return _argv; }
-
+        static int    argc(void) { return m_Argc; }
+        static char** argv(void) { return m_Argv; }
     private:
-        static int _argc;
-        static char** _argv;
-        static neo_core::StringConst error;
-        static std::string exec_path, exec_folder, exec_name;
+        static int m_Argc;
+        static char** m_Argv;
+        static std::string m_ExecPath, m_ExecDir;
     };
-} // namespace neo
-
-namespace neo_core {
-    using namespace neo;
-    inline int32_t init(int argc, char* argv[]) { return Internal::Init(argc, argv); }
-    inline void    terminate(void)              { return Internal::Terminate(); }
-
-    inline const char* get_error(void)        { return Internal::GetError().data; }
-    inline StringConst get_error(void*)       { return Internal::GetError(); }
-
-    inline const char* get_exec_path(void)    { return Internal::GetExecutablePath().data; }
-    inline String      get_exec_path(void*)   { return Internal::GetExecutablePath(); }
-
-    inline const char* get_exec_folder(void)  { return Internal::GetExecutableFolder().data; }
-    inline String      get_exec_folder(void*) { return Internal::GetExecutableFolder(); }
-} // namespace neo_core
-
-namespace neo {
-#if defined(NEO_ID32)
-    using id_t      = uint32_t;
-    using index_t   = uint32_t;
-
-    #define NEO_ID_MAX    UINT32_MAX;
-    #define NEO_INDEX_MAX UINT32_MAX;
-#elif defined(NEO_ID16)
-    using id_t      = uint16_t;
-    using index_t   = uint16_t;
-
-    #define NEO_ID_MAX    UINT16_MAX;
-    #define NEO_INDEX_MAX UINT16_MAX;
-#elif defined(NEO_ID8)
-    using id_t      = uint8_t;
-    using index_t   = uint8_t;
-
-    #define NEO_ID_MAX    UINT8_MAX;
-    #define NEO_INDEX_MAX UINT8_MAX;
-#else
-    using id_t      = uint64_t;
-    using index_t   = uint64_t;
-
-    #define NEO_ID_MAX    UINT64_MAX;
-    #define NEO_INDEX_MAX UINT64_MAX;
-#endif
-
-    using id8_t      = uint8_t;
-    using id16_t     = uint16_t;
-    using id32_t     = uint32_t;
-    using id64_t     = uint64_t;
-
-    using index8_t   = uint8_t;
-    using index16_t  = uint16_t;
-    using index32_t  = uint32_t;
-    using index64_t  = uint64_t;
 } // namespace neo
 
 #endif // NEO_CORE_HPP

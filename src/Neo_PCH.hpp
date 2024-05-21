@@ -39,7 +39,6 @@
 #include <SDL2/SDL_mixer.h>
 
 #include <glm/glm.hpp>
-#include <EnTT/entt.hpp>
 
 #include "NeoInfused/Core/Neo_Color.hpp"
 #include "NeoInfused/Core/Neo_Time.hpp"

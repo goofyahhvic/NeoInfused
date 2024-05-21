@@ -5,43 +5,40 @@
 #include "NeoInfused/Sprite/Neo_TextureRegistry.hpp"
 
 namespace neo {
-    using namespace neo_core;
-    int    Internal::_argc;
-    char** Internal::_argv;
-    neo_core::StringConst Internal::error;
-    std::string Internal::exec_path, Internal::exec_folder, Internal::exec_name;
+    int    Core::m_Argc;
+    char** Core::m_Argv;
+    std::string Core::m_ExecPath, Core::m_ExecDir;
 
-    int32_t Internal::Init(int argc, char* argv[]) {
-        _argc = argc;
-        _argv = argv;
+    void Core::Init(int argc, char* argv[]) {
+        Core::m_Argc = argc;
+        Core::m_Argv = argv;
 
-        exec_path.clear();
-        exec_name.clear();
-        exec_folder.clear();
 #if defined(NEO_PLATFORM_LINUX)
-        exec_path = std::filesystem::canonical("/proc/self/exe").string();
-        index_t index = exec_path.find_last_of('/');
+        Core::m_ExecPath = std::filesystem::canonical("/proc/self/exe").string();
+        index_t index = Core::m_ExecPath.find_last_of('/');
 #elif defined(NEO_PLATFORM_WINDOWS)
         char exec_path_buffer[MAX_PATH];
         GetModuleFileNameA(nullptr, exec_path_buffer, MAX_PATH);
 
-        exec_path = std::string(exec_path_buffer);
-        index_t index = exec_path.find_last_of('\\');
+        Core::m_ExecPath = std::string(exec_path_buffer);
+        index_t index = Core::m_ExecPath.find_last_of('\\');
 #endif // NEO_PLATFORM_LINUX
-        exec_folder = exec_path.substr(0, index+1);
-        exec_name = exec_path.substr(index+1);
+        Core::m_ExecDir = Core::m_ExecPath.substr(0, index+1);
 
-        if (exec_path.empty() || exec_folder.empty() || exec_name.empty()) {
-            error = neo_core::StringConst("Error in getting executable path!");
-            return NEO_FAILURE;
+        if (Core::m_ExecPath.empty() || Core::m_ExecDir.empty()) {
+            throw std::runtime_error("Error in getting executable path!");
         }
 
         TextureRegistry::Init();
 
-        return NEO_SUCCESS;
+        NEO_ASSERT_FUNC(!SDL_Init(SDL_INIT_EVERYTHING), "Failed to initialize SDL: {0}", SDL_GetError());
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
+        IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
     }
 
-    void Internal::Terminate() {
+    void Core::Terminate(void) {
+        IMG_Quit();
+        SDL_Quit();
         TextureRegistry::Reset();
     }
 } // namespace neo

@@ -16,9 +16,9 @@ namespace neo {
     public:
         virtual bool handle_event(SDL_Event* e) override;
     protected:
-        void set_input(SDL_Event* e);
+        void _set_input(SDL_Event* e);
     protected:
-        Input input;
+        Input m_Input;
     };
 } // namespace neo
 

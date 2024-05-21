@@ -4,31 +4,31 @@
 #include "NeoInfused/Neo_App.hpp"
 
 namespace neo {
-    std::vector<SDL_Texture*> TextureRegistry::s_Registry;
+    std::vector<SDL_Texture*> TextureRegistry::m_Registry;
 
     void TextureRegistry::Init(void) {
-        TextureRegistry::s_Registry.clear();
+        m_Registry.clear();
     }
     void TextureRegistry::Reset(void) {
-        for (index_t i = 0; i < s_Registry.size(); i++) {
-            if (s_Registry[i]) {
-                SDL_DestroyTexture(TextureRegistry::s_Registry[i]);
-                TextureRegistry::s_Registry[i] = nullptr;
+        for (index_t i = 0; i < m_Registry.size(); i++) {
+            if (m_Registry[i]) {
+                SDL_DestroyTexture(m_Registry[i]);
+                m_Registry[i] = nullptr;
             }
         }
-        TextureRegistry::s_Registry.clear();
+        m_Registry.clear();
     }
 
-    SDL_Texture* TextureRegistry::LoadTexture(const std::filesystem::path& path) {
+    SDL_Texture* TextureRegistry::_LoadTexture(const std::filesystem::path& path) {
 #if defined(NEO_PLATFORM_LINUX)
-        NEO_TRACE_LOG("Loading {0}", path.string().c_str());
+        NEO_TRACE_LOG("Loading {0}", path.c_str());
         return IMG_LoadTexture(App::Get()->get_renderer(), path.c_str());
 #elif defined(NEO_PLATFORM_WINDOWS)
         NEO_TRACE_LOG("Loading {0}", path.string().c_str());
         return IMG_LoadTexture(App::Get()->get_renderer(), path.string().c_str());
 #endif // NEO_PLATFORM_LINUX
     }
-    SDL_Texture* TextureRegistry::LoadTextureN(const std::filesystem::path& path) {
+    SDL_Texture* TextureRegistry::_LoadTextureN(const std::filesystem::path& path) {
         if (!std::filesystem::exists(path)) {
 #if defined(NEO_PLATFORM_LINUX)
             NEO_ERROR_LOG("File does not exist!: {0}", path.c_str());
@@ -43,7 +43,7 @@ namespace neo {
         return IMG_LoadTexture(App::Get()->get_renderer(), path.string().c_str());
 #endif // NEO_PLATFORM_LINUX
     }
-    SDL_Texture* TextureRegistry::LoadTextureB(const std::filesystem::path& path) {
+    SDL_Texture* TextureRegistry::_LoadTextureB(const std::filesystem::path& path) {
 #if defined(NEO_PLATFORM_LINUX)
         if (std::filesystem::exists(path)) {
             NEO_TRACE_LOG("Loading {0}", path.c_str());
@@ -66,25 +66,25 @@ namespace neo {
         }
     }
     
-    id_t TextureRegistry::PushTexture(SDL_Texture* texture) {
-        index_t index = TextureRegistry::s_Registry.size();
-        TextureRegistry::s_Registry.push_back(texture);
+    id_t TextureRegistry::_PushTexture(SDL_Texture* texture) {
+        index_t index = m_Registry.size();
+        m_Registry.push_back(texture);
         return index;
     }
 
     id_t TextureRegistry::CreateTexture(const std::filesystem::path& path) {
-        return TextureRegistry::PushTexture(TextureRegistry::LoadTextureN(path));
+        return TextureRegistry::_PushTexture(TextureRegistry::_LoadTextureN(path));
     }
     id_t TextureRegistry::CreateTexture(void) {
-        return TextureRegistry::PushTexture(nullptr);
+        return TextureRegistry::_PushTexture(nullptr);
     }
     id_t TextureRegistry::CreateTextureB(const std::filesystem::path& path) {
-        return TextureRegistry::PushTexture(TextureRegistry::LoadTextureB(path));
+        return TextureRegistry::_PushTexture(TextureRegistry::_LoadTextureB(path));
     }
 
     void TextureRegistry::DestroyTexture(const id_t id) {
-        SDL_DestroyTexture(TextureRegistry::s_Registry[id]);
-        TextureRegistry::s_Registry[id] = nullptr;
+        SDL_DestroyTexture(TextureRegistry::m_Registry[id]);
+        TextureRegistry::m_Registry[id] = nullptr;
     }
 
     void TextureRegistry::SetTexture(const id_t id, const std::filesystem::path& path) {
@@ -96,16 +96,16 @@ namespace neo {
 #endif // NEO_PLATFORM_LINUX
             return;
         }
-        SDL_DestroyTexture(TextureRegistry::s_Registry[id]);
-        TextureRegistry::s_Registry[id] = TextureRegistry::LoadTexture(path); 
+        SDL_DestroyTexture(TextureRegistry::m_Registry[id]);
+        m_Registry[id] = TextureRegistry::_LoadTexture(path); 
     }
     void TextureRegistry::SetTextureB(const id_t id, const std::filesystem::path& path) {
-        SDL_DestroyTexture(TextureRegistry::s_Registry[id]);
-        TextureRegistry::s_Registry[id] = TextureRegistry::LoadTextureB(path); 
+        SDL_DestroyTexture(m_Registry[id]);
+        m_Registry[id] = TextureRegistry::_LoadTextureB(path); 
     }
     void TextureRegistry::SetTextureN(const id_t id, const std::filesystem::path& path) {
-        SDL_DestroyTexture(TextureRegistry::s_Registry[id]);
-        TextureRegistry::s_Registry[id] = TextureRegistry::LoadTextureN(path); 
+        SDL_DestroyTexture(m_Registry[id]);
+        m_Registry[id] = TextureRegistry::_LoadTextureN(path); 
     }
 
     void TextureRegistry::SetNullTexture(const id_t id, const std::filesystem::path& path) {
@@ -117,18 +117,18 @@ namespace neo {
 #endif // NEO_PLATFORM_LINUX
             return;
         }
-        TextureRegistry::s_Registry[id] = TextureRegistry::LoadTexture(path); 
+        m_Registry[id] = TextureRegistry::_LoadTexture(path); 
     }
     void TextureRegistry::SetNullTextureB(const id_t id, const std::filesystem::path& path) {
-        TextureRegistry::s_Registry[id] = TextureRegistry::LoadTextureB(path); 
+        m_Registry[id] = TextureRegistry::_LoadTextureB(path); 
     }
     void TextureRegistry::SetNullTextureN(const id_t id, const std::filesystem::path& path) {
-        TextureRegistry::s_Registry[id] = TextureRegistry::LoadTextureN(path); 
+        m_Registry[id] = TextureRegistry::_LoadTextureN(path); 
     }
 
     id_t TextureRegistry::FindFirstOf(SDL_Texture* texture) {
         index_t i = 0;
-        for (auto it = TextureRegistry::s_Registry.begin(); it != TextureRegistry::s_Registry.end(); it++) {
+        for (auto it = m_Registry.begin(); it != m_Registry.end(); it++) {
             if (*it == texture)
                 return i;
             i++;
@@ -136,8 +136,8 @@ namespace neo {
         return NEO_ID_MAX;
     }
     id_t TextureRegistry::FindLastOf(SDL_Texture* texture) {
-        index_t i = TextureRegistry::s_Registry.size()-1;
-        for (auto it = TextureRegistry::s_Registry.rbegin(); it != TextureRegistry::s_Registry.rend(); it++) {
+        index_t i = m_Registry.size()-1;
+        for (auto it = m_Registry.rbegin(); it != m_Registry.rend(); it++) {
             if (*it == texture)
                 return i;
             i--;
