@@ -10,25 +10,25 @@ namespace neo {
 #else
     InputLayer::InputLayer(bool enabled) : Layer(enabled) {
 #endif // NEO_CONFIG_DIST
-        this->input = Input();
+        m_Input = Input();
     }
     bool InputLayer::handle_event(SDL_Event* e) {
-        this->set_input(e);
+        this->_set_input(e);
         return true;
     }
-    void InputLayer::set_input(SDL_Event* e) {
+    void InputLayer::_set_input(SDL_Event* e) {
         switch (e->type) {
         case SDL_KEYDOWN:
-            this->input.get_key(NEO_KEYBOARD_EVENT->keysym.scancode) = true;
+            m_Input.get_key(NEO_KEYBOARD_EVENT->keysym.scancode) = true;
             break;
         case SDL_KEYUP:
-            this->input.get_key(NEO_KEYBOARD_EVENT->keysym.scancode) = false;
+            m_Input.get_key(NEO_KEYBOARD_EVENT->keysym.scancode) = false;
             break;
         case SDL_MOUSEBUTTONDOWN:
-            this->input.get_mb(NEO_MOUSEBUTTON_EVENT->button) = true;
+            m_Input.get_mb(NEO_MOUSEBUTTON_EVENT->button) = true;
             break;
         case SDL_MOUSEBUTTONUP:
-            this->input.get_mb(NEO_MOUSEBUTTON_EVENT->button) = false;
+            m_Input.get_mb(NEO_MOUSEBUTTON_EVENT->button) = false;
             break;
         }
     }
