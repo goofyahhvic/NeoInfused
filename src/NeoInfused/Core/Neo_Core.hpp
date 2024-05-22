@@ -101,10 +101,17 @@ namespace neo {
     using index32_t  = uint32_t;
     using index64_t  = uint64_t;
 
+    struct InitInfo {
+        int argc;
+        char** argv;
+        uint32_t TextureRegistrySize;
+    };
+
     class Core {
         Core(void) = default;
         ~Core(void) = default;
     public:
+        static void Init(const InitInfo& info);
         static void Init(int argc, char* argv[]);
         static void Terminate();
 
