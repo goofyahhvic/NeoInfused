@@ -8,8 +8,8 @@ namespace neo {
         TextureRegistry() = default;
         ~TextureRegistry() = default;
     public:
-        // by default allocates 64kb of ram
-        static void Alloc(uint32_t arena_size = 8000);
+        // by default allocates 8kb of ram
+        static void Alloc(uint32_t arena_size = 1000);
         static void ReAlloc(uint32_t new_arena_size);
         static void DestroyAll(void);
         // destroys all textures, then frees the memory

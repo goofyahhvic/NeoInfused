@@ -9,10 +9,10 @@ namespace neo {
     char** Core::m_Argv;
     std::string Core::m_ExecPath, Core::m_ExecDir;
 
-    void Core::Init(int argc, char* argv[]) {
+    void Core::Init(const InitInfo& info) {
         NEO_INFO_LOG("Initializing NeoInfused!");
-        Core::m_Argc = argc;
-        Core::m_Argv = argv;
+        Core::m_Argc = info.argc;
+        Core::m_Argv = info.argv;
 
 #if defined(NEO_PLATFORM_LINUX)
         Core::m_ExecPath = std::filesystem::canonical("/proc/self/exe").string();
@@ -30,11 +30,14 @@ namespace neo {
             throw std::runtime_error("Error in getting executable path!");
         }
 
-        TextureRegistry::Alloc();
+        TextureRegistry::Alloc(info.TextureRegistrySize);
 
         NEO_ASSERT_FUNC(!SDL_Init(SDL_INIT_EVERYTHING), "Failed to initialize SDL: {0}", SDL_GetError());
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
         IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
+    }
+    void Core::Init(int argc, char** argv) {
+        Core::Init({argc, argv, 1000});
     }
 
     void Core::Terminate(void) {
