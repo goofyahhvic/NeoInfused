@@ -4,6 +4,7 @@
 #include "NeoInfused/Core/Neo_Core.hpp"
 #include "./Sprite/Neo_Sprite.hpp"
 #include "./Layer/Neo_Layer.hpp"
+#include "./Neo_Renderer.hpp"
 
 namespace neo {
     struct WindowData {
@@ -50,8 +51,8 @@ namespace neo {
         inline void get_window_rect(int32_t& x, int32_t& y, uint32_t& w, uint32_t& h) { this->_get_window_pos();  x = m_WindowData.x;  y = m_WindowData.y;  w = m_WindowData.w;  h = m_WindowData.h; }
         inline void get_window_rect(int32_t* x, int32_t* y, uint32_t* w, uint32_t* h) { this->_get_window_rect(); *x = m_WindowData.x; *y = m_WindowData.y; *w = m_WindowData.w; *h = m_WindowData.h; }
 
-        inline SDL_Window* get_window(void)     { return m_Window; }
-        inline SDL_Renderer* get_renderer(void) { return m_Renderer; }
+        inline SDL_Window* get_window(void) { return m_Window; }
+        inline Renderer& get_renderer(void) { return m_Renderer; }
 
         inline bool should_close(void) const { return m_ShouldClose; }
         inline void close(bool value = true) { m_ShouldClose = value; }
@@ -65,7 +66,7 @@ namespace neo {
         void _get_window_rect(void);
     protected:
         SDL_Window* m_Window;
-        SDL_Renderer* m_Renderer;
+        Renderer m_Renderer;
 
         bool m_ShouldClose;
         WindowData m_WindowData;

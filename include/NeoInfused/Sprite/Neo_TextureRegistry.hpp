@@ -28,8 +28,6 @@ namespace neo {
         static index32_t SetTexture(const index32_t id, const std::filesystem::path& path);
         // creates a blank texture if path is invalid.
         static index32_t SetTextureB(const index32_t id, const std::filesystem::path& path);
-        // creates a null texture if path is invalid.
-        static index32_t SetTextureN(const index32_t id, const std::filesystem::path& path);
 
         // won't destroy the original texture at the sent index, and won't do anything if path is invalid.
         // useful for reusing memory, since destroyed SDL_Textures stay in the registry so indecies don't move.
@@ -37,9 +35,6 @@ namespace neo {
         // won't destroy the original texture at the sent index, and creates a blank texture if path is invalid.
         // useful for reusing memory, since destroyed SDL_Textures stay in the registry so indecies don't move.
         static index32_t SetNullTextureB(const index32_t id, const std::filesystem::path& path);
-        // won't destroy the original texture at the sent index, and creates a null texture if path is invalid.
-        // useful for reusing memory, since destroyed SDL_Textures stay in the registry so indecies don't move.
-        static index32_t SetNullTextureN(const index32_t id, const std::filesystem::path& path);
         static inline SDL_Texture* GetTexture(const index32_t id) { return m_Arena[id]; }
 
         static index32_t FindFirstOf(SDL_Texture* texture);

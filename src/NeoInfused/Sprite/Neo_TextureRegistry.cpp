@@ -43,10 +43,10 @@ namespace neo {
     SDL_Texture* TextureRegistry::_LoadTexture(const std::filesystem::path& path) {
 #if defined(NEO_PLATFORM_LINUX)
         NEO_TRACE_LOG("Loading {0}", path.c_str());
-        return IMG_LoadTexture(App::Get()->get_renderer(), path.c_str());
+        return IMG_LoadTexture(Renderer::GetBound()->get_native(), path.c_str());
 #elif defined(NEO_PLATFORM_WINDOWS)
         NEO_TRACE_LOG("Loading {0}", path.string().c_str());
-        return IMG_LoadTexture(App::Get()->get_renderer(), path.string().c_str());
+        return IMG_LoadTexture(Renderer::GetBound()->get_native(), path.string().c_str());
 #endif // NEO_PLATFORM_LINUX
     }
     SDL_Texture* TextureRegistry::_LoadTextureN(const std::filesystem::path& path) {
@@ -60,30 +60,30 @@ namespace neo {
         }
 #if defined(NEO_PLATFORM_LINUX)
         NEO_TRACE_LOG("Loading {0}", path.c_str());
-        return IMG_LoadTexture(App::Get()->get_renderer(), path.c_str());
+        return IMG_LoadTexture(Renderer::GetBound()->get_native(), path.c_str());
 #elif defined(NEO_PLATFORM_WINDOWS)
         NEO_TRACE_LOG("Loading {0}", path.string().c_str());
-        return IMG_LoadTexture(App::Get()->get_renderer(), path.string().c_str());
+        return IMG_LoadTexture(Renderer::GetBound()->get_native(), path.string().c_str());
 #endif // NEO_PLATFORM_LINUX
     }
     SDL_Texture* TextureRegistry::_LoadTextureB(const std::filesystem::path& path) {
 #if defined(NEO_PLATFORM_LINUX)
         if (std::filesystem::exists(path)) {
             NEO_TRACE_LOG("Loading {0}", path.c_str());
-            return IMG_LoadTexture(App::Get()->get_renderer(), path.c_str());
+            return IMG_LoadTexture(Renderer::GetBound()->get_native(), path.c_str());
         } else {
             NEO_ERROR_LOG("File does not exist!: {0}", path.c_str());
 #elif defined(NEO_PLATFORM_WINDOWS)
         if (std::filesystem::exists(path)) {
             NEO_TRACE_LOG("Loading {0}", path.string().c_str());
-            return IMG_LoadTexture(App::Get()->get_renderer(), path.string().c_str());
+            return IMG_LoadTexture(Renderer::GetBound()->get_native(), path.string().c_str());
         } else {
             NEO_ERROR_LOG("File does not exist!: {0}", path.string().c_str());
 #endif // NEO_PLATFORM_LINUX
             SDL_Color color = { 0x00, 0xff, 0xff, 0x00 };
             SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(&color, 1, 1, 8, 0, 0, 0, 0, 0);
 
-            SDL_Texture* new_texture = SDL_CreateTextureFromSurface(App::Get()->get_renderer(), surface);
+            SDL_Texture* new_texture = SDL_CreateTextureFromSurface(Renderer::GetBound()->get_native(), surface);
             SDL_FreeSurface(surface);
             return new_texture;
         }
@@ -123,11 +123,6 @@ namespace neo {
         m_Arena[id] = TextureRegistry::_LoadTextureB(path); 
         return id;
     }
-    index32_t TextureRegistry::SetTextureN(const index32_t id, const std::filesystem::path& path) {
-        SDL_DestroyTexture(m_Arena[id]);
-        m_Arena[id] = TextureRegistry::_LoadTextureN(path); 
-        return id;
-    }
 
     index32_t TextureRegistry::SetNullTexture(const index32_t id, const std::filesystem::path& path) {
         if (!std::filesystem::exists(path)) {
@@ -143,10 +138,6 @@ namespace neo {
     }
     index32_t TextureRegistry::SetNullTextureB(const index32_t id, const std::filesystem::path& path) {
         m_Arena[id] = TextureRegistry::_LoadTextureB(path);
-        return id;
-    }
-    index32_t TextureRegistry::SetNullTextureN(const index32_t id, const std::filesystem::path& path) {
-        m_Arena[id] = TextureRegistry::_LoadTextureN(path);
         return id;
     }
 

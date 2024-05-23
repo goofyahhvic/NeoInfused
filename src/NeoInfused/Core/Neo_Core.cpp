@@ -31,6 +31,7 @@ namespace neo {
         }
 
         TextureRegistry::Alloc(info.TextureRegistrySize);
+        Renderer::Init();
 
         NEO_ASSERT_FUNC(!SDL_Init(SDL_INIT_EVERYTHING), "Failed to initialize SDL: {0}", SDL_GetError());
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
