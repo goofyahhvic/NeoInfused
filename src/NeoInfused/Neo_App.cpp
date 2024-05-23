@@ -5,7 +5,7 @@ namespace neo {
     App* App::m_This;
 
     App::App(int32_t x, int32_t y, uint32_t w, uint32_t h, const char* title)
-        : m_Window(nullptr), m_Renderer(nullptr), m_ShouldClose(false), m_Layers() {
+        : m_Window(nullptr), m_Renderer(), m_ShouldClose(false), m_Layers() {
         NEO_ASSERT(!App::m_This, "Cannot create multiple instances of neo::App!");
         App::m_This = this;
 
@@ -23,18 +23,18 @@ namespace neo {
         );
         NEO_ASSERT(m_Window, "Failed to create SDL_Window: {0}", SDL_GetError());
 
-        m_Renderer = SDL_CreateRenderer(m_Window, -1, SDL_RENDERER_ACCELERATED);
-        NEO_ASSERT(m_Renderer, "Failed to create SDL_Renderer: {0}", SDL_GetError());
-        SDL_SetRenderDrawColor(m_Renderer, 0, 0, 0, 255);
+        m_Renderer = Renderer(m_Window, SDL_RENDERER_ACCELERATED);
+        Renderer::Bind(&m_Renderer);
+        m_Renderer.set_draw_color();
     }
     App::~App(void) {
-        SDL_DestroyRenderer(m_Renderer);
+        m_Renderer.destroy();
         SDL_DestroyWindow(m_Window);
     }
  
     void App::run(void) {
         while (!m_ShouldClose) {
-            SDL_RenderClear(m_Renderer);
+            m_Renderer.clear();
 
             SDL_Event e;
             while (SDL_PollEvent(&e)) {
@@ -47,7 +47,7 @@ namespace neo {
             this->_update();
             this->_draw();
             EndLoop:
-            SDL_RenderPresent(m_Renderer);
+            m_Renderer.present();
         }
     }
     void App::_handle_event(SDL_Event* e) {
