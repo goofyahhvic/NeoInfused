@@ -37,7 +37,6 @@
 
     #define NEO_ASSERT(x, ...) if(!(x)) {\
                                 throw std::runtime_error(NEO_FORMAT(__VA_ARGS__));\
-                                return;\
                                }
     
     #define NEO_ASSERT_FUNC(x, ...) NEO_ASSERT(x, __VA_ARGS__);
