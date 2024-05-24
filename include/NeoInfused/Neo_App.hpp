@@ -2,7 +2,6 @@
 #define NEO_APP_HPP
 
 #include "NeoInfused/Core/Neo_Core.hpp"
-#include "./Sprite/Neo_Sprite.hpp"
 #include "./Layer/Neo_Layer.hpp"
 #include "./Neo_Renderer.hpp"
 

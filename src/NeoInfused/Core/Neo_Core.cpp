@@ -2,7 +2,6 @@
 #include "NeoInfused/Core/Neo_Core.hpp"
 
 #include "NeoInfused/Neo_App.hpp"
-#include "NeoInfused/Sprite/Neo_TextureRegistry.hpp"
 
 namespace neo {
     int    Core::m_Argc;
@@ -30,7 +29,6 @@ namespace neo {
             throw std::runtime_error("Error in getting executable path!");
         }
 
-        TextureRegistry::Alloc(info.TextureRegistrySize);
         Renderer::Init();
 
         NEO_ASSERT_FUNC(!SDL_Init(SDL_INIT_EVERYTHING), "Failed to initialize SDL: {0}", SDL_GetError());
@@ -45,6 +43,5 @@ namespace neo {
         NEO_INFO_LOG("Terminating NeoInfused, Goodbye!");
         IMG_Quit();
         SDL_Quit();
-        TextureRegistry::Free();
     }
 } // namespace neo
