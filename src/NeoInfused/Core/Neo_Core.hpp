@@ -3,6 +3,7 @@
 
 #include "NeoInfused/Core/Neo_Color.hpp"
 #include "NeoInfused/Core/Neo_Time.hpp"
+#include <cstdint>
 
 #if defined(NEO_PLATFORM_LINUX)
 
@@ -31,7 +32,13 @@
     #define NEO_FORMAT(...) fmt::format(__VA_ARGS__)
 #elif defined(NEO_PLATFORM_WINDOWS)
     #define NEO_FORMAT(...) std::format(__VA_ARGS__)
-#endif
+#endif // NEO_PLATFORM_LINUX
+
+#if defined(NEO_PLATFORM_LINUX)
+    #define C_STR c_str()
+#elif defined(NEO_PLATFORM_WINDOWS)
+    #define C_STR string().c_str()
+#endif // NEO_PLATFORM_LINUX
 
 #if !defined(NEO_CONFIG_DIST)
 
@@ -111,7 +118,6 @@ namespace neo {
         ~Core(void) = default;
     public:
         static void Init(const InitInfo& info);
-        static void Init(int argc, char* argv[]);
         static void Terminate();
 
         static inline const std::string& GetExecPath(void) { return m_ExecPath; }

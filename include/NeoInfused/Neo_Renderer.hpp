@@ -1,18 +1,19 @@
 #if !defined(NEO_RENDERER_HPP)
 #define NEO_RENDERER_HPP
 
+#include "./Neo_Window.hpp"
+
 namespace neo {
     class Renderer {
-    public:
-        Renderer(void) = default;
+        Renderer(void) : m_Renderer(nullptr) {}
         ~Renderer(void) = default;
-        struct BlitInfo;
     public:
         static void Init(void);
         static void Terminate(void);    
+        struct BlitInfo;
     public:
-        Renderer(SDL_Window* window, int32_t flags);
-        void destroy(void);
+        static Renderer* New(int16_t flags, Window* window = Window::GetBound(), int16_t driver_index = -1);
+        static void Delete(Renderer* _this);
     public:
         void blit(SDL_Texture* texture, SDL_FRect* dest_rect = nullptr, SDL_Rect* src_rect = nullptr, double angle = 0.0f, SDL_FPoint* center = nullptr, SDL_RendererFlip flip = SDL_FLIP_NONE) const;
         void blit(const BlitInfo& info) const;
@@ -29,11 +30,12 @@ namespace neo {
 
         inline SDL_Renderer* get_native(void) { return m_Renderer; }
         inline const SDL_Renderer* get_native(void) const { return m_Renderer; }
+        inline operator bool() const { return (m_Renderer); }
     private:
         SDL_Renderer* m_Renderer;
+        size_t m_RendererIndex;
         static Renderer* m_BoundRenderer;
-        static int32_t m_NewRendererIndex;
-        static std::list<SDL_Renderer*> m_Renderers;
+        static std::vector<SDL_Renderer*> m_Renderers;
     };
 
     struct Renderer::BlitInfo {
