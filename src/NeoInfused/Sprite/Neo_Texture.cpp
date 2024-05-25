@@ -6,11 +6,12 @@
 namespace neo {
     Texture::Texture(const std::filesystem::path& path) {
         if (!std::filesystem::exists(path)) {
-            NEO_ASSERT(nullptr, "Failed to load image in {0}", path.string().c_str());
+            NEO_ASSERT(NULL, "Failed to load image in {0}", path.C_STR);
             m_State = State::Failed;
             return;
         }
-        m_Texture = IMG_LoadTexture(Renderer::GetBound()->get_native(), path.string().c_str());
+        NEO_TRACE_LOG("Loading texture from {0}", path.C_STR);
+        m_Texture = IMG_LoadTexture(Renderer::GetBound()->get_native(), path.C_STR);
         m_RefCount = new uint32_t;
         (*m_RefCount) = 1;
         m_State = State::Created;
@@ -38,16 +39,19 @@ namespace neo {
 
     void Texture::set(const std::filesystem::path& path) {
         if (!std::filesystem::exists(path)) {
-            NEO_ASSERT(nullptr, "Failed to load image in {0}", path.string().c_str());
+            NEO_ASSERT(NULL, "Failed to load image in {0}", path.C_STR);
             m_State = State::Failed;
             return;
         }
         if (!m_Texture) {
-            m_Texture = IMG_LoadTexture(Renderer::GetBound()->get_native(), path.string().c_str());
+            NEO_TRACE_LOG("Loading texture from {0}", path.C_STR);
+            m_Texture = IMG_LoadTexture(Renderer::GetBound()->get_native(), path.C_STR);
             m_State = State::Created;
+            return;
         }
         SDL_DestroyTexture(m_Texture);
-        m_Texture = IMG_LoadTexture(Renderer::GetBound()->get_native(), path.string().c_str());
+        NEO_TRACE_LOG("Loading texture from {0}", path.C_STR);
+        m_Texture = IMG_LoadTexture(Renderer::GetBound()->get_native(), path.C_STR);
         m_State = State::Created;
     }
 } // namespace neo

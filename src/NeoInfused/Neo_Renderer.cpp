@@ -3,30 +3,33 @@
 
 namespace neo {
     Renderer* Renderer::m_BoundRenderer;
-    int32_t Renderer::m_NewRendererIndex;
-    std::list<SDL_Renderer*> Renderer::m_Renderers;
+    std::vector<SDL_Renderer*> Renderer::m_Renderers;
 
     void Renderer::Init(void) {
-        Renderer::m_NewRendererIndex = -1;
+        Renderer::m_BoundRenderer = nullptr;
     }
     void Renderer::Terminate(void) {
+        if (Renderer::m_Renderers.empty()) return;
         for (auto renderer : Renderer::m_Renderers) 
             SDL_DestroyRenderer(renderer);
         Renderer::m_Renderers.clear();
     }
 
-    Renderer::Renderer(SDL_Window* window, int32_t flags) {
-        m_Renderer = SDL_CreateRenderer(window, Renderer::m_NewRendererIndex, flags);
-        NEO_ASSERT(m_Renderer, "Failed to create SDL_Renderer: {0}", SDL_GetError());
-        SDL_SetRenderDrawColor(m_Renderer, 0, 0, 0, 255);
+    Renderer* Renderer::New(int16_t flags, Window* window, int16_t driver_index) {
+        Renderer* _this = new Renderer;
+        _this->m_Renderer = SDL_CreateRenderer(window->get_native(), -1, flags);
+        NEO_ASSERT(_this->m_Renderer, "Failed to create SDL_Renderer: {0}", SDL_GetError());
+        SDL_SetRenderDrawColor(_this->m_Renderer, 0, 0, 0, 255);
 
-        Renderer::m_NewRendererIndex++;
-        Renderer::m_Renderers.push_back(m_Renderer);
+        _this->m_RendererIndex = Renderer::m_Renderers.size();
+        Renderer::m_Renderers.push_back(_this->m_Renderer);
+        return _this;
     }
-    void Renderer::destroy(void) {
-        Renderer::m_Renderers.remove(m_Renderer);
-        SDL_DestroyRenderer(m_Renderer);
-        m_Renderer = nullptr;
+    void Renderer::Delete(Renderer* _this) {
+        if (!_this->m_Renderer) return;
+        Renderer::m_Renderers.erase(Renderer::m_Renderers.begin() + _this->m_RendererIndex);
+        SDL_DestroyRenderer(_this->m_Renderer);
+        delete _this;
     }
 
     void Renderer::blit(SDL_Texture* texture, SDL_FRect* dest_rect, SDL_Rect* src_rect, double angle, SDL_FPoint* center, SDL_RendererFlip flip) const {

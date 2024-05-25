@@ -2,6 +2,7 @@
 #include "NeoInfused/Core/Neo_Core.hpp"
 
 #include "NeoInfused/Neo_App.hpp"
+#include "NeoInfused/Neo_Window.hpp"
 
 namespace neo {
     int    Core::m_Argc;
@@ -29,18 +30,20 @@ namespace neo {
             throw std::runtime_error("Error in getting executable path!");
         }
 
-        Renderer::Init();
-
         NEO_ASSERT_FUNC(!SDL_Init(SDL_INIT_EVERYTHING), "Failed to initialize SDL: {0}", SDL_GetError());
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
         IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
-    }
-    void Core::Init(int argc, char** argv) {
-        Core::Init({argc, argv, 1000});
+
+        Window::Init();
+        Renderer::Init();
     }
 
     void Core::Terminate(void) {
         NEO_INFO_LOG("Terminating NeoInfused, Goodbye!");
+
+        Renderer::Terminate();
+        Window::Terminate();
+
         IMG_Quit();
         SDL_Quit();
     }
