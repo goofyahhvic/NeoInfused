@@ -41,10 +41,10 @@ namespace neo {
 
     void Buffer::grow(size_t growth_size) {
         m_Size += growth_size;
-        realloc(m_Buffer, m_Size);
+        m_Buffer = realloc(m_Buffer, m_Size);
     }
     void Buffer::resize(size_t new_size) {
         m_Size = new_size;
-        realloc(m_Buffer, new_size);
+        m_Buffer = realloc(m_Buffer, new_size);
     }
 } // namespace neo

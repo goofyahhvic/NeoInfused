@@ -103,8 +103,8 @@ namespace neo {
                 this->destroy();
         }
     public:
-        inline void grow(size_t growth_size) { m_Size += growth_size; realloc(m_Buffer, m_Size * sizeof(T)); }
-        inline void resize(size_t new_size)  { m_Size = new_size; realloc(m_Buffer, new_size * sizeof(T)); }
+        inline void grow(size_t growth_size) { m_Size += growth_size; m_Buffer = realloc(m_Buffer, m_Size * sizeof(T)); }
+        inline void resize(size_t new_size)  { m_Size = new_size; m_Buffer = realloc(m_Buffer, new_size * sizeof(T)); }
 
         inline T& operator[](size_t index) { NEO_ASSERT(index < m_Size, "index {0} is out of bounds! size of buffer: {1}", index, m_Size); return m_Buffer[index]; }
         inline const T& operator[](size_t index) const { NEO_ASSERT(index < m_Size, "index {0} is out of bounds! size of buffer: {1}", index, m_Size); return m_Buffer[index]; }

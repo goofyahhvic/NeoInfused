@@ -16,9 +16,9 @@ namespace neo {
         // returns if event should be passed down or not
         virtual bool handle_event(SDL_Event* e) { return true; }
 #if !defined(NEO_CONFIG_DIST)
-        const std::string& get_name(void) const { return Layer::m_DebugName; }
+        const std::string* get_name(void) const { return Layer::m_DebugName; }
 #else
-        const std::string& get_name(void) const { return std::string(""); }
+        const std::string* get_name(void) const { return nullptr; }
 #endif // NEO_CONFIG_DIST
         virtual inline void enable(void) { this->m_Enabled = true; }
         virtual inline void disable(void) { this->m_Enabled = false; }
