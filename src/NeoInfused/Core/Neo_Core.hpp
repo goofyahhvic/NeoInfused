@@ -28,11 +28,7 @@
 
 #endif // NEO_PLATFORM_LINUX
 
-#if defined(NEO_PLATFORM_LINUX)
-    #define NEO_FORMAT(...) fmt::format(__VA_ARGS__)
-#elif defined(NEO_PLATFORM_WINDOWS)
-    #define NEO_FORMAT(...) std::format(__VA_ARGS__)
-#endif // NEO_PLATFORM_LINUX
+#define NEO_FORMAT(...) std::format(__VA_ARGS__)
 
 #if defined(NEO_PLATFORM_LINUX)
     #define C_STR c_str()

@@ -5,11 +5,7 @@
 #define NEO_MOUSEBUTTON_EVENT ((SDL_MouseButtonEvent*)e)
 
 namespace neo {
-#if !defined(NEO_CONFIG_DIST)
-    InputLayer::InputLayer(const std::string& debug_name, bool enabled) : Layer(debug_name, enabled) {
-#else
     InputLayer::InputLayer(bool enabled) : Layer(enabled) {
-#endif // NEO_CONFIG_DIST
         m_Input = Input();
     }
     bool InputLayer::handle_event(SDL_Event* e) {

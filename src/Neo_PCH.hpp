@@ -26,10 +26,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#if defined(NEO_PLATFORM_LINUX)
-    #include <fmt/format.h>
-#elif defined(NEO_PLATFORM_WINDOWS)
-    #include <format>
+#if defined(NEO_PLATFORM_WINDOWS)
     #include <windows.h>
 #endif // NEO_PLATFORM_LINUX
 
@@ -38,9 +35,10 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
 
+#include <format>
 #include <glm/glm.hpp>
-
 #include "NeoInfused/Core/Neo_Color.hpp"
+
 #include "NeoInfused/Core/Neo_Time.hpp"
 #include "NeoInfused/Core/Neo_Core.hpp"
 
