@@ -43,8 +43,8 @@ project "NeoInfused"
     }
 
     filter "system:linux"
-        toolset "gcc"
-        cppdialect "C++17"
+        toolset "clang"
+        cppdialect "C++20"
 
         defines {
             "NEO_PLATFORM_LINUX"
@@ -54,9 +54,8 @@ project "NeoInfused"
             "SDL2",
             "SDL2_image",
             "SDL2_ttf",
-            "SDL2_mixer",
             --"SDL2_net",
-            "fmt"
+            "SDL2_mixer"
         }
     filter "system:windows"
         toolset "msc"
