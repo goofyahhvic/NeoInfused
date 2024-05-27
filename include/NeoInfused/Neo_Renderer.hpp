@@ -11,7 +11,7 @@ namespace neo {
         static void Init(void);
         static void Terminate(void);    
         struct BlitInfo;
-    public:
+
         static Renderer* New(int16_t flags, Window* window = Window::GetBound(), int16_t driver_index = -1);
         static void Delete(Renderer* _this);
     public:

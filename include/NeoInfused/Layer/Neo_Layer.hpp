@@ -14,11 +14,12 @@ namespace neo {
         
         virtual inline void enable(void) { this->m_Enabled = true; }
         virtual inline void disable(void) { this->m_Enabled = false; }
+        virtual inline void set_enabled(bool value) { this->m_Enabled = value; }
+
         bool enabled(void) const { return this->m_Enabled; }
         inline operator bool() { return this->m_Enabled; }
     protected:
         bool m_Enabled;
-    private:
     };
 } // namespace neo 
 

@@ -18,28 +18,40 @@ namespace neo {
         struct CopyRect { int32_t x, y; int32_t w, h; };
 
         struct Data {
-            int32_t x = SDL_WINDOWPOS_CENTERED, y = SDL_WINDOWPOS_CENTERED;
-            int32_t w = 1280, h = 720;
+            int32_t x = SDL_WINDOWPOS_CENTERED, y = SDL_WINDOWPOS_CENTERED, w = 1280, h = 720;
             std::string title = "Unnamed Window"; 
-            uint32_t index = 0;
+            bool should_close = false;
+            std::function<void(void*)> on_close = [](void*){};
         };
         struct CreateInfo {
             int32_t w = 1280, h = 720;
             const std::string& title = "Unnamed Window";
-            int32_t flags = SDL_WINDOW_SHOWN;
+            int32_t flags = SDL_WINDOW_RESIZABLE;
+            const std::function<void(void*)> on_close = [](void*){};
             int32_t x = SDL_WINDOWPOS_CENTERED, y = SDL_WINDOWPOS_CENTERED;
-            inline operator Data() const { return { x, y, w, h, title }; }
+            inline operator Data() const { return { x, y, w, h, title, false, on_close }; }
         };
-    public:
+
         static void Init(void);
         static void Terminate(void);
-    public:
+    
         static Window* New(const CreateInfo& info);
         static void Delete(Window* _this);
     public:
         inline void bind(void) { Window::m_BoundWindow = this; }
-        static inline void Bind(Window* window) { Window::m_BoundWindow = window; }
         static inline Window* GetBound(void) { return Window::m_BoundWindow; }
+
+        inline uint32_t id(void) const { return SDL_GetWindowID(m_Window); }
+        static uint32_t GetID(SDL_Window* window);
+
+        static inline Window* GetFromID(uint32_t id) { return Window::m_Windows.at(id); }
+        static SDL_Window* GetNativeFromID(uint32_t id);
+
+        inline void set_on_close(const std::function<void(void*)>& on_close) { m_Data.on_close = on_close; }
+        static inline bool NoWindows(void) { return Window::m_Windows.empty(); }
+
+        inline bool should_close(void) const { return m_Data.should_close; }
+        inline void close(void* user_data = nullptr) { m_Data.should_close = true; m_Data.on_close(user_data); }
 
         void set_pos(int32_t x = SDL_WINDOWPOS_CENTERED, int32_t y = SDL_WINDOWPOS_CENTERED);
         void set_x(int32_t x = SDL_WINDOWPOS_CENTERED);
@@ -50,39 +62,39 @@ namespace neo {
         void set_height(int32_t h);
         void increase_size(int32_t w, int32_t h);
 
-        void set_rect(const CopyRect& rect);
         void rename(const std::string& title);
         inline const std::string& get_name(void) const { return m_Data.title; }
 
-        inline int32_t get_x(void) { this->_update_pos();  return m_Data.x; }
-        inline int32_t get_y(void) { this->_update_pos();  return m_Data.y; }
-        inline int32_t get_w(void) { this->_update_size(); return m_Data.w; }
-        inline int32_t get_h(void) { this->_update_size(); return m_Data.h; }
+        inline int32_t get_x(void) const { this->_update_pos();  return m_Data.x; }
+        inline int32_t get_y(void) const { this->_update_pos();  return m_Data.y; }
+        inline int32_t get_w(void) const { this->_update_size(); return m_Data.w; }
+        inline int32_t get_h(void) const { this->_update_size(); return m_Data.h; }
 
-        inline void get_pos(int32_t* x, int32_t* y) { this->_update_pos(); *x = m_Data.x; *y = m_Data.y; }
-        inline Pos get_pos(void) { this->_update_pos(); return { m_Data.x, m_Data.y}; }
-        inline CopyPos get_copy_pos(void) { this->_update_pos(); return { m_Data.x, m_Data.y}; }
+        inline void get_pos(int32_t* x, int32_t* y) const { this->_update_pos(); *x = m_Data.x; *y = m_Data.y; }
+        inline Pos get_pos(void) const { this->_update_pos(); return { m_Data.x, m_Data.y}; }
+        inline CopyPos get_copy_pos(void) const { this->_update_pos(); return { m_Data.x, m_Data.y}; }
 
-        inline void get_size(int32_t* w, int32_t* h) { this->_update_size(); *w = m_Data.w; *h = m_Data.h; }
-        inline Size get_size(void) { this->_update_size(); return { m_Data.w, m_Data.h }; }
-        inline CopySize get_copy_size(void) { this->_update_size(); return { m_Data.w, m_Data.h }; }
+        inline void get_size(int32_t* w, int32_t* h) const { this->_update_size(); *w = m_Data.w; *h = m_Data.h; }
+        inline Size get_size(void) const { this->_update_size(); return { m_Data.w, m_Data.h }; }
+        inline CopySize get_copy_size(void) const { this->_update_size(); return { m_Data.w, m_Data.h }; }
 
-        inline void get_rect(int32_t* x, int32_t* y,uint32_t* w, int32_t* h) { this->_update_rect(); *x = m_Data.x; *y = m_Data.y; *w = m_Data.w; *h = m_Data.h; }
-        inline Rect get_rect(void) { this->_update_rect(); return { m_Data.x, m_Data.y, m_Data.w, m_Data.h }; }     
-        inline CopyRect get_copy_rect(void) { this->_update_rect(); return { m_Data.x, m_Data.y, m_Data.w, m_Data.h }; }     
+        inline void get_rect(int32_t* x, int32_t* y,uint32_t* w, int32_t* h) const { this->_update_rect(); *x = m_Data.x; *y = m_Data.y; *w = m_Data.w; *h = m_Data.h; }
+        inline Rect get_rect(void) const { this->_update_rect(); return { m_Data.x, m_Data.y, m_Data.w, m_Data.h }; }     
+        inline CopyRect get_copy_rect(void) const { this->_update_rect(); return { m_Data.x, m_Data.y, m_Data.w, m_Data.h }; }     
 
         inline const Data& get_data(void) const { return m_Data; }
         inline SDL_Window* get_native(void) const { return m_Window; }
-        inline operator bool() const { return (m_Window); }
+        inline operator bool() const { return (bool)m_Window; }
     private:
-        void _update_pos(void);
-        void _update_size(void);
-        void _update_rect(void);
+        void _update_pos(void) const;
+        void _update_size(void) const;
+        void _update_rect(void) const;
     private:
         SDL_Window* m_Window;
-        Data m_Data;
+        // m_Data being mutable allows position/size getters to be const, since m_Data has to be updated
+        mutable Data m_Data;
         static Window* m_BoundWindow;
-        static std::vector<SDL_Window*> m_Windows;
+        static std::unordered_map<uint32_t, Window*> m_Windows;
     };
     using WindowCreateInfo = Window::CreateInfo;
 } // namespace neo

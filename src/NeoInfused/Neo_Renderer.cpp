@@ -18,15 +18,18 @@ namespace neo {
     Renderer* Renderer::New(int16_t flags, Window* window, int16_t driver_index) {
         Renderer* _this = new Renderer;
         _this->m_Renderer = SDL_CreateRenderer(window->get_native(), -1, flags);
-        NEO_ASSERT(_this->m_Renderer, "Failed to create SDL_Renderer: {0}", SDL_GetError());
-        SDL_SetRenderDrawColor(_this->m_Renderer, 0, 0, 0, 255);
-
         _this->m_RendererIndex = Renderer::m_Renderers.size();
+
         Renderer::m_Renderers.push_back(_this->m_Renderer);
+        if (!Renderer::m_BoundRenderer) Renderer::m_BoundRenderer = _this;
+
         return _this;
     }
     void Renderer::Delete(Renderer* _this) {
         if (!_this->m_Renderer) return;
+        if (_this == Renderer::m_BoundRenderer)
+            Renderer::m_BoundRenderer = nullptr;
+
         Renderer::m_Renderers.erase(Renderer::m_Renderers.begin() + _this->m_RendererIndex);
         SDL_DestroyRenderer(_this->m_Renderer);
         delete _this;

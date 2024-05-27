@@ -3,46 +3,52 @@
 
 namespace neo {
     Window* Window::m_BoundWindow;
-    std::vector<SDL_Window*> Window::m_Windows;
+    std::unordered_map<uint32_t, Window*> Window::m_Windows;
 
     void Window::Init(void) {
         Window::m_BoundWindow = nullptr;
     }
     void Window::Terminate(void) {
         if (Window::m_Windows.empty()) return;
-        for (auto window : Window::m_Windows)
-            SDL_DestroyWindow(window);
+        for (const auto& [id, window] : Window::m_Windows)
+            SDL_DestroyWindow(window->m_Window);
         Window::m_Windows.clear();
     }
 
     Window* Window::New(const Window::CreateInfo& info) {
         Window* _this = new Window;
-
         _this->m_Data = info;
-        _this->m_Window = SDL_CreateWindow(
-            info.title.c_str(),
-            info.x, info.y,
-            info.w, info.h,
-            info.flags
-        );
-        _this->m_Data.index = Window::m_Windows.size();
-        Window::m_Windows.push_back(_this->m_Window);
+        _this->m_Window = SDL_CreateWindow(info.title.c_str(), info.x, info.y, info.w, info.h, info.flags);
+
+        Window::m_Windows[SDL_GetWindowID(_this->m_Window)] = _this;
+        if (!Window::m_BoundWindow) Window::m_BoundWindow = _this;
+
         return _this;
     }
     void Window::Delete(Window* _this) {
         if (!_this->m_Window) return;
-        Window::m_Windows.erase(Window::m_Windows.begin() + _this->m_Data.index);
+        if (_this == Window::m_BoundWindow)
+            Window::m_BoundWindow = nullptr;
+
+        Window::m_Windows.erase(SDL_GetWindowID(_this->m_Window));
         SDL_DestroyWindow(_this->m_Window);
         delete _this;
     }
 
-    void Window::_update_pos(void) {
+    uint32_t Window::GetID(SDL_Window* window) {
+        return SDL_GetWindowID(window);
+    }
+    SDL_Window* Window::GetNativeFromID(uint32_t id) {
+        return SDL_GetWindowFromID(id);
+    }
+
+    void Window::_update_pos(void) const {
         SDL_GetWindowPosition(m_Window, &(m_Data.x), &(m_Data.y));
     }
-    void Window::_update_size(void) {
+    void Window::_update_size(void) const {
         SDL_GetWindowSize(m_Window, &(m_Data.w), &(m_Data.h));
     }
-    void Window::_update_rect(void) {
+    void Window::_update_rect(void) const {
         SDL_GetWindowPosition(m_Window, &(m_Data.x), &(m_Data.y));
         SDL_GetWindowSize(m_Window, &(m_Data.w), &(m_Data.h));
     }
@@ -79,14 +85,6 @@ namespace neo {
         SDL_SetWindowSize(m_Window, m_Data.w, h);
     }
 
-    void Window::set_rect(const Window::CopyRect& rect) {
-        m_Data.x = rect.x;
-        m_Data.y = rect.y;
-        m_Data.w = rect.w;
-        m_Data.h = rect.h;
-        SDL_SetWindowPosition(m_Window, rect.x, rect.y);
-        SDL_SetWindowSize(m_Window, rect.w, rect.h);
-    }
     void Window::rename(const std::string& title) {
         m_Data.title = title;
         SDL_SetWindowTitle(m_Window, title.c_str());
