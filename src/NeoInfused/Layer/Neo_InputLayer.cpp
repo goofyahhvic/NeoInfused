@@ -3,6 +3,7 @@
 
 #define NEO_KEYBOARD_EVENT ((SDL_KeyboardEvent*)e)
 #define NEO_MOUSEBUTTON_EVENT ((SDL_MouseButtonEvent*)e)
+#define NEO_MOUSEMOTION_EVENT ((SDL_MouseMotionEvent*)e)
 
 namespace neo {
     InputLayer::InputLayer(bool enabled) : Layer(enabled) {
@@ -25,6 +26,9 @@ namespace neo {
             break;
         case SDL_MOUSEBUTTONUP:
             m_Input.get_mb(NEO_MOUSEBUTTON_EVENT->button) = false;
+            break;
+        case SDL_MOUSEMOTION:
+            m_Input.set_mp(NEO_MOUSEMOTION_EVENT->x, NEO_MOUSEMOTION_EVENT->y);
             break;
         }
     }
