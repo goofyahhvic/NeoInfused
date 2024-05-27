@@ -14,7 +14,6 @@ namespace neo {
 
         m_Renderer = Renderer::New(SDL_RENDERER_ACCELERATED);
         m_Renderer->bind();
-        m_Renderer->set_draw_color();
     }
     App::~App(void) {
         Renderer::Delete(m_Renderer);
