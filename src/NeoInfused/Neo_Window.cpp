@@ -11,7 +11,7 @@ namespace neo {
     void Window::Terminate(void) {
         if (Window::m_Windows.empty()) return;
         for (const auto& [id, window] : Window::m_Windows)
-            SDL_DestroyWindow(window->get_native());
+            SDL_DestroyWindow(window->m_Window);
         Window::m_Windows.clear();
     }
 
