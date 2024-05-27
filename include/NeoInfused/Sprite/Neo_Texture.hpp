@@ -21,7 +21,7 @@ namespace neo {
         static void Delete(Texture* _this);
     public:
         void set(const std::filesystem::path& path);
-        inline void draw(const DrawInfo& info, Renderer* renderer = Renderer::GetBound()) const { renderer->blit(m_Texture, info.dest_rect, info.src_rect, info.angle, info.center, info.flip); }
+        inline void draw(const DrawInfo& info, Renderer* renderer = Renderer::GetBound()) const { renderer->blit({ m_Texture, info.dest_rect, info.src_rect, info.angle, info.center, info.flip }); }
         inline operator bool() const { return (bool)m_Texture; }
     private:
         SDL_Texture* m_Texture;

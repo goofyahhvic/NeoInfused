@@ -32,9 +32,6 @@ namespace neo {
         delete _this;
     }
 
-    void Renderer::blit(SDL_Texture* texture, SDL_FRect* dest_rect, SDL_Rect* src_rect, double angle, SDL_FPoint* center, SDL_RendererFlip flip) const {
-        SDL_RenderCopyExF(m_Renderer, texture, src_rect, dest_rect, angle, center, flip);
-    }
     void Renderer::blit(const BlitInfo& info) const {
         SDL_RenderCopyExF(m_Renderer, info.texture, info.src_rect, info.dest_rect, info.angle, info.center, info.flip);
     }

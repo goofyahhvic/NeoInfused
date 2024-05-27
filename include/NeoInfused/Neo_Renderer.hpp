@@ -15,7 +15,6 @@ namespace neo {
         static Renderer* New(int16_t flags, Window* window = Window::GetBound(), int16_t driver_index = -1);
         static void Delete(Renderer* _this);
     public:
-        void blit(SDL_Texture* texture, SDL_FRect* dest_rect = nullptr, SDL_Rect* src_rect = nullptr, double angle = 0.0f, SDL_FPoint* center = nullptr, SDL_RendererFlip flip = SDL_FLIP_NONE) const;
         void blit(const BlitInfo& info) const;
 
         void clear(void);
