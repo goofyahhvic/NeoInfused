@@ -2,7 +2,6 @@
 #define NEO_WINDOW_HPP
 
 #include "NeoInfused/Core/Neo_Core.hpp"
-#include <functional>
 
 namespace neo {
     class Window {
