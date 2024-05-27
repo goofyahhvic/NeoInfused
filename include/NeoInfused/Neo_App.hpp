@@ -18,9 +18,6 @@ namespace neo {
 
         inline Window* get_window(void) { return m_Window; }
         inline Renderer* get_renderer(void) { return m_Renderer; }
-
-        inline bool should_close(void) const { return m_ShouldClose; }
-        inline void close(bool value = true) { m_ShouldClose = value; }
     protected:
         virtual void _update(void);
         virtual void _draw(void);
@@ -32,8 +29,6 @@ namespace neo {
     protected:
         Window* m_Window;
         Renderer* m_Renderer;
-
-        bool m_ShouldClose;
 
         std::deque<Layer*> m_Layers;
     private:

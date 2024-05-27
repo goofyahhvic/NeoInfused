@@ -17,10 +17,10 @@ namespace neo {
             SDL_RendererFlip flip = SDL_FLIP_NONE;
         };
     public:
-        static Texture* New(const std::filesystem::path& path);
+        static Texture* New(const std::filesystem::path& path, Renderer* renderer = Renderer::GetBound());
         static void Delete(Texture* _this);
     public:
-        void set(const std::filesystem::path& path);
+        void set(const std::filesystem::path& path, Renderer* renderer = Renderer::GetBound());
         inline void draw(const DrawInfo& info, Renderer* renderer = Renderer::GetBound()) const { renderer->blit({ m_Texture, info.dest_rect, info.src_rect, info.angle, info.center, info.flip }); }
         inline operator bool() const { return (bool)m_Texture; }
     private:
