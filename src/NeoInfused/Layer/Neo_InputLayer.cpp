@@ -6,7 +6,7 @@
 #define NEO_MOUSEMOTION_EVENT ((SDL_MouseMotionEvent*)e)
 
 namespace neo {
-    InputLayer::InputLayer(float priority) : Layer(priority) {
+    InputLayer::InputLayer(float priority, bool enabled) : Layer(priority, enabled) {
         m_Input = Input();
     }
     bool InputLayer::handle_event(SDL_Event* e) {
