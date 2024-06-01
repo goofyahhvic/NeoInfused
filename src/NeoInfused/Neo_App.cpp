@@ -45,9 +45,9 @@ namespace neo {
         }
     }
     void App::_draw(void) {
-        for (auto layer : m_Layers) {
-            if (!layer->enabled()) continue;
-            layer->draw();
+        for (auto it = m_Layers.rbegin(); it != m_Layers.rend(); it++) {
+            if (!(*it)->enabled()) continue;
+            (*it)->draw();
         }
     }
 } // namespace neo

@@ -6,14 +6,14 @@
 #define NEO_MOUSEMOTION_EVENT ((SDL_MouseMotionEvent*)e)
 
 namespace neo {
-    InputLayer::InputLayer(bool enabled) : Layer(enabled) {
+    InputLayer::InputLayer(float priority) : Layer(priority) {
         m_Input = Input();
     }
     bool InputLayer::handle_event(SDL_Event* e) {
         this->_set_input(e);
         return true;
     }
-    void InputLayer::_set_input(SDL_Event* e) {
+    void InputLayer::_set_input(SDL_Event* e) {   
         switch (e->type) {
         case SDL_KEYDOWN:
             m_Input.get_key(NEO_KEYBOARD_EVENT->keysym.scancode) = true;

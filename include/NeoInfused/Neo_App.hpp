@@ -1,8 +1,7 @@
 #if !defined(NEO_APP_HPP)
 #define NEO_APP_HPP
 
-#include "NeoInfused/Core/Neo_Core.hpp"
-#include "./Layer/Neo_Layer.hpp"
+#include "./Layer/Neo_LayerGroup.hpp"
 #include "./Neo_Window.hpp"
 #include "./Neo_Renderer.hpp"
 
@@ -22,15 +21,11 @@ namespace neo {
         virtual void _update(void);
         virtual void _draw(void);
         virtual void _handle_event(SDL_Event* e);
-    private:
-        void _get_window_pos(void);
-        void _get_window_size(void);
-        void _get_window_rect(void);
     protected:
         Window* m_Window;
         Renderer* m_Renderer;
 
-        std::deque<Layer*> m_Layers;
+        LayerGroup m_Layers;
     private:
         static App* m_This;
     };

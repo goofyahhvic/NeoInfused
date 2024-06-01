@@ -7,7 +7,7 @@
 namespace neo {
     class InputLayer : public Layer {
     public:
-        InputLayer(bool enabled = true);
+        InputLayer(float priority);
         virtual ~InputLayer(void) {}
     public:
         virtual bool handle_event(SDL_Event* e) override;
@@ -17,6 +17,5 @@ namespace neo {
         Input m_Input;
     };
 } // namespace neo
-
 
 #endif // NEO_INPUT_LAYER_HPP

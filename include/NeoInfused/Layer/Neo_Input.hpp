@@ -26,11 +26,11 @@ namespace neo {
         inline MousePos& get_mp(void) { return m_MousePos; }
         inline const MousePos& get_mp(void) const { return m_MousePos; }
 
-        int32_t get_mouse_x(void) const { return m_MousePos.x; }
-        int32_t& get_mouse_x(void) { return m_MousePos.x; }
+        inline int32_t get_mouse_x(void) const { return m_MousePos.x; }
+        inline int32_t& get_mouse_x(void) { return m_MousePos.x; }
 
-        int32_t get_mouse_y(void) const { return m_MousePos.y; }
-        int32_t& get_mouse_y(void) { return m_MousePos.y; }
+        inline int32_t get_mouse_y(void) const { return m_MousePos.y; }
+        inline int32_t& get_mouse_y(void) { return m_MousePos.y; }
 
         inline void set_key(index16_t index, bool value) { m_Keys[index] = value; }
         inline void set_mb(index8_t index, bool value) { m_MouseButtons[index] = value; }
