@@ -1,0 +1,46 @@
+#if !defined(NEO_LAYER_GROUP_HPP)
+#define NEO_LAYER_GROUP_HPP
+
+#include "NeoInfused/Core/Neo_Core.hpp"
+#include "./Neo_Layer.hpp"
+
+namespace neo {
+    class LayerGroup {
+    public:
+        using Layers = std::vector<Layer*>;
+        LayerGroup(void) = default;
+        ~LayerGroup(void);
+    public:
+        template<typename T, typename... _Args>
+        inline T* create(_Args&&... __args) { return (T*)this->push(new T(std::forward<_Args>(__args)...)); }
+        Layer* push(Layer* layer);
+        void pop(index_t index);
+
+        void set_priority(float new_priority, index_t index);
+        void resort(void);
+
+        index_t find_first_of(Layer* layer) const;
+        index_t find_last_of(Layer* layer) const;
+
+        inline Layers::iterator begin(void) { return m_Layers.begin(); }
+        inline Layers::iterator end(void) { return m_Layers.end(); }
+
+        inline Layers::reverse_iterator rbegin(void) { return m_Layers.rbegin(); }
+        inline Layers::reverse_iterator rend(void) { return m_Layers.rend(); }
+
+        inline Layers::const_iterator cbegin(void) const { return m_Layers.cbegin(); }
+        inline Layers::const_iterator cend(void) const { return m_Layers.cend(); }
+
+        inline Layers::const_reverse_iterator crbegin(void) const { return m_Layers.crbegin(); }
+        inline Layers::const_reverse_iterator crend(void) const { return m_Layers.crend(); }
+
+        inline size_t size(void) const { return m_Layers.size(); }
+        inline Layer* operator[](index_t index) const { return m_Layers[index]; }
+        inline Layer* at(index_t index) { return m_Layers.at(index); }
+        inline bool empty(void) const { return m_Layers.empty(); }
+    private:
+        Layers m_Layers;
+    };
+} // namespace neo
+
+#endif // NEO_LAYER_GROUP_HPP

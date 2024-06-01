@@ -3,23 +3,29 @@
 
 namespace neo {
     class Layer {
+        friend class LayerGroup;
     public:
-        Layer(bool enabled = true) : m_Enabled(enabled) {}
+        Layer(float priority) : m_Priority(priority) {}
         virtual ~Layer(void) = default;
     public:
         virtual void update(void) {}
         virtual void draw(void) {}
-        // returns if event should be passed down or not
+        // returns true if event should be passed down
         virtual bool handle_event(SDL_Event* e) { return true; }
         
-        virtual inline void enable(void) { this->m_Enabled = true; }
-        virtual inline void disable(void) { this->m_Enabled = false; }
-        virtual inline void set_enabled(bool value) { this->m_Enabled = value; }
+        inline bool enabled(void) const { return (m_Priority >= 0.0f); }
+        inline float priority(void) const { return m_Priority; }
 
-        bool enabled(void) const { return this->m_Enabled; }
-        inline operator bool() { return this->m_Enabled; }
+        inline bool operator>(const Layer& r)  const { return (m_Priority > r.m_Priority); }
+        inline bool operator>=(const Layer& r) const { return (m_Priority >= r.m_Priority); }
+        inline bool operator<(const Layer& r)  const { return (m_Priority < r.m_Priority); }
+        inline bool operator<=(const Layer& r) const { return (m_Priority <= r.m_Priority); }
+        inline bool operator==(const Layer& r) const { return (m_Priority == r.m_Priority); }
+        inline bool operator!=(const Layer& r) const { return (m_Priority != r.m_Priority); }
+
+        inline operator float() const { return m_Priority; }
     protected:
-        bool m_Enabled;
+        float m_Priority;
     };
 } // namespace neo 
 
