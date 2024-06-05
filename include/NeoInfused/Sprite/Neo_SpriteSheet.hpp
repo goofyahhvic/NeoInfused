@@ -19,6 +19,8 @@ namespace neo {
             SDL_Rect portion = { 0, 0, 0, 0 };
         };
         struct CellDrawInfo {
+            uint32_t row, col;
+            uint32_t horizontal_amount = 1, vertical_amount = 1;
             SDL_FRect* dest_rect = nullptr;
             double angle = 0.0f;
             SDL_FPoint* center = nullptr;
@@ -31,7 +33,7 @@ namespace neo {
         Cell at(uint32_t row, uint32_t col) const;
         inline void draw(const Texture::DrawInfo& info) const { m_Data.texture->draw(info); }
         inline void draw_cell(Cell& cell, const CellDrawInfo& info) const { m_Data.texture->draw({ info.dest_rect, &cell.portion, info.angle, info.center, info.flip }); }
-        void draw_cell(uint32_t row, uint32_t col, const CellDrawInfo& info) const;
+        void draw_cell(const CellDrawInfo& info) const;
     private:
         Data m_Data;
     };
