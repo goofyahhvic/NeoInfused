@@ -28,7 +28,7 @@
 
 #if defined(NEO_PLATFORM_WINDOWS)
     #include <windows.h>
-#endif // NEO_PLATFORM_LINUX
+#endif // NEO_PLATFORM_WINDOWS
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -36,7 +36,6 @@
 #include <SDL2/SDL_mixer.h>
 
 #include <format>
-#include <glm/glm.hpp>
 #include "NeoInfused/Core/Neo_Color.hpp"
 
 #include "NeoInfused/Core/Neo_Time.hpp"

@@ -43,7 +43,7 @@ project "NeoInfused"
     }
 
     filter "system:linux"
-        toolset "clang"
+        toolset "gcc"
         defines { "NEO_PLATFORM_LINUX" }
 
     filter "system:windows"
