@@ -35,14 +35,12 @@ namespace neo {
         IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
 
         Window::Init();
-        Renderer::Init();
     }
 
     void Core::Terminate(void) {
         NEO_INFO_LOG("Terminating NeoInfused, Goodbye!");
 
-        Renderer::Terminate();
-        Window::Terminate();
+        Window::Cleanup();
 
         IMG_Quit();
         SDL_Quit();

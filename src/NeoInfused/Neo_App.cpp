@@ -10,26 +10,33 @@ namespace neo {
         App::m_This = this;
 
         m_Window = Window::New(window_create_info);
-        m_Renderer = Renderer::New(SDL_RENDERER_ACCELERATED, m_Window);
     }
     App::~App(void) {
-        Renderer::Delete(m_Renderer);
         Window::Delete(m_Window);
     }
  
     void App::run(void) {
         while (!m_Window->should_close()) {
-            m_Renderer->clear();
-
             SDL_Event e;
             while (SDL_PollEvent(&e)) {
-                if (e.window.event == SDL_WINDOWEVENT_CLOSE)
-                    return Window::GetFromID(e.window.windowID)->close();
+                switch (e.window.event) {
+                    case SDL_WINDOWEVENT_CLOSE:
+                        return Window::GetFromID(e.window.windowID)->close();
+                        break;
+                    case SDL_WINDOWEVENT_RESIZED:
+                        m_Window->display()->update_size();
+                        break;
+                    default:
+                        break;
+                }
+
                 this->_handle_event(&e);
             }
+            
+            m_Window->display()->clear({100, 100, 255, 255});
             this->_update();
             this->_draw();
-            m_Renderer->present();
+            m_Window->display()->present();
         }
     }
     void App::_handle_event(SDL_Event* e) {
