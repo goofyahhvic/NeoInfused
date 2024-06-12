@@ -3,7 +3,6 @@
 
 #include "./Layer/Neo_LayerGroup.hpp"
 #include "./Neo_Window.hpp"
-#include "./Neo_Renderer.hpp"
 
 namespace neo {
     class App {
@@ -16,14 +15,12 @@ namespace neo {
         inline static App* Get(void) { return App::m_This; }
 
         inline Window* get_window(void) { return m_Window; }
-        inline Renderer* get_renderer(void) { return m_Renderer; }
     protected:
         virtual void _update(void);
         virtual void _draw(void);
         virtual void _handle_event(SDL_Event* e);
     protected:
         Window* m_Window;
-        Renderer* m_Renderer;
 
         LayerGroup m_Layers;
     private:

@@ -22,13 +22,13 @@ namespace neo {
             (int)m_Data.cell_width
         } };
     }
-    void SpriteSheet::draw_cell(const SpriteSheet::CellDrawInfo& info) const {
+    void SpriteSheet::draw_cell(uint32_t row, uint32_t col, uint32_t h_amount, uint32_t v_amount, SDL_Rect* position, Window* window) const {
         SDL_Rect portion = {
-            (int)(info.col * m_Data.cell_height),
-            (int)(info.row * m_Data.cell_width),
-            (int)(info.horizontal_amount * m_Data.cell_height),
-            (int)(info.vertical_amount * m_Data.cell_width)
+            (int)(col * m_Data.cell_height),
+            (int)(row * m_Data.cell_width),
+            (int)(h_amount * m_Data.cell_height),
+            (int)(v_amount * m_Data.cell_width)
         };
-        m_Data.texture->draw({ info.dest_rect, &portion, info.angle, info.center, info.flip });
+        m_Data.texture->draw(position, &portion, window);
     }
 }
