@@ -33,14 +33,59 @@ namespace neo {
     }
 
     void Window::Display::update_size(void) {
-        m_Window->m_WindowSurface = SDL_GetWindowSurface(m_Window->m_Window);
-        
         SDL_Surface* new_draw_surface = SDL_CreateRGBSurfaceWithFormat(
             0,
             m_Window->m_WindowSurface->w, m_Window->m_WindowSurface->h,
             32, SDL_PIXELFORMAT_RGBA32
         );
 
+        SDL_FreeSurface(m_Window->m_DrawSurface);
+        m_Window->m_DrawSurface = new_draw_surface;
+    }
+    void Window::update_size(void) {
+        m_WindowSurface = SDL_GetWindowSurface(m_Window);
+    }
+    void Window::Display::set_width(uint32_t new_width) {
+        SDL_Surface* new_draw_surface = SDL_CreateRGBSurfaceWithFormat(
+            0,
+            new_width, m_Window->m_DrawSurface->h,
+            32, SDL_PIXELFORMAT_RGBA32
+        );
+
+        SDL_BlitSurface(m_Window->m_DrawSurface, nullptr, new_draw_surface, nullptr);
+        SDL_FreeSurface(m_Window->m_DrawSurface);
+        m_Window->m_DrawSurface = new_draw_surface;
+    }
+    void Window::Display::set_height(uint32_t new_height) {
+        SDL_Surface* new_draw_surface = SDL_CreateRGBSurfaceWithFormat(
+            0,
+            m_Window->m_DrawSurface->w, new_height,
+            32, SDL_PIXELFORMAT_RGBA32
+        );
+
+        SDL_BlitSurface(m_Window->m_DrawSurface, nullptr, new_draw_surface, nullptr);
+        SDL_FreeSurface(m_Window->m_DrawSurface);
+        m_Window->m_DrawSurface = new_draw_surface;
+    }
+    void Window::Display::set_size(uint32_t new_width, uint32_t new_height) {
+        SDL_Surface* new_draw_surface = SDL_CreateRGBSurfaceWithFormat(
+            0,
+            new_width, new_height,
+            32, SDL_PIXELFORMAT_RGBA32
+        );
+
+        SDL_BlitSurface(m_Window->m_DrawSurface, nullptr, new_draw_surface, nullptr);
+        SDL_FreeSurface(m_Window->m_DrawSurface);
+        m_Window->m_DrawSurface = new_draw_surface;
+    }
+    void Window::Display::increase_size(uint32_t width_amount, uint32_t height_amount) {
+        SDL_Surface* new_draw_surface = SDL_CreateRGBSurfaceWithFormat(
+            0,
+            width_amount + m_Window->m_DrawSurface->w, height_amount + m_Window->m_DrawSurface->h,
+            32, SDL_PIXELFORMAT_RGBA32
+        );
+
+        SDL_BlitSurface(m_Window->m_DrawSurface, nullptr, new_draw_surface, nullptr);
         SDL_FreeSurface(m_Window->m_DrawSurface);
         m_Window->m_DrawSurface = new_draw_surface;
     }
@@ -82,6 +127,26 @@ namespace neo {
         Window::m_Windows.erase(SDL_GetWindowID(_this->m_Window));
         SDL_DestroyWindow(_this->m_Window);
         delete _this;
+    }
+
+    void Window::set_width(uint32_t new_width) {
+        SDL_SetWindowSize(m_Window, new_width, m_WindowSurface->h);
+        m_WindowSurface = SDL_GetWindowSurface(m_Window);
+    }
+    void Window::set_height(uint32_t new_height) {
+        SDL_SetWindowSize(m_Window, m_WindowSurface->w, new_height);
+        m_WindowSurface = SDL_GetWindowSurface(m_Window);
+    }
+    void Window::set_size(uint32_t new_width, uint32_t new_height) {
+        SDL_SetWindowSize(m_Window, new_width, new_height);
+        m_WindowSurface = SDL_GetWindowSurface(m_Window);
+    }
+    void Window::increase_size(uint32_t width_amount, uint32_t height_amount) {
+        SDL_SetWindowSize(m_Window, width_amount + m_WindowSurface->w, height_amount + m_WindowSurface->h);
+        m_WindowSurface = SDL_GetWindowSurface(m_Window);
+    }
+    void Window::update_pos(void) {
+        SDL_GetWindowPosition(m_Window, &m_X, &m_Y);
     }
 
     uint32_t Window::GetID(SDL_Window* window) {

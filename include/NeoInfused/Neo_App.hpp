@@ -11,17 +11,15 @@ namespace neo {
         virtual ~App(void);
     public:
         virtual void run(void);
-    public: 
-        inline static App* Get(void) { return App::m_This; }
 
-        inline Window* get_window(void) { return m_Window; }
+        inline static App* Get(void) { return App::m_This; }
+        inline Window* window(void) { return m_Window; }
     protected:
         virtual void _update(void);
         virtual void _draw(void);
         virtual void _handle_event(SDL_Event* e);
     protected:
         Window* m_Window;
-
         LayerGroup m_Layers;
     private:
         static App* m_This;
