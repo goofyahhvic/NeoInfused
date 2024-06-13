@@ -25,15 +25,22 @@ namespace neo {
             Display(Window* window);
             ~Display(void) = default;
         public:
-            void clear(Color color = {});
+            inline uint32_t width(void) const { return m_Window->m_DrawSurface->w; }
+            inline uint32_t height(void) const { return m_Window->m_DrawSurface->h; }
+
+            void update_size(void);
+            void set_width(uint32_t new_width);
+            void set_height(uint32_t new_height);
+            void set_size(uint32_t new_width, uint32_t new_height);
+            void increase_size(uint32_t width_amount, uint32_t height_amount);
+
+            void clear(Color color = {0, 0, 0, 255});
             void present(void);
 
             Color* at(uint32_t x, uint32_t y);
             void set_at(uint32_t x, uint32_t y, Color color);
 
             void blit(SDL_Surface* surface, SDL_Rect* position = nullptr, SDL_Rect* portion = nullptr);
-
-            void update_size(void);
         private:
             Window* m_Window;
         };
@@ -44,6 +51,19 @@ namespace neo {
         static Window* New(const CreateInfo& info);
         static void Delete(Window* _this);
     public:
+        inline uint32_t width(void) const { return m_WindowSurface->w; }
+        inline uint32_t height(void) const { return m_WindowSurface->h; }
+        void update_size(void);
+
+        void set_width(uint32_t new_width);
+        void set_height(uint32_t new_height);
+        void set_size(uint32_t new_width, uint32_t new_height);
+        void increase_size(uint32_t width_amount, uint32_t height_amount);
+
+        inline int32_t x(void) const { return m_X; }
+        inline int32_t y(void) const { return m_Y; }
+        void update_pos(void);
+
         inline Display* const display(void) const { return m_Display; }
 
         inline void bind(void) { Window::m_BoundWindow = this; }
@@ -63,10 +83,11 @@ namespace neo {
 
         void rename(const char* new_title);
 
-        inline SDL_Window* get_native(void) const { return m_Window; }
+        inline SDL_Window* native(void) const { return m_Window; }
         inline operator bool() const { return (bool)m_Window; }
     private:
         SDL_Window* m_Window;
+        int32_t m_X, m_Y;
         SDL_Surface *m_WindowSurface, *m_DrawSurface;
         Display* m_Display; 
         bool m_ShouldClose = false;

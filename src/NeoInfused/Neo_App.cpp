@@ -4,8 +4,7 @@
 namespace neo {
     App* App::m_This;
 
-    App::App(const Window::CreateInfo& window_create_info)
-        : m_Layers() {
+    App::App(const Window::CreateInfo& window_create_info) : m_Layers() {
         NEO_ASSERT(!App::m_This, "Cannot create multiple instances of neo::App!");
         App::m_This = this;
 
@@ -19,27 +18,28 @@ namespace neo {
         while (!m_Window->should_close()) {
             SDL_Event e;
             while (SDL_PollEvent(&e)) {
-                switch (e.window.event) {
-                    case SDL_WINDOWEVENT_CLOSE:
-                        return Window::GetFromID(e.window.windowID)->close();
-                        break;
-                    case SDL_WINDOWEVENT_RESIZED:
-                        m_Window->display()->update_size();
-                        break;
-                    default:
-                        break;
-                }
-
                 this->_handle_event(&e);
             }
             
-            m_Window->display()->clear({100, 100, 255, 255});
+            m_Window->display()->clear();
             this->_update();
             this->_draw();
             m_Window->display()->present();
         }
     }
     void App::_handle_event(SDL_Event* e) {
+        switch (e->window.event) {
+            case SDL_WINDOWEVENT_MOVED:
+                m_Window->update_pos();
+                break;
+            case SDL_WINDOWEVENT_RESIZED:
+                m_Window->update_size();
+                m_Window->display()->update_size();
+                break;
+            case SDL_WINDOWEVENT_CLOSE:
+                return Window::GetFromID(e->window.windowID)->close();
+                break;
+        }
         for (auto layer : m_Layers) {
             if (!layer->enabled()) continue;
             if (!layer->handle_event(e)) return;
