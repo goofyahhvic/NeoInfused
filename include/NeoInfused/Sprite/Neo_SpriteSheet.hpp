@@ -10,6 +10,15 @@ namespace neo {
         SpriteSheet(uint32_t width, uint32_t height, uint32_t cell_size, Color* pixels);
         SpriteSheet(uint32_t cell_size, const std::filesystem::path& image_path);
         ~SpriteSheet(void) = default;
+
+        SpriteSheet(void) : Graphic2D(), m_CellSize(0) {}
+        SpriteSheet(const SpriteSheet& src);
+        SpriteSheet(const SpriteSheet* src);
+        void operator=(const SpriteSheet& src);
+
+        void CreateMirroredFrom_H(const SpriteSheet* src);
+        void CreateMirroredFrom_V(const SpriteSheet* src);
+        void CreateMirroredFrom_HV(const SpriteSheet* src);
     public:
         void blit_cell(Graphic2D* where, uint32_t row, uint32_t col, uint32_t horizontal_amount = 1, uint32_t vertical_amount = 1, SDL_Rect* position = nullptr) const;
         void blit_cell_stretch(Graphic2D* where, uint32_t row, uint32_t col, uint32_t horizontal_amount = 1, uint32_t vertical_amount = 1, SDL_Rect* position = nullptr) const;

@@ -49,6 +49,39 @@ namespace neo {
         m_Surface = IMG_Load(image_path.C_STR);
     }
 
+    void Graphic2D::CreateMirroredFrom_H(const Graphic2D* src) {
+        m_Surface = MirrorSurface_H(src->m_Surface);
+    }
+    void Graphic2D::CreateMirroredFrom_V(const Graphic2D* src) {
+        m_Surface = MirrorSurface_V(src->m_Surface);
+    }
+    void Graphic2D::CreateMirroredFrom_HV(const Graphic2D* src) {
+        m_Surface = MirrorSurface_HV(src->m_Surface);
+    }
+
+    void Graphic2D::blit(Graphic2D* where, SDL_Rect* position, SDL_Rect* portion) const {
+        SDL_BlitSurface(m_Surface, portion, where->m_Surface, position);
+    }
+    void Graphic2D::blit_stretch(Graphic2D* where, SDL_Rect* position, SDL_Rect* portion) const {
+        SDL_BlitScaled(m_Surface, portion, where->m_Surface, position);
+    }
+
+    void Graphic2D::mirror_h(void) {
+        SDL_Surface* mirrored = MirrorSurface_H(m_Surface);
+        SDL_FreeSurface(m_Surface);
+        m_Surface = mirrored;
+    }
+    void Graphic2D::mirror_v(void) {
+        SDL_Surface* mirrored = MirrorSurface_V(m_Surface);
+        SDL_FreeSurface(m_Surface);
+        m_Surface = mirrored;
+    }
+    void Graphic2D::mirror_hv(void) {
+        SDL_Surface* mirrored = MirrorSurface_HV(m_Surface);
+        SDL_FreeSurface(m_Surface);
+        m_Surface = mirrored;
+    }
+
     Graphic2D::Graphic2D(const Graphic2D& src) {
         m_Surface = SDL_CreateRGBSurface(
             0, src.m_Surface->w, src.m_Surface->h,
@@ -81,39 +114,5 @@ namespace neo {
             src.m_Surface->format->Amask
         );
         SDL_BlitSurface(src.m_Surface, nullptr, m_Surface, nullptr);
-    }
-
-    void Graphic2D::CreateMirroredFrom_H(const Graphic2D* src) {
-        m_Surface = MirrorSurface_H(src->m_Surface);
-    }
-    void Graphic2D::CreateMirroredFrom_V(const Graphic2D* src) {
-        m_Surface = MirrorSurface_V(src->m_Surface);
-    }
-    void Graphic2D::CreateMirroredFrom_HV(const Graphic2D* src) {
-        m_Surface = MirrorSurface_HV(src->m_Surface);
-    }
-
-
-    void Graphic2D::blit(Graphic2D* where, SDL_Rect* position, SDL_Rect* portion) const {
-        SDL_BlitSurface(m_Surface, portion, where->m_Surface, position);
-    }
-    void Graphic2D::blit_stretch(Graphic2D* where, SDL_Rect* position, SDL_Rect* portion) const {
-        SDL_BlitScaled(m_Surface, portion, where->m_Surface, position);
-    }
-
-    void Graphic2D::mirror_h(void) {
-        SDL_Surface* mirrored = MirrorSurface_H(m_Surface);
-        SDL_FreeSurface(m_Surface);
-        m_Surface = mirrored;
-    }
-    void Graphic2D::mirror_v(void) {
-        SDL_Surface* mirrored = MirrorSurface_V(m_Surface);
-        SDL_FreeSurface(m_Surface);
-        m_Surface = mirrored;
-    }
-        void Graphic2D::mirror_hv(void) {
-        SDL_Surface* mirrored = MirrorSurface_HV(m_Surface);
-        SDL_FreeSurface(m_Surface);
-        m_Surface = mirrored;
     }
 } // namespace neo

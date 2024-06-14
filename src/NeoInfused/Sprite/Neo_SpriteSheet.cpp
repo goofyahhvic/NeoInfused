@@ -42,4 +42,55 @@ namespace neo {
         };
         SDL_FillRect(m_Surface, &portion, color.rgba);
     }
+
+    SpriteSheet::SpriteSheet(const SpriteSheet& src) {
+        m_Surface = SDL_CreateRGBSurface(
+            0, src.m_Surface->w, src.m_Surface->h,
+            src.m_Surface->format->BitsPerPixel,
+            src.m_Surface->format->Rmask,
+            src.m_Surface->format->Gmask,
+            src.m_Surface->format->Bmask,
+            src.m_Surface->format->Amask
+        );
+        SDL_BlitSurface(src.m_Surface, nullptr, m_Surface, nullptr);
+        m_CellSize = src.m_CellSize;
+    }
+    SpriteSheet::SpriteSheet(const SpriteSheet* src) {
+        m_Surface = SDL_CreateRGBSurface(
+            0, src->m_Surface->w, src->m_Surface->h,
+            src->m_Surface->format->BitsPerPixel,
+            src->m_Surface->format->Rmask,
+            src->m_Surface->format->Gmask,
+            src->m_Surface->format->Bmask,
+            src->m_Surface->format->Amask
+        );
+        SDL_BlitSurface(src->m_Surface, nullptr, m_Surface, nullptr);
+        m_CellSize = src->m_CellSize;
+    }
+    void SpriteSheet::operator=(const SpriteSheet& src) {
+        m_Surface = SDL_CreateRGBSurface(
+            0, src.m_Surface->w, src.m_Surface->h,
+            src.m_Surface->format->BitsPerPixel,
+            src.m_Surface->format->Rmask,
+            src.m_Surface->format->Gmask,
+            src.m_Surface->format->Bmask,
+            src.m_Surface->format->Amask
+        );
+        SDL_BlitSurface(src.m_Surface, nullptr, m_Surface, nullptr);
+        m_CellSize = src.m_CellSize;
+    }
+
+    void SpriteSheet::CreateMirroredFrom_H(const SpriteSheet* src) {
+        m_Surface = MirrorSurface_H(src->m_Surface);
+        m_CellSize = src->m_CellSize;
+    }
+    void SpriteSheet::CreateMirroredFrom_V(const SpriteSheet* src) {
+        m_Surface = MirrorSurface_V(src->m_Surface);
+        m_CellSize = src->m_CellSize;
+    }
+    void SpriteSheet::CreateMirroredFrom_HV(const SpriteSheet* src) {
+        m_Surface = MirrorSurface_HV(src->m_Surface);
+        m_CellSize = src->m_CellSize;
+    }
+
 } // namespace neo
