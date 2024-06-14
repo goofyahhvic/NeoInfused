@@ -16,7 +16,18 @@ namespace neo {
         Graphic2D(uint32_t width, uint32_t height);
         Graphic2D(uint32_t width, uint32_t height, Color* pixels);
         Graphic2D(const std::filesystem::path& image_path);
-        virtual ~Graphic2D(void);
+
+        void destroy(void) { SDL_FreeSurface(m_Surface); m_Surface = nullptr; }
+        virtual ~Graphic2D(void) { this->destroy(); }
+
+        Graphic2D(void) : m_Surface(nullptr) {}
+        Graphic2D(const Graphic2D& src);
+        Graphic2D(const Graphic2D* src);
+        void operator=(const Graphic2D& src);
+
+        void CreateMirroredFrom_H(const Graphic2D* src);
+        void CreateMirroredFrom_V(const Graphic2D* src);
+        void CreateMirroredFrom_HV(const Graphic2D* src);
     public:
         virtual void blit(Graphic2D* where, SDL_Rect* position = nullptr, SDL_Rect* portion = nullptr) const;
         virtual void blit_stretch(Graphic2D* where, SDL_Rect* position = nullptr, SDL_Rect* portion = nullptr) const;
@@ -26,11 +37,13 @@ namespace neo {
         virtual inline Color at(uint32_t x, uint32_t y) const { return GetPixelFromSurface(m_Surface, x, y); }
         virtual inline void set_at(uint32_t x, uint32_t y, Color color) { SetPixelFromSurface(m_Surface, x, y, color); }
 
+        virtual void mirror_h(void);
+        virtual void mirror_v(void);
+        virtual void mirror_hv(void);
+
         virtual inline uint32_t width(void) const { return m_Surface->w; }
         virtual inline uint32_t height(void) const { return m_Surface->h; }
         inline SDL_Surface* surface(void) { return m_Surface; }
-    protected:
-        Graphic2D() : m_Surface(nullptr) {}
     protected:
         SDL_Surface* m_Surface;
     };
