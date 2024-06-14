@@ -22,7 +22,7 @@ namespace neo {
 
     class SpriteSheetCell : public Graphic2D {
     public:
-        SpriteSheetCell(uint32_t row, uint32_t col, uint32_t horizontal_amount, uint32_t vertical_amount, SpriteSheet* sprite_sheet) : Graphic2D(), m_SpriteSheet(sprite_sheet), m_Row(row), m_Col(col) {}
+        SpriteSheetCell(uint32_t row, uint32_t col, uint32_t horizontal_amount, uint32_t vertical_amount, SpriteSheet* sprite_sheet) : Graphic2D(), m_SpriteSheet(sprite_sheet), m_Row(row), m_Col(col), m_HorizontalAmount(horizontal_amount), m_VerticalAmount(vertical_amount) {}
         ~SpriteSheetCell(void) = default;
     public:
         inline void blit(Graphic2D* where, SDL_Rect* position = nullptr, SDL_Rect* portion = nullptr) const override { m_SpriteSheet->blit_cell(where, m_Row, m_Col, m_HorizontalAmount, m_VerticalAmount, position); }
