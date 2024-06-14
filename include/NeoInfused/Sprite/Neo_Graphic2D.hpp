@@ -16,8 +16,8 @@ namespace neo {
         Graphic2D(uint32_t width, uint32_t height);
         Graphic2D(uint32_t width, uint32_t height, Color* pixels);
         Graphic2D(const std::filesystem::path& image_path);
-        
-        void destroy(void) { SDL_FreeSurface(m_Surface); }
+
+        void destroy(void) { SDL_FreeSurface(m_Surface); m_Surface = nullptr; }
         virtual ~Graphic2D(void) { this->destroy(); }
 
         Graphic2D(void) : m_Surface(nullptr) {}
