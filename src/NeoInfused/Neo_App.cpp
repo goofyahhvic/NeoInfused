@@ -21,20 +21,16 @@ namespace neo {
                 this->_handle_event(&e);
             }
             
-            m_Window->display()->clear();
+            m_Window->display()->fill(m_ClearColor);
             this->_update();
             this->_draw();
-            m_Window->display()->present();
+            m_Window->present_display();
         }
     }
     void App::_handle_event(SDL_Event* e) {
         switch (e->window.event) {
             case SDL_WINDOWEVENT_MOVED:
                 m_Window->update_pos();
-                break;
-            case SDL_WINDOWEVENT_RESIZED:
-                m_Window->update_size();
-                m_Window->display()->update_size();
                 break;
             case SDL_WINDOWEVENT_CLOSE:
                 return Window::GetFromID(e->window.windowID)->close();

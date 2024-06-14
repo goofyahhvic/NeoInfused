@@ -1,6 +1,8 @@
 #if !defined(NEO_LAYER_HPP)
 #define NEO_LAYER_HPP
 
+#include "NeoInfused/Core/Neo_Core.hpp"
+
 namespace neo {
     class Layer {
         friend class LayerGroup;
