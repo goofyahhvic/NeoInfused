@@ -1,45 +1,60 @@
-#if !defined(NEO_SPRITE_SHEET_HPP)
-#define NEO_SPRITE_SHEET_HPP
+#if !defined(NEO_SPRITESHEET_HPP)
+#define NEO_SPRITESHEET_HPP
 
-#include <cstdint>
-#include "./Neo_Texture.hpp"
+#include "NeoInfused/Sprite/Neo_Graphic2D.hpp"
 
 namespace neo {
-    class SpriteSheet {
-        SpriteSheet(void) = default;
+    class SpriteSheet : public Graphic2D {
+    public:
+        SpriteSheet(uint32_t width, uint32_t height, uint32_t cell_size);
+        SpriteSheet(uint32_t width, uint32_t height, uint32_t cell_size, Color* pixels);
+        SpriteSheet(uint32_t cell_size, const std::filesystem::path& image_path);
         ~SpriteSheet(void) = default;
     public:
-        struct Cell {
-            const SpriteSheet* const ss = nullptr;
-            SDL_Rect portion = { 0, 0, 0, 0 };
-        };
-        static SpriteSheet* New(const std::filesystem::path& path, uint32_t cell_width, uint32_t cell_height);
-        static SpriteSheet* NewFrom(const SpriteSheet* src);
-        static SpriteSheet* NewFrom(const Texture* src, uint32_t cell_width, uint32_t cell_height);
+        void blit_cell(Graphic2D* where, uint32_t row, uint32_t col, uint32_t horizontal_amount = 1, uint32_t vertical_amount = 1, SDL_Rect* position = nullptr) const;
+        void blit_cell_stretch(Graphic2D* where, uint32_t row, uint32_t col, uint32_t horizontal_amount = 1, uint32_t vertical_amount = 1, SDL_Rect* position = nullptr) const;
+        void fill_cell(uint32_t row, uint32_t col, uint32_t horizontal_amount, uint32_t vertical_amount, Color color = {0, 0, 0, 255});
 
-        static SpriteSheet* NewMirrored_H(const SpriteSheet* src);
-        static SpriteSheet* NewMirrored_V(const SpriteSheet* src);
-        static SpriteSheet* NewMirrored_HV(const SpriteSheet* src);
-
-        static void Delete(SpriteSheet* _this);
-    public:
-        inline void mirror_h(void) { m_Texture->mirror_h(); }
-        inline void mirror_v(void) { m_Texture->mirror_v(); }
-        inline void mirror_hv(void) { m_Texture->mirror_hv(); }
-
-        Cell at(uint32_t row, uint32_t col, uint32_t h_amount = 1, uint32_t v_amount = 1) const;
-        inline void draw(SDL_Rect* position = nullptr, SDL_Rect* portion = nullptr, Window* window = Window::GetBound()) const { m_Texture->draw(position, portion, window); }
-        void draw_cell(uint32_t row, uint32_t col, uint32_t h_amount = 1, uint32_t v_amount = 1, SDL_Rect* position = nullptr, Window* window = Window::GetBound()) const;
-
-        inline Texture* texture(void) const { return m_Texture; }
-        inline uint32_t cell_width(void) const { return m_CellWidth; }
-        inline uint32_t cell_height(void) const { return m_CellHeight; }
+        inline uint32_t cell_size(void) const { return m_CellSize; }
     private:
-        Texture* m_Texture;
-        uint32_t m_CellWidth, m_CellHeight;
+        uint32_t m_CellSize;
     };
-    using SpriteSheetCell = SpriteSheet::Cell;
-    using SS_Cell = SpriteSheet::Cell;
-}
 
-#endif // !defined(NEO_SPRITE_SHEET_HPP)
+    class SpriteSheetCell : public Graphic2D {
+    public:
+        SpriteSheetCell(uint32_t row, uint32_t col, uint32_t horizontal_amount, uint32_t vertical_amount, SpriteSheet* sprite_sheet) : Graphic2D(), m_SpriteSheet(sprite_sheet), m_Row(row), m_Col(col) {}
+        ~SpriteSheetCell(void) = default;
+    public:
+        inline void blit(Graphic2D* where, SDL_Rect* position = nullptr, SDL_Rect* portion = nullptr) const override { m_SpriteSheet->blit_cell(where, m_Row, m_Col, m_HorizontalAmount, m_VerticalAmount, position); }
+        inline void blit_stretch(Graphic2D* where, SDL_Rect* position = nullptr, SDL_Rect* portion = nullptr) const override {m_SpriteSheet->blit_cell_stretch(where, m_Row, m_Col, m_HorizontalAmount, m_VerticalAmount, position); }
+
+        inline void fill(Color color = {0, 0, 0, 255}, SDL_Rect* portion = nullptr) override { m_SpriteSheet->fill_cell(m_Row, m_Col, m_HorizontalAmount, m_VerticalAmount, color); }
+
+        inline Color at(uint32_t x, uint32_t y) const override { return GetPixelFromSurface(m_SpriteSheet->surface(), m_Col * m_SpriteSheet->cell_size() + x, m_Row * m_SpriteSheet->cell_size() + y); }
+        inline void set_at(uint32_t x, uint32_t y, Color color) override { SetPixelFromSurface(m_SpriteSheet->surface(), m_Col * m_SpriteSheet->cell_size() + x, m_Row * m_SpriteSheet->cell_size() + y, color); }
+
+        inline void set_row(uint32_t new_row) { m_Row = new_row; }
+        inline void set_col(uint32_t new_col) { m_Col = new_col; }
+
+        inline void set_horizontal_amount(uint32_t new_horizontal_amount) { m_HorizontalAmount = new_horizontal_amount; }
+        inline void set_vertical_amount(uint32_t new_vertical_amount) { m_VerticalAmount = new_vertical_amount; }
+
+        inline void set(uint32_t new_row, uint32_t new_col, uint32_t new_horizontal_amount = 1, uint32_t new_vertical_amount = 1) { m_Row = new_row; m_Col = new_col; m_HorizontalAmount = new_horizontal_amount; m_VerticalAmount = new_vertical_amount; }
+
+        inline uint32_t row(void) const { return m_Row; }
+        inline uint32_t col(void) const { return m_Col; }
+        inline uint32_t horizontal_amount(void) const { return m_HorizontalAmount; }
+        inline uint32_t vertical_amount(void) const { return m_VerticalAmount; }
+
+        inline uint32_t width(void) const override { return m_SpriteSheet->cell_size(); }
+        inline uint32_t height(void) const override { return m_SpriteSheet->cell_size(); }
+
+        inline SpriteSheet* sprite_sheet(void) { return m_SpriteSheet; }
+    private:
+        SpriteSheet* m_SpriteSheet;
+        uint32_t m_Row, m_Col, m_HorizontalAmount, m_VerticalAmount;
+    };
+    using SS_Cell = SpriteSheetCell;
+} // namespace neo
+
+#endif // NEO_SPRITESHEET_HPP

@@ -11,6 +11,9 @@ namespace neo {
         virtual ~App(void);
     public:
         virtual void run(void);
+        
+        inline void set_clear_color(Color new_clear_color) { m_ClearColor = new_clear_color; }
+        inline Color clear_color(void) const { return m_ClearColor; }
 
         inline static App* Get(void) { return App::m_This; }
         inline Window* window(void) { return m_Window; }
@@ -21,6 +24,7 @@ namespace neo {
     protected:
         Window* m_Window;
         LayerGroup m_Layers;
+        Color m_ClearColor = {0, 0, 0, 255};
     private:
         static App* m_This;
     };
