@@ -19,8 +19,8 @@ namespace neo {
         void set_priority(float new_priority, index_t index);
         void resort(void);
 
-        index_t find_first_of(Layer* layer) const;
-        index_t find_last_of(Layer* layer) const;
+        index_t find_first_of(const Layer* layer) const;
+        index_t find_last_of(const Layer* layer) const;
 
         inline Layers::iterator begin(void) { return m_Layers.begin(); }
         inline Layers::iterator end(void) { return m_Layers.end(); }

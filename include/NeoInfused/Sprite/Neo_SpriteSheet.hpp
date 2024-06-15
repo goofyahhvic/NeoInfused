@@ -6,15 +6,13 @@
 namespace neo {
     class SpriteSheet : public Graphic2D {
     public:
+        SpriteSheet(void) : Graphic2D(), m_CellSize(0) {}
         SpriteSheet(uint32_t width, uint32_t height, uint32_t cell_size);
         SpriteSheet(uint32_t width, uint32_t height, uint32_t cell_size, Color* pixels);
         SpriteSheet(uint32_t cell_size, const std::filesystem::path& image_path);
         ~SpriteSheet(void) = default;
 
-        SpriteSheet(void) : Graphic2D(), m_CellSize(0) {}
-        SpriteSheet(const SpriteSheet& src);
-        SpriteSheet(const SpriteSheet* src);
-        void operator=(const SpriteSheet& src);
+        void clone(const SpriteSheet* src);
 
         void CreateMirroredFrom_H(const SpriteSheet* src);
         void CreateMirroredFrom_V(const SpriteSheet* src);
@@ -33,6 +31,7 @@ namespace neo {
     public:
         SpriteSheetCell(uint32_t row, uint32_t col, uint32_t horizontal_amount, uint32_t vertical_amount, SpriteSheet* sprite_sheet) : Graphic2D(), m_SpriteSheet(sprite_sheet), m_Row(row), m_Col(col), m_HorizontalAmount(horizontal_amount), m_VerticalAmount(vertical_amount) {}
         ~SpriteSheetCell(void) = default;
+        void clone(const SpriteSheetCell* src);
     public:
         inline void blit(Graphic2D* where, SDL_Rect* position = nullptr, SDL_Rect* portion = nullptr) const override { m_SpriteSheet->blit_cell(where, m_Row, m_Col, m_HorizontalAmount, m_VerticalAmount, position); }
         inline void blit_stretch(Graphic2D* where, SDL_Rect* position = nullptr, SDL_Rect* portion = nullptr) const override {m_SpriteSheet->blit_cell_stretch(where, m_Row, m_Col, m_HorizontalAmount, m_VerticalAmount, position); }

@@ -15,6 +15,7 @@
 #include <functional>
 #include <exception>
 #include <filesystem>
+#include <format>
 
 #include <string>
 #include <array>
@@ -34,11 +35,6 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
-
-#include <format>
-#include "NeoInfused/Core/Neo_Color.hpp"
-
-#include "NeoInfused/Core/Neo_Time.hpp"
-#include "NeoInfused/Core/Neo_Core.hpp"
+#include <glm/glm.hpp>
 
 #endif // NEO_PCH_HPP

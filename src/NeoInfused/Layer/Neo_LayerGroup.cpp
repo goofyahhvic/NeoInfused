@@ -3,7 +3,7 @@
 
 namespace neo {
     static bool greater(Layer* l1, Layer* l2) {
-        return (*l1 > *l2);
+        return (l1->operator>(*l2));
     }
     void LayerGroup::resort(void) {
         std::sort(m_Layers.begin(), m_Layers.end(), greater);
@@ -29,7 +29,7 @@ namespace neo {
         std::sort(m_Layers.begin(), m_Layers.end(), greater);
     }
 
-    index_t LayerGroup::find_first_of(Layer* layer) const {
+    index_t LayerGroup::find_first_of(const Layer* layer) const {
         index_t i = 0;
         for (auto it = m_Layers.begin(); it != m_Layers.end(); it++) {
             if ((*it) == layer)
@@ -40,7 +40,7 @@ namespace neo {
         return NEO_INDEX_MAX;
     }
 
-    index_t LayerGroup::find_last_of(Layer* layer) const {
+    index_t LayerGroup::find_last_of(const Layer* layer) const {
         index_t i = m_Layers.size();
         for (auto it = m_Layers.rbegin(); it != m_Layers.rend(); it++) {
             if ((*it) == layer)

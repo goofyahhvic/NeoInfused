@@ -13,6 +13,7 @@ namespace neo {
 
     class Graphic2D {
     public:
+        Graphic2D(void) : m_Surface(nullptr) {}
         Graphic2D(uint32_t width, uint32_t height);
         Graphic2D(uint32_t width, uint32_t height, Color* pixels);
         Graphic2D(const std::filesystem::path& image_path);
@@ -20,10 +21,7 @@ namespace neo {
         void destroy(void) { SDL_FreeSurface(m_Surface); m_Surface = nullptr; }
         virtual ~Graphic2D(void) { this->destroy(); }
 
-        Graphic2D(void) : m_Surface(nullptr) {}
-        Graphic2D(const Graphic2D& src);
-        Graphic2D(const Graphic2D* src);
-        void operator=(const Graphic2D& src);
+        virtual void clone(const Graphic2D* src);
 
         void CreateMirroredFrom_H(const Graphic2D* src);
         void CreateMirroredFrom_V(const Graphic2D* src);
