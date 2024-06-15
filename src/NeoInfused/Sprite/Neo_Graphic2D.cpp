@@ -82,18 +82,7 @@ namespace neo {
         m_Surface = mirrored;
     }
 
-    Graphic2D::Graphic2D(const Graphic2D& src) {
-        m_Surface = SDL_CreateRGBSurface(
-            0, src.m_Surface->w, src.m_Surface->h,
-            src.m_Surface->format->BitsPerPixel,
-            src.m_Surface->format->Rmask,
-            src.m_Surface->format->Gmask,
-            src.m_Surface->format->Bmask,
-            src.m_Surface->format->Amask
-        );
-        SDL_BlitSurface(src.m_Surface, nullptr, m_Surface, nullptr);
-    }
-    Graphic2D::Graphic2D(const Graphic2D* src) {
+    void Graphic2D::clone(const Graphic2D* src) {
         m_Surface = SDL_CreateRGBSurface(
             0, src->m_Surface->w, src->m_Surface->h,
             src->m_Surface->format->BitsPerPixel,
@@ -103,16 +92,5 @@ namespace neo {
             src->m_Surface->format->Amask
         );
         SDL_BlitSurface(src->m_Surface, nullptr, m_Surface, nullptr);
-    }
-    void Graphic2D::operator=(const Graphic2D& src) {
-        m_Surface = SDL_CreateRGBSurface(
-            0, src.m_Surface->w, src.m_Surface->h,
-            src.m_Surface->format->BitsPerPixel,
-            src.m_Surface->format->Rmask,
-            src.m_Surface->format->Gmask,
-            src.m_Surface->format->Bmask,
-            src.m_Surface->format->Amask
-        );
-        SDL_BlitSurface(src.m_Surface, nullptr, m_Surface, nullptr);
     }
 } // namespace neo

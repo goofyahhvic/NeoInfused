@@ -16,7 +16,13 @@ namespace neo {
         inline Color clear_color(void) const { return m_ClearColor; }
 
         inline static App* Get(void) { return App::m_This; }
+        inline static const App* GetConst(void) { return App::m_This; }
+
         inline Window* window(void) { return m_Window; }
+        inline const Window* window(void) const { return m_Window; }
+
+        inline LayerGroup& layers(void) { return m_Layers; }
+        inline const LayerGroup& layers(void) const { return m_Layers; }
     protected:
         virtual void _update(void);
         virtual void _draw(void);

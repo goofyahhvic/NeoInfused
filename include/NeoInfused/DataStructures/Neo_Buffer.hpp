@@ -1,7 +1,7 @@
 #if !defined(NEO_BUFFER_HPP)
 #define NEO_BUFFER_HPP
 
-#include <cstdint>
+#include "NeoInfused/Core/Neo_Core.hpp"
 
 namespace neo {
     // reference counted buffer

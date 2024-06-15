@@ -43,19 +43,7 @@ namespace neo {
         SDL_FillRect(m_Surface, &portion, color.rgba);
     }
 
-    SpriteSheet::SpriteSheet(const SpriteSheet& src) {
-        m_Surface = SDL_CreateRGBSurface(
-            0, src.m_Surface->w, src.m_Surface->h,
-            src.m_Surface->format->BitsPerPixel,
-            src.m_Surface->format->Rmask,
-            src.m_Surface->format->Gmask,
-            src.m_Surface->format->Bmask,
-            src.m_Surface->format->Amask
-        );
-        SDL_BlitSurface(src.m_Surface, nullptr, m_Surface, nullptr);
-        m_CellSize = src.m_CellSize;
-    }
-    SpriteSheet::SpriteSheet(const SpriteSheet* src) {
+    void SpriteSheet::clone(const SpriteSheet* src) {
         m_Surface = SDL_CreateRGBSurface(
             0, src->m_Surface->w, src->m_Surface->h,
             src->m_Surface->format->BitsPerPixel,
@@ -66,18 +54,6 @@ namespace neo {
         );
         SDL_BlitSurface(src->m_Surface, nullptr, m_Surface, nullptr);
         m_CellSize = src->m_CellSize;
-    }
-    void SpriteSheet::operator=(const SpriteSheet& src) {
-        m_Surface = SDL_CreateRGBSurface(
-            0, src.m_Surface->w, src.m_Surface->h,
-            src.m_Surface->format->BitsPerPixel,
-            src.m_Surface->format->Rmask,
-            src.m_Surface->format->Gmask,
-            src.m_Surface->format->Bmask,
-            src.m_Surface->format->Amask
-        );
-        SDL_BlitSurface(src.m_Surface, nullptr, m_Surface, nullptr);
-        m_CellSize = src.m_CellSize;
     }
 
     void SpriteSheet::CreateMirroredFrom_H(const SpriteSheet* src) {
@@ -93,4 +69,11 @@ namespace neo {
         m_CellSize = src->m_CellSize;
     }
 
+    void SpriteSheetCell::clone(const SpriteSheetCell* src) {
+        m_SpriteSheet = src->m_SpriteSheet;
+        m_Row = src->m_Row;
+        m_Col = src->m_Col;
+        m_HorizontalAmount = src->m_HorizontalAmount;
+        m_VerticalAmount = src->m_VerticalAmount;
+    }
 } // namespace neo
