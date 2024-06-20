@@ -46,6 +46,7 @@ namespace neo {
             SetPixelFromSurface(m_Surface, 1, 0, {255, 100, 255, 255});
             return;
         }
+        NEO_TRACE_LOG("Loading texture from file: {}", image_path.C_STR);
         m_Surface = IMG_Load(image_path.C_STR);
     }
 
