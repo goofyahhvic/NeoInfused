@@ -16,13 +16,13 @@ namespace neo {
 
 #if defined(NEO_PLATFORM_LINUX)
         Core::m_ExecPath = std::filesystem::canonical("/proc/self/exe").string();
-        index_t index = Core::m_ExecPath.find_last_of('/');
+        size_t index = Core::m_ExecPath.find_last_of('/');
 #elif defined(NEO_PLATFORM_WINDOWS)
         char exec_path_buffer[MAX_PATH];
         GetModuleFileNameA(nullptr, exec_path_buffer, MAX_PATH);
 
         Core::m_ExecPath = std::string(exec_path_buffer);
-        index_t index = Core::m_ExecPath.find_last_of('\\');
+        size_t index = Core::m_ExecPath.find_last_of('\\');
 #endif // NEO_PLATFORM_LINUX
         Core::m_ExecDir = Core::m_ExecPath.substr(0, index+1);
 
