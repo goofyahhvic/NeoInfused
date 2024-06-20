@@ -103,11 +103,6 @@ namespace neo {
     using index32_t  = uint32_t;
     using index64_t  = uint64_t;
 
-    union Color {
-        struct { uint8_t r, g, b, a; };
-        uint32_t rgba = 0x000000FF;
-    };
-
     struct InitInfo {
         int argc;
         char** argv;

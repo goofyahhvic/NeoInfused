@@ -16,7 +16,7 @@ namespace neo {
         Layer* push(Layer* layer);
         void pop(index_t index);
 
-        void set_priority(float new_priority, index_t index);
+        void set_priority(int64_t new_priority, index_t index);
         void resort(void);
 
         index_t find_first_of(const Layer* layer) const;

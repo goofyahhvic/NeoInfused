@@ -16,4 +16,11 @@
 #define NEO_FONT_BOLD "\x1B[1m"           // bold
 #define NEO_FONT_UNDL "\x1B[4m"           // underline
 
+namespace neo {
+    union Color {
+        struct { uint8_t r, g, b, a; };
+        uint32_t rgba = 0x000000FF;
+    };
+} // namespace neo
+
 #endif // NEO_COLOR_HPP
