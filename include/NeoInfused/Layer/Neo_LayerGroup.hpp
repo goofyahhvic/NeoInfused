@@ -14,13 +14,13 @@ namespace neo {
         template<typename T, typename... _Args>
         inline T* create(_Args&&... __args) { return (T*)this->push(new T(std::forward<_Args>(__args)...)); }
         Layer* push(Layer* layer);
-        void pop(index_t index);
+        void pop(size_t index);
 
-        void set_priority(int64_t new_priority, index_t index);
+        void set_priority(int64_t new_priority, size_t index);
         void resort(void);
 
-        index_t find_first_of(const Layer* layer) const;
-        index_t find_last_of(const Layer* layer) const;
+        size_t find_first_of(const Layer* layer) const;
+        size_t find_last_of(const Layer* layer) const;
 
         inline Layers::iterator begin(void) { return m_Layers.begin(); }
         inline Layers::iterator end(void) { return m_Layers.end(); }
@@ -35,8 +35,8 @@ namespace neo {
         inline Layers::const_reverse_iterator crend(void) const { return m_Layers.crend(); }
 
         inline size_t size(void) const { return m_Layers.size(); }
-        inline Layer* operator[](index_t index) const { return m_Layers[index]; }
-        inline Layer* at(index_t index) { return m_Layers.at(index); }
+        inline Layer* operator[](size_t index) const { return m_Layers[index]; }
+        inline Layer* at(size_t index) { return m_Layers.at(index); }
         inline bool empty(void) const { return m_Layers.empty(); }
     private:
         Layers m_Layers;

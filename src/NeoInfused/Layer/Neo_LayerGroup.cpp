@@ -19,35 +19,35 @@ namespace neo {
         std::sort(m_Layers.begin(), m_Layers.end(), greater);
         return layer;
     }
-    void LayerGroup::pop(index_t index) {
+    void LayerGroup::pop(size_t index) {
         delete m_Layers[index];
         m_Layers.erase(m_Layers.begin() + index);
     }
 
-    void LayerGroup::set_priority(int64_t new_priority, index_t index) {
+    void LayerGroup::set_priority(int64_t new_priority, size_t index) {
         m_Layers[index]->m_Priority = new_priority;
         std::sort(m_Layers.begin(), m_Layers.end(), greater);
     }
 
-    index_t LayerGroup::find_first_of(const Layer* layer) const {
-        index_t i = 0;
+    size_t LayerGroup::find_first_of(const Layer* layer) const {
+        size_t i = 0;
         for (auto it = m_Layers.begin(); it != m_Layers.end(); it++) {
             if ((*it) == layer)
                 return i;
             i++;
         }
         NEO_ASSERT(0, "Failed to find element in LayerGroup!");
-        return NEO_INDEX_MAX;
+        return SIZE_MAX;
     }
 
-    index_t LayerGroup::find_last_of(const Layer* layer) const {
-        index_t i = m_Layers.size();
+    size_t LayerGroup::find_last_of(const Layer* layer) const {
+        size_t i = m_Layers.size();
         for (auto it = m_Layers.rbegin(); it != m_Layers.rend(); it++) {
             if ((*it) == layer)
                 return i-1;
             i--;
         }
         NEO_ASSERT(0, "Failed to find element in LayerGroup!");
-        return NEO_INDEX_MAX;
+        return SIZE_MAX;
     } 
 } // namespace neo
