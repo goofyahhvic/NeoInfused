@@ -70,6 +70,13 @@
 namespace neo {
     using byte_t = char;
 
+    inline int32_t round(float num) {
+        return floor(num + 0.5f);
+    }
+    inline int64_t round(double num) {
+        return floor(num + 0.5f);
+    }
+
     struct InitInfo {
         int argc;
         char** argv;

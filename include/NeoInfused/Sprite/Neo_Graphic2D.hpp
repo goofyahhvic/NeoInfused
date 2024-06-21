@@ -2,6 +2,7 @@
 #define NEO_GRAPHIC2D_HPP
 
 #include "NeoInfused/Core/Neo_Core.hpp"
+#include "NeoInfused/ECS/Neo_BasicComponents.hpp"
 
 namespace neo {
     inline Color GetPixelFromSurface(const SDL_Surface* surface, int x, int y) { return ((Color*)surface->pixels)[x + (y * surface->w)]; }
@@ -27,8 +28,8 @@ namespace neo {
         void CreateMirroredFrom_V(const Graphic2D* src);
         void CreateMirroredFrom_HV(const Graphic2D* src);
     public:
-        virtual void blit(Graphic2D* where, SDL_Rect* position = nullptr, SDL_Rect* portion = nullptr) const;
-        virtual void blit_stretch(Graphic2D* where, SDL_Rect* position = nullptr, SDL_Rect* portion = nullptr) const;
+        virtual void blit(Graphic2D* where, const Vec4& position, SDL_Rect* portion = nullptr) const;
+        virtual void blit_stretch(Graphic2D* where, const Vec4& position, SDL_Rect* portion = nullptr) const;
 
         virtual inline void fill(Color color = {0, 0, 0, 255}, SDL_Rect* portion = nullptr) { SDL_FillRect(m_Surface, portion, color.rgba); }
 
@@ -45,6 +46,8 @@ namespace neo {
     protected:
         SDL_Surface* m_Surface;
     };
+    
+    void DrawSprite(const Graphic2D* what, Graphic2D* where, const Vec4& position, SDL_Rect* portion = nullptr);
 } // namespace neo
 
 #endif // NEO_GRAPHIC2D_HPP
