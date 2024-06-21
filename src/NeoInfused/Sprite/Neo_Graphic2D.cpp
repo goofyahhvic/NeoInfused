@@ -60,11 +60,13 @@ namespace neo {
         m_Surface = MirrorSurface_HV(src->m_Surface);
     }
 
-    void Graphic2D::blit(Graphic2D* where, SDL_Rect* position, SDL_Rect* portion) const {
-        SDL_BlitSurface(m_Surface, portion, where->m_Surface, position);
+    void Graphic2D::blit(Graphic2D* where, const Vec4& position, SDL_Rect* portion) const {
+        SDL_Rect _position = position;
+        SDL_BlitSurface(m_Surface, portion, where->m_Surface, &_position);
     }
-    void Graphic2D::blit_stretch(Graphic2D* where, SDL_Rect* position, SDL_Rect* portion) const {
-        SDL_BlitScaled(m_Surface, portion, where->m_Surface, position);
+    void Graphic2D::blit_stretch(Graphic2D* where, const Vec4& position, SDL_Rect* portion) const {
+        SDL_Rect _position = position;
+        SDL_BlitScaled(m_Surface, portion, where->m_Surface, &_position);
     }
 
     void Graphic2D::mirror_h(void) {
@@ -93,5 +95,9 @@ namespace neo {
             src->m_Surface->format->Amask
         );
         SDL_BlitSurface(src->m_Surface, nullptr, m_Surface, nullptr);
+    }
+
+    void DrawSprite(const Graphic2D* what, Graphic2D* where, const Vec4& position, SDL_Rect* portion) {
+        what->blit_stretch(where, position, portion);
     }
 } // namespace neo

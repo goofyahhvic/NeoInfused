@@ -3,6 +3,9 @@
 
 #include "NeoInfused/Sprite/Neo_Graphic2D.hpp"
 
+#define NEO_BOUND_WINDOW neo::Window::GetBound()
+#define NEO_BOUND_DISPLAY neo::Window::GetBound()->display()
+
 namespace neo {
     class Window {
         Window(void) = default;

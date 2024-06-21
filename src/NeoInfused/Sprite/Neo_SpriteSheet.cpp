@@ -15,23 +15,25 @@ namespace neo {
 
     }
 
-    void SpriteSheet::blit_cell(Graphic2D* where, uint32_t row, uint32_t col, uint32_t horizontal_amount, uint32_t vertical_amount, SDL_Rect* position) const {
+    void SpriteSheet::blit_cell(Graphic2D* where, uint32_t row, uint32_t col, const Vec4& position, uint32_t horizontal_amount, uint32_t vertical_amount) const {
         SDL_Rect portion = {
             (int)(col * m_CellSize),
             (int)(row * m_CellSize),
             (int)(horizontal_amount * m_CellSize),
             (int)(vertical_amount * m_CellSize)
         };
-        SDL_BlitSurface(m_Surface, &portion, where->surface(), position);
+        SDL_Rect _position = position;
+        SDL_BlitSurface(m_Surface, &portion, where->surface(), &_position);
     }
-    void SpriteSheet::blit_cell_stretch(Graphic2D* where, uint32_t row, uint32_t col, uint32_t horizontal_amount, uint32_t vertical_amount, SDL_Rect* position) const {
+    void SpriteSheet::blit_cell_stretch(Graphic2D* where, uint32_t row, uint32_t col, const Vec4& position, uint32_t horizontal_amount, uint32_t vertical_amount) const {
         SDL_Rect portion = {
             (int)(col * m_CellSize),
             (int)(row * m_CellSize),
             (int)(horizontal_amount * m_CellSize),
             (int)(vertical_amount * m_CellSize)
         };
-        SDL_BlitScaled(m_Surface, &portion, where->surface(), position);
+        SDL_Rect _position = position;
+        SDL_BlitScaled(m_Surface, &portion, where->surface(), &_position);
     }
     void SpriteSheet::fill_cell(uint32_t row, uint32_t col, uint32_t horizontal_amount, uint32_t vertical_amount, Color color) {
         SDL_Rect portion = {
