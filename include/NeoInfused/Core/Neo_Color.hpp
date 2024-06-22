@@ -20,6 +20,7 @@ namespace neo {
     union Color {
         struct { uint8_t r, g, b, a; };
         uint32_t rgba = 0x000000FF;
+        operator SDL_Color(void) { return {r, g, b, a}; }
     };
 } // namespace neo
 
