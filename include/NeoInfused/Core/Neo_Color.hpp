@@ -23,4 +23,13 @@ namespace neo {
     };
 } // namespace neo
 
+#define NEO_COLOR_BLACK {0,   0,   0,   255}
+#define NEO_COLOR_RED   {255, 0,   0,   255}
+#define NEO_COLOR_YEL   {255, 255, 0,   255}
+#define NEO_COLOR_PURPL {255, 0,   255, 255}
+#define NEO_COLOR_GREEN {0,   255, 0,   255}
+#define NEO_COLOR_CYAN  {0,   255, 255, 255}
+#define NEO_COLOR_BLUE  {0,   0,   255, 255}
+#define NEO_COLOR_WHITE {255, 255, 255, 255}
+
 #endif // NEO_COLOR_HPP

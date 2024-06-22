@@ -18,7 +18,8 @@ namespace neo {
         void CreateMirroredFrom_V(const SpriteSheet* src);
         void CreateMirroredFrom_HV(const SpriteSheet* src);
     public:
-        void blit_cell(Graphic2D* where, uint32_t row, uint32_t col, const Vec4& position, uint32_t horizontal_amount = 1, uint32_t vertical_amount = 1) const;
+        void blit_cell(Graphic2D* where, uint32_t row, uint32_t col, const Vec2& position, uint32_t horizontal_amount = 1, uint32_t vertical_amount = 1) const;
+        void blit_cell_stretch_p(Graphic2D* where, uint32_t row, uint32_t col, const Vec3& position, uint32_t horizontal_amount = 1, uint32_t vertical_amount = 1) const;
         void blit_cell_stretch(Graphic2D* where, uint32_t row, uint32_t col, const Vec4& position, uint32_t horizontal_amount = 1, uint32_t vertical_amount = 1) const;
         void fill_cell(uint32_t row, uint32_t col, uint32_t horizontal_amount, uint32_t vertical_amount, Color color = {0, 0, 0, 255});
 
@@ -33,7 +34,8 @@ namespace neo {
         ~SpriteSheetCell(void) = default;
         void clone(const SpriteSheetCell* src);
     public:
-        inline void blit(Graphic2D* where, const Vec4& position, SDL_Rect* portion = nullptr) const override { m_SpriteSheet->blit_cell(where, m_Row, m_Col, position, m_HorizontalAmount, m_VerticalAmount); }
+        inline void blit(Graphic2D* where, const Vec2& position, SDL_Rect* portion = nullptr) const override { m_SpriteSheet->blit_cell(where, m_Row, m_Col, position, m_HorizontalAmount, m_VerticalAmount); }
+        inline void blit_stretch_p(Graphic2D* where, const Vec3& position, SDL_Rect* portion = nullptr) const override {m_SpriteSheet->blit_cell_stretch_p(where, m_Row, m_Col, position, m_HorizontalAmount, m_VerticalAmount); }
         inline void blit_stretch(Graphic2D* where, const Vec4& position, SDL_Rect* portion = nullptr) const override {m_SpriteSheet->blit_cell_stretch(where, m_Row, m_Col, position, m_HorizontalAmount, m_VerticalAmount); }
 
         inline void fill(Color color = {0, 0, 0, 255}, SDL_Rect* portion = nullptr) override { m_SpriteSheet->fill_cell(m_Row, m_Col, m_HorizontalAmount, m_VerticalAmount, color); }
