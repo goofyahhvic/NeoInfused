@@ -30,33 +30,13 @@ namespace neo {
         return mirrored;
     }
 
-    Graphic2D::Graphic2D(uint32_t width, uint32_t height) {
-        m_Surface = SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, SDL_PIXELFORMAT_RGBA32);
-    }
-    Graphic2D::Graphic2D(uint32_t width, uint32_t height, Color* pixels) {
-        m_Surface = SDL_CreateRGBSurfaceWithFormatFrom(pixels, width, height, 32, width*4, SDL_PIXELFORMAT_RGBA32);
-    }
-    Graphic2D::Graphic2D(const std::filesystem::path& image_path) {
-        if (!std::filesystem::exists(image_path)) {
-            NEO_ERROR_LOG("Failed to load image in {0}", image_path.C_STR);
-            m_Surface = SDL_CreateRGBSurfaceWithFormat(0, 2, 2, 32, SDL_PIXELFORMAT_RGBA32);
-            SetPixelFromSurface(m_Surface, 0, 0, {0, 0, 0, 255});
-            SetPixelFromSurface(m_Surface, 1, 1, {0, 0, 0, 255});
-            SetPixelFromSurface(m_Surface, 0, 1, {255, 100, 255, 255});
-            SetPixelFromSurface(m_Surface, 1, 0, {255, 100, 255, 255});
-            return;
-        }
-        NEO_TRACE_LOG("Loading texture from file: {}", image_path.C_STR);
-        m_Surface = IMG_Load(image_path.C_STR);
-    }
-
-    void Graphic2D::CreateMirroredFrom_H(const Graphic2D* src) {
+    void Graphic2D::create_mirroredH_from(const Graphic2D* src) {
         m_Surface = MirrorSurface_H(src->m_Surface);
     }
-    void Graphic2D::CreateMirroredFrom_V(const Graphic2D* src) {
+    void Graphic2D::create_mirroredV_from(const Graphic2D* src) {
         m_Surface = MirrorSurface_V(src->m_Surface);
     }
-    void Graphic2D::CreateMirroredFrom_HV(const Graphic2D* src) {
+    void Graphic2D::create_mirroredHV_from(const Graphic2D* src) {
         m_Surface = MirrorSurface_HV(src->m_Surface);
     }
 
@@ -95,6 +75,26 @@ namespace neo {
             src->m_Surface->format->Amask
         );
         SDL_BlitSurface(src->m_Surface, nullptr, m_Surface, nullptr);
+    }
+
+    void Graphic2D::set_surface(uint32_t width, uint32_t height) {
+        m_Surface = SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, SDL_PIXELFORMAT_RGBA32);
+    }
+    void Graphic2D::set_surface(uint32_t width, uint32_t height, Color* pixels) {
+        m_Surface = SDL_CreateRGBSurfaceWithFormatFrom(pixels, width, height, 32, width*4, SDL_PIXELFORMAT_RGBA32);
+    }
+    void Graphic2D::set_surface(const std::filesystem::path& image_path) {
+        if (!std::filesystem::exists(image_path)) {
+            NEO_ERROR_LOG("Failed to load image in {0}", image_path.C_STR);
+            m_Surface = SDL_CreateRGBSurfaceWithFormat(0, 2, 2, 32, SDL_PIXELFORMAT_RGBA32);
+            SetPixelFromSurface(m_Surface, 0, 0, {0, 0, 0, 255});
+            SetPixelFromSurface(m_Surface, 1, 1, {0, 0, 0, 255});
+            SetPixelFromSurface(m_Surface, 0, 1, {255, 100, 255, 255});
+            SetPixelFromSurface(m_Surface, 1, 0, {255, 100, 255, 255});
+            return;
+        }
+        NEO_TRACE_LOG("Loading texture from file: {}", image_path.C_STR);
+        m_Surface = IMG_Load(image_path.C_STR);
     }
 
     void DrawSprite(const Graphic2D* what, Graphic2D* where, const Vec4& position, SDL_Rect* portion) {

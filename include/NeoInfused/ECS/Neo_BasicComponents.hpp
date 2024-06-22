@@ -5,6 +5,12 @@
 #include <SDL2/SDL.h>
 
 namespace neo {
+    struct Vec2 {
+        float x, y;
+    };
+    struct Vec3 {
+        float x, y, z;
+    };
     struct Vec4 {
         float x, y, w, h;
         inline operator SDL_FRect(void) const { return {x, y, w, h}; }
