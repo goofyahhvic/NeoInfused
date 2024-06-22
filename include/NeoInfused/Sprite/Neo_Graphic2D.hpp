@@ -23,7 +23,7 @@ namespace neo {
         void set_surface(uint32_t width, uint32_t height, Color* pixels);
         void set_surface(const std::filesystem::path& image_path);
 
-        inline void destroy(void) { SDL_FreeSurface(m_Surface); m_Surface = nullptr; }
+        inline virtual void destroy(void) { SDL_FreeSurface(m_Surface); m_Surface = nullptr; }
         virtual ~Graphic2D(void) { this->destroy(); }
 
         virtual void clone(const Graphic2D* src);
@@ -32,8 +32,10 @@ namespace neo {
         void create_mirroredV_from(const Graphic2D* src);
         void create_mirroredHV_from(const Graphic2D* src);
     public:
-        virtual void blit(Graphic2D* where, const Vec4& position, SDL_Rect* portion = nullptr) const;
+        virtual void blit(Graphic2D* where, const Vec2& position, SDL_Rect* portion = nullptr) const;
         virtual void blit_stretch(Graphic2D* where, const Vec4& position, SDL_Rect* portion = nullptr) const;
+        // scales the surface up without losing proportion
+        virtual void blit_stretch_p(Graphic2D* where, const Vec3& position, SDL_Rect* portion = nullptr) const;
 
         virtual inline void fill(Color color = {0, 0, 0, 255}, SDL_Rect* portion = nullptr) { SDL_FillRect(m_Surface, portion, color.rgba); }
 

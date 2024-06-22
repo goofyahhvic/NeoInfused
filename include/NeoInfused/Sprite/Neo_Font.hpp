@@ -5,6 +5,7 @@
 
 namespace neo {
     class Font {
+        friend class Text;
     public:
         inline Font(const std::filesystem::path& ttf_path, int32_t size) { this->set_font(ttf_path, size); }
         inline ~Font(void) { this->destroy(); }
