@@ -30,9 +30,10 @@ namespace neo {
             throw std::runtime_error("Error in getting executable path!");
         }
 
-        NEO_ASSERT_FUNC(!SDL_Init(SDL_INIT_EVERYTHING), "Failed to initialize SDL: {0}", SDL_GetError());
+        NEO_ASSERT_FUNC(SDL_Init(SDL_INIT_EVERYTHING) >= 0, "Failed to initialize SDL: {0}", SDL_GetError());
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
-        IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
+        NEO_ASSERT_FUNC(IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG), "Failed to initialize SDL_image: {0}", IMG_GetError());
+        NEO_ASSERT_FUNC(TTF_Init() >= 0, "Failed to initialize SDL_ttf: {0}", TTF_GetError());
 
         Window::Init();
     }
@@ -42,6 +43,7 @@ namespace neo {
 
         Window::Cleanup();
 
+        TTF_Quit();
         IMG_Quit();
         SDL_Quit();
     }
