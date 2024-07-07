@@ -5,13 +5,11 @@
 
 namespace neo {
     class Window {
-        Window(void) = default;
-        ~Window(void) = default;
         friend class Core;
         friend class glContext;
     public:
-        static Window* New(int32_t width = 1280, int32_t height = 720, const char* title = "Unnamed Window");
-        static void Delete(Window* _this);
+        Window(int32_t width = 1280, int32_t height = 720, const char* title = "Unnamed Window");
+        ~Window(void);
     public:
         inline uint16_t id(void) const { return m_Id; }
         static Window* GetFromID(uint16_t id) { return m_Windows.at(id); }

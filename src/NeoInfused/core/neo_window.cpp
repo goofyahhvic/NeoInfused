@@ -7,27 +7,21 @@ namespace neo {
     uint16_t Window::m_LastId = 0;
     std::unordered_map<uint16_t, Window*> Window::m_Windows;
 
-    Window* Window::New(int32_t width, int32_t height, const char* title) {
-        Window* _this = new Window;
+    Window::Window(int32_t width, int32_t height, const char* title) {
+        m_Window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+        glfwSetWindowUserPointer(m_Window, this);
+        SetGLFWCallbacks(m_Window);
 
-        _this->m_Window = glfwCreateWindow(width, height, title, nullptr, nullptr);
-        glfwSetWindowUserPointer(_this->m_Window, _this);
-        SetGLFWCallbacks(_this->m_Window);
-
-        _this->m_Id = m_LastId++;
-        Window::m_Windows[_this->m_Id] = _this;
+        m_Id = m_LastId++;
+        Window::m_Windows[m_Id] = this;
 
         if (!Context::Initialized())
-			Context::Get()->initialize(_this);
-		Context::Get()->set_viewport(_this, width, height);
-
-        return _this;
+			Context::Get()->initialize(this);
+		Context::Get()->set_viewport(this, width, height);
     }
-    void Window::Delete(Window* _this) {
-        Window::m_Windows.erase(_this->m_Id);
-        
-        glfwDestroyWindow(_this->m_Window);
-        delete _this;
+    Window::~Window(void) {
+        Window::m_Windows.erase(m_Id);
+        glfwDestroyWindow(m_Window);
     }
 
     void Window::SetGLFWCallbacks(GLFWwindow* _window) {
