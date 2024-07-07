@@ -7,6 +7,8 @@ LIB_DIR["external"] = "external/lib/"
 
 INCLUDE_DIR["submods"] = "submods/"
 
+include "glad/glad-Premake.lua"
+
 project "NeoInfused"
     location "./"
     targetname "NeoInfused-bin"
@@ -20,8 +22,8 @@ project "NeoInfused"
     targetdir "bin/%{OUTPUT_DIR}/%{prj.name}/"
     objdir "bin-int/%{OUTPUT_DIR}/%{prj.name}/"
 
-    pchheader "Neo_PCH.hpp"
-    pchsource "src/Neo_PCH.cpp"
+    pchheader "neo_pch.hpp"
+    pchsource "src/neo_pch.cpp"
 
     files {
         "include/**.hpp",
@@ -29,17 +31,15 @@ project "NeoInfused"
         "src/**.cpp",
     }
     includedirs {
-        "src/",
         "include/",
         "%{INCLUDE_DIR.external}",
         "%{INCLUDE_DIR.submods}",
+        "%{INCLUDE_DIR.glad}"
     }
 
     links {
-        "SDL2",
-        "SDL2_image",
-        "SDL2_ttf",
-        "SDL2_mixer"
+        "glfw",
+        "glad"
     }
 
     filter "system:linux"
@@ -55,7 +55,6 @@ project "NeoInfused"
 
         includedirs { "%{INCLUDE_DIR.external}windows/" }
         libdirs { "%{LIB_DIR.external}windows/" }
-        links { "SDL2test" }
     
     filter "configurations:dbg"
         symbols "On"
