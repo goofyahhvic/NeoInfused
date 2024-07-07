@@ -52,16 +52,6 @@ project "GLFW"
 			"_GNU_SOURCE"
 		}
 
-		links {
-			"Xcursor",
-			"Xinerama",
-			"Xrandr",
-			"Xi",
-			"dl",
-			"X11",
-			"m"
-		}
-
     filter "system:windows"
         toolset "msc"
 		files {

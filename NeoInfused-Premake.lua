@@ -31,23 +31,13 @@ project "NeoInfused"
     }
 
     links {
-        "GLFW",
-        "glad"
+        "glad",
+        "GLFW"
     }
 
     filter "system:linux"
         toolset "gcc"
         defines { "NEO_PLATFORM_LINUX" }
-
-        links {
-			"Xcursor",
-			"Xinerama",
-			"Xrandr",
-			"Xi",
-			"dl",
-			"X11",
-			"m"
-		}
 
     filter "system:windows"
         toolset "msc"

@@ -30,7 +30,9 @@ namespace neo {
     }
 
     void Core::Init(const InitInfo& info) {
+    #if !defined (NEO_CONFIG_DIST)
         NEO_DATE_TIME_LOG << '\n';
+    #endif // NEO_CONFIG_DIST   
         NEO_INFO_LOG("Initializing NeoInfused!");
         Core::m_Argc = info.argc;
         Core::m_Argv = info.argv;
