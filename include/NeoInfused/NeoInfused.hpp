@@ -17,7 +17,6 @@
 #include "graphics/shaders/neo_vertex.hpp"
 #include "graphics/shaders/neo_fragment.hpp"
 #include "graphic/neo_triangle.hpp"
-
 #include "graphics/neo_context.hpp"
 
 #endif // NEOINFUSED_HPP

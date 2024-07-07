@@ -13,7 +13,6 @@ namespace neo {
 			this->_on_event(e);
 		};
 	}
-
 	void App::run(void) {
         while (!window.should_close) {
 			PollEvents();

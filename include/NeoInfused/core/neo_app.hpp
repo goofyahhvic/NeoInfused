@@ -1,7 +1,6 @@
 #if !defined(NEO_APP_HPP)
 #define NEO_APP_HPP
 
-#include "neo_window.hpp"
 #include "NeoInfused/graphics/neo_context.hpp"
 #include "neo_layer-group.hpp"
 
