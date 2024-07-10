@@ -6,9 +6,9 @@
 namespace neo {
     class Window {
         friend class Core;
-        friend class glContext;
+        friend class gl_Context;
     public:
-        Window(int32_t width = 1280, int32_t height = 720, const char* title = "Unnamed Window");
+        Window(int32_t width = 1280, int32_t height = 720, const std::string& title = Core::GetExecName());
         ~Window(void);
     public:
         inline uint16_t id(void) const { return m_Id; }

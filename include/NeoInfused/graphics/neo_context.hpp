@@ -1,21 +1,19 @@
 #if !defined(NEO_RENDERER_HPP)
 #define NEO_RENDERER_HPP
 
-#include "NeoInfused/neo_core.hpp"
 #include "NeoInfused/core/neo_window.hpp"
 
-enum neo_RendererAPI {
+enum neoRendererAPI {
     NEO_RENDERERAPI_NONE = 0,
     NEO_RENDERERAPI_OPENGL,
     NEO_RENDERERAPI_VULKAN
 #if defined(NEO_PLATFORM_WINDOWS)
-    ,NEO_RENDERAPI_DIRECTX
+   ,NEO_RENDERAPI_DIRECTX
 #endif // NEO_PLATFORM_WINDOWS
 };
 
-#define NEO_CONTEXT neo::Context::Get
-
 namespace neo {
+    using RendererAPI = neoRendererAPI;
     class Context {
         friend class Core;
     public:
@@ -36,7 +34,7 @@ namespace neo {
 
     protected:
         static Context* m_This;
-        static uint8_t m_API;
+        static RendererAPI m_API;
         static bool m_Initialized;
     };
 }

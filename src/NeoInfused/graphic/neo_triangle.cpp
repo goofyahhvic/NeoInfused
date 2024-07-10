@@ -21,7 +21,7 @@ namespace neo {
         glDeleteBuffers(1, &m_VertexBuffer);
     }
 
-    void Triangle::draw(void) {
+    void Triangle::draw(void) const {
         glBindVertexArray(m_VertexArray);
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }

@@ -20,7 +20,9 @@ project "NeoInfused"
 
     files {
         "include/**.hpp",
+        "include/**.h",
         "src/**.hpp",
+        "src/**.h",
         "src/**.cpp"
     }
     includedirs {

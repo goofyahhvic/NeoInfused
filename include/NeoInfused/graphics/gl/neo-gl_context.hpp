@@ -4,10 +4,10 @@
 #include "../neo_context.hpp"
 
 namespace neo {
-    class glContext : public Context {
+    class gl_Context : public Context {
         friend class Context;
-        glContext(void) = default;
-        ~glContext(void) = default;
+        gl_Context(void) = default;
+        ~gl_Context(void) = default;
     public:
         void initialize(Window* window) override;
         void terminate(void) override;

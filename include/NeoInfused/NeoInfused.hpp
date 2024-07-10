@@ -11,11 +11,8 @@
 #include "core/neo_scoped-timer.hpp"
 #include "core/neo_app.hpp"
 
-#include "game/neo_object.hpp"
-
-#include "graphic/neo_shader.hpp"
-#include "graphics/shaders/neo_vertex.hpp"
-#include "graphics/shaders/neo_fragment.hpp"
+#include "graphics/neo_shaders.hpp"
+#include "graphics/gl/neo-gl_shader.hpp"
 #include "graphic/neo_triangle.hpp"
 #include "graphics/neo_context.hpp"
 

@@ -4,8 +4,8 @@
 namespace neo {
 	App* App::m_This = nullptr;
 
-	App::App(int32_t width, int32_t height, const char* title)
-	: window(width, height, title), layer_group() {
+	App::App(int32_t width, int32_t height, const std::string& title)
+	: window(width, height, title), layer_group(), frame_buffer() {
 		NEO_ASSERT(!App::m_This, "Cannot create multiple instances of App!");
 		App::m_This = this;
 
@@ -13,17 +13,19 @@ namespace neo {
 			this->_on_event(e);
 		};
 	}
-	void App::run(void) {
+	void App::run(size_t frame_buffer_size) {
+		frame_buffer.initialize(frame_buffer_size);
         while (!window.should_close) {
 			PollEvents();
 			this->_update();
 			this->_draw();
+			frame_buffer.flush();
         }
 	}
 
 	void App::_on_event(const Event* e) {
 		if (e->type() == neo::EventType::WindowResize) {
-			NEO_CONTEXT()->set_viewport(
+			Context::Get()->set_viewport(
 				&window,
 				((neo::WindowResizeEvent*)e)->width(),
 				((neo::WindowResizeEvent*)e)->height()
@@ -41,10 +43,10 @@ namespace neo {
 				layer->update();
 	}
 	void App::_draw(void) {
-		NEO_CONTEXT()->new_frame(&window, { 0.5f, 0.5f, 1.0f, 1.0f });
+		Context::Get()->new_frame(&window, clear_color);
 		for (auto layer : layer_group)
 			if ((layer->state & NEO_LAYERSTATE_VISIBLE) == NEO_LAYERSTATE_VISIBLE)
 				layer->draw();
-		NEO_CONTEXT()->present(&window);
+		Context::Get()->present(&window);
 	}
 }

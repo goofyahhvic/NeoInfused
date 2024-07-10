@@ -15,7 +15,7 @@ namespace neo {
         Layer* push(Layer* layer);
         void pop(size_t index);
 
-        void set_priority(int64_t new_priority, size_t index);
+        void set_priority(int32_t new_priority, size_t index);
         void resort(void);
 
         size_t find_first_of(const Layer* layer) const;
@@ -34,8 +34,8 @@ namespace neo {
         inline Layers::const_reverse_iterator crend(void) const { return m_Layers.crend(); }
 
         inline size_t size(void) const { return m_Layers.size(); }
-        inline size_t capacity(void) const { return m_Layers.capacity(); 
-        }
+        inline size_t capacity(void) const { return m_Layers.capacity(); }
+
         inline Layer* operator[](size_t index) const { return m_Layers[index]; }
         inline Layer* at(size_t index) { return m_Layers.at(index); }
         

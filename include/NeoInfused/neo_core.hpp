@@ -51,16 +51,16 @@
 
 #if !defined(NEO_CONFIG_DIST)
 
-    #define NEO_TRACE_LOG(...) std::cout << NEO_FORMAT(NEO_FONT_BOLD                "{0}[Neo]" NEO_COLOR_RSET " {1}\n", neo::hours_minutes_seconds(), NEO_FORMAT(__VA_ARGS__)) 
-    #define NEO_INFO_LOG(...)  std::cout << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FGRN "{0}[Neo]" NEO_COLOR_RSET " {1}\n", neo::hours_minutes_seconds(), NEO_FORMAT(__VA_ARGS__)) 
-    #define NEO_WARN_LOG(...)  std::cout << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FYEL "{0}[Neo]" NEO_COLOR_RSET " {1}\n", neo::hours_minutes_seconds(), NEO_FORMAT(__VA_ARGS__)) 
-    #define NEO_ERROR_LOG(...) std::cout << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FRED "{0}[Neo]" NEO_COLOR_RSET " {1}\n", neo::hours_minutes_seconds(), NEO_FORMAT(__VA_ARGS__))
-    #define NEO_FATAL_LOG(...) std::cout << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_BRED "{0}[Neo]" NEO_COLOR_RSET " {1}\n", neo::hours_minutes_seconds(), NEO_FORMAT(__VA_ARGS__))
+    #define NEO_TRACE_LOG(...) std::cout << NEO_FORMAT(NEO_FONT_BOLD                "{0}[Neo]" NEO_COLOR_RSET " {1}\n", neo::HoursMinutesSeconds(), NEO_FORMAT(__VA_ARGS__)) 
+    #define NEO_INFO_LOG(...)  std::cout << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FGRN "{0}[Neo]" NEO_COLOR_RSET " {1}\n", neo::HoursMinutesSeconds(), NEO_FORMAT(__VA_ARGS__)) 
+    #define NEO_WARN_LOG(...)  std::cout << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FYEL "{0}[Neo]" NEO_COLOR_RSET " {1}\n", neo::HoursMinutesSeconds(), NEO_FORMAT(__VA_ARGS__)) 
+    #define NEO_ERROR_LOG(...) std::cout << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FRED "{0}[Neo]" NEO_COLOR_RSET " {1}\n", neo::HoursMinutesSeconds(), NEO_FORMAT(__VA_ARGS__))
+    #define NEO_FATAL_LOG(...) std::cout << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_BRED "{0}[Neo]" NEO_COLOR_RSET " {1}\n", neo::HoursMinutesSeconds(), NEO_FORMAT(__VA_ARGS__))
 
-    #define NEO_FULL_LOG(...)  std::cout << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FGRN "{0}"      NEO_COLOR_RSET "\n",     neo::year_month_day_hours_minutes_seconds(), NEO_FORMAT(__VA_ARGS__)) 
-    #define NEO_DATE_LOG       std::cout << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FGRN "{0}"      NEO_COLOR_RSET "\n",     neo::year_month_day()) 
-    #define NEO_TIME_LOG       std::cout << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FGRN "{0}"      NEO_COLOR_RSET "\n",     neo::hours_minutes_seconds()) 
-    #define NEO_DATE_TIME_LOG  std::cout << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FGRN "{0}[{1}]" NEO_COLOR_RSET "\n",     neo::year_month_day_hours_minutes_seconds(), std::chrono::current_zone()->name()) 
+    #define NEO_FULL_LOG(...)  std::cout << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FGRN "{0}"      NEO_COLOR_RSET "\n",     neo::DateAndTime(), NEO_FORMAT(__VA_ARGS__)) 
+    #define NEO_DATE_LOG       std::cout << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FGRN "{0}"      NEO_COLOR_RSET "\n",     neo::YearMonthDay()) 
+    #define NEO_TIME_LOG       std::cout << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FGRN "{0}"      NEO_COLOR_RSET "\n",     neo::HoursMinutesSeconds()) 
+    #define NEO_DATE_TIME_LOG  std::cout << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FGRN "{0}[{1}]" NEO_COLOR_RSET "\n",     neo::DateAndTime(), std::chrono::current_zone()->name()) 
     #define NEO_LOG_NEWLINE    std::cout << '\n';
 #else
     #define NEO_TRACE_LOG(...)
@@ -80,24 +80,22 @@
 
 #define NEO_BIT(x) (1u << x)
 
-namespace neo {
-    std::string hours_minutes_seconds(void);
-    std::string year_month_day(void);
-    std::string year_month_day_hours_minutes_seconds(void);
+enum neoRendererAPI;
 
+namespace neo {
     using byte_t = char;
 
-    inline int32_t round(float num) {
-        return floor(num + 0.5f);
-    }
-    inline int64_t round(double num) {
-        return floor(num + 0.5f);
-    }
+    std::string HoursMinutesSeconds(void);
+    std::string YearMonthDay(void);
+    std::string DateAndTime(void);
+ 
+    inline int32_t Round32(float num) { return (int32_t)floor(num + 0.5f); }
+    inline int64_t Round64(double num) { return (int64_t)floor(num + 0.5f); }
 
     struct InitInfo {
         int argc;
         char** argv;
-        uint8_t renderer_api = 0;
+        neoRendererAPI renderer_api;
     };
 
     class GLFWError : public std::exception {
@@ -117,13 +115,14 @@ namespace neo {
 
         static inline const std::string& GetExecPath(void) { return m_ExecPath; }
         static inline const std::string& GetExecDir(void) { return m_ExecDir; }
+        static inline const std::string& GetExecName(void) { return m_ExecName; }
 
         static int    argc(void) { return m_Argc; }
         static char** argv(void) { return m_Argv; }
     private:
         static int m_Argc;
         static char** m_Argv;
-        static std::string m_ExecPath, m_ExecDir;
+        static std::string m_ExecPath, m_ExecDir, m_ExecName;
     };
 } // namespace neo
 

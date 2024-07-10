@@ -1,10 +1,10 @@
 #include "neo_pch.hpp"
-#include "NeoInfused/graphic/neo_shader.hpp"
+#include "NeoInfused/graphics/gl/neo-gl_shader.hpp"
 
 namespace neo {
-    uint32_t CreateShader(const char* shader_src, int32_t type) {
-        uint32_t shader = glCreateShader(type);
-        glShaderSource(shader, 1, &shader_src, nullptr);
+	uint32_t gl_CreateShader(gl_ShaderCreateInfo info) {
+        uint32_t shader = glCreateShader(info.type);
+        glShaderSource(shader, 1, &(info.src), nullptr);
         glCompileShader(shader);
 
     #if !defined (NEO_CONFIG_DIST)
@@ -17,18 +17,13 @@ namespace neo {
         }
     #endif
         return shader;
-    }
-    void DestroyShader(uint32_t shader) {
-        glDeleteShader(shader);
-    }
+	}
 
-    ShaderProgram::ShaderProgram(const char* vshader_src, const char* fshader_src) {
-        uint32_t vshader = CreateShader(vshader_src, GL_VERTEX_SHADER);
-        uint32_t fshader = CreateShader(fshader_src, GL_FRAGMENT_SHADER);
-
+    gl_ShaderProgram::gl_ShaderProgram(const std::vector<uint32_t>& shaders) {
         m_Program = glCreateProgram();
-        glAttachShader(m_Program, vshader);
-        glAttachShader(m_Program, fshader);
+        for (auto it = shaders.begin(); it != shaders.end(); it++)
+            glAttachShader(m_Program, *it);
+
         glLinkProgram(m_Program);
 
     #if !defined (NEO_CONFIG_DIST)
@@ -41,14 +36,14 @@ namespace neo {
         }
     #endif
 
-        glDeleteShader(fshader);
-        glDeleteShader(vshader);
+        for (auto it = shaders.begin(); it != shaders.end(); it++)
+            glDeleteShader(*it);
     }
-    ShaderProgram::~ShaderProgram(void) {
+    gl_ShaderProgram::~gl_ShaderProgram(void) {
         glDeleteProgram(m_Program);
     }
 
-    void ShaderProgram::use(void) {
+    void gl_ShaderProgram::bind(void) const {
         glUseProgram(m_Program);
     }
-} // namespace neo
+}

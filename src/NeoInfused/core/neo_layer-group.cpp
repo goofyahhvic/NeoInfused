@@ -24,7 +24,7 @@ namespace neo {
         m_Layers.erase(m_Layers.begin() + index);
     }
 
-    void LayerGroup::set_priority(int64_t new_priority, size_t index) {
+    void LayerGroup::set_priority(int32_t new_priority, size_t index) {
         m_Layers[index]->m_Priority = new_priority;
         std::sort(m_Layers.begin(), m_Layers.end(), greater);
     }

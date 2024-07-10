@@ -7,8 +7,8 @@ namespace neo {
     uint16_t Window::m_LastId = 0;
     std::unordered_map<uint16_t, Window*> Window::m_Windows;
 
-    Window::Window(int32_t width, int32_t height, const char* title) {
-        m_Window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+    Window::Window(int32_t width, int32_t height, const std::string& title) {
+        m_Window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
         glfwSetWindowUserPointer(m_Window, this);
         SetGLFWCallbacks(m_Window);
 

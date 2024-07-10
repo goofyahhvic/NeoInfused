@@ -7,9 +7,9 @@
 namespace neo {
     int    Core::m_Argc;
     char** Core::m_Argv;
-    std::string Core::m_ExecPath, Core::m_ExecDir;
+    std::string Core::m_ExecPath, Core::m_ExecDir, Core::m_ExecName;
 
-    std::string hours_minutes_seconds(void) {
+    std::string HoursMinutesSeconds(void) {
         std::time_t seconds = std::time(nullptr);
         std::string str(std::asctime(std::localtime(&seconds)));
         str = str.substr(10, 10);
@@ -17,11 +17,11 @@ namespace neo {
         str[str.length()-1] = ']';
         return str;
     }
-    std::string year_month_day(void) {
+    std::string YearMonthDay(void) {
         const std::chrono::year_month_day ymd {std::chrono::floor<std::chrono::days>(std::chrono::system_clock::now())};
         return NEO_FORMAT("[{0}]", ymd);
     }
-    std::string year_month_day_hours_minutes_seconds(void) {
+    std::string DateAndTime(void) {
         std::time_t seconds = std::time(nullptr);
         std::string str(std::asctime(std::localtime(&seconds)));
         str = str.substr(11, 8);
@@ -49,10 +49,13 @@ namespace neo {
         size_t index = Core::m_ExecPath.find_last_of('\\');
 #endif // NEO_PLATFORM_LINUX
         Core::m_ExecDir = Core::m_ExecPath.substr(0, index+1);
+        Core::m_ExecName = Core::m_ExecPath.substr(
+            index + 1,
+            Core::m_ExecPath.find_first_of('.', index + 1) - index - 1
+        );
 
-        if (Core::m_ExecPath.empty() || Core::m_ExecDir.empty()) {
+        if (Core::m_ExecPath.empty() || Core::m_ExecDir.empty() || Core::m_ExecName.empty())
             throw std::runtime_error("Error in getting executable path!");
-        }
 
         NEO_ASSERT_FUNC(glfwInit(), "Failed to initialize glfw!");
         glfwSetErrorCallback([](int error, const char* description) {
