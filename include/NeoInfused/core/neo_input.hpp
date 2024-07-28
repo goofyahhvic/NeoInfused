@@ -10,11 +10,11 @@ namespace neo {
         using Keys = std::array<bool, NEO_KEY_LAST>;
         using MouseButtons = std::array<bool, NEO_MOUSE_BUTTON_LAST>;
         struct MousePos { double x = 0, y = 0; };
-    public:
+
         Input(void) = default;
         ~Input(void) = default;
-    public:
-        void on_event(const Event* e);
+
+        void on_event(const Event& e);
 
         inline bool key(uint16_t index) const { return m_Keys[index]; }
         inline void set_key(uint16_t index, bool value) { m_Keys[index] = value; }

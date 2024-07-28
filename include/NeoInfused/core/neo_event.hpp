@@ -3,144 +3,77 @@
 
 #include "NeoInfused/neo_core.hpp"
 
-// CODE COPIED FROM https://github.com/TheCherno/Hazel.git
+enum neo_EventType {
+	NEO_EVENT_NONE = 0,
+	NEO_KEY_PRESSED_EVENT, NEO_KEY_RELEASED_EVENT,
+	NEO_WINDOW_RESIZE_EVENT, NEO_WINDOW_CLOSE_EVENT , NEO_WINDOW_FOCUS_EVENT, NEO_WINDOW_LOST_FOCUS_EVENT,
+	NEO_MOUSE_MOVED_EVENT, NEO_MOUSE_SCROLLED_EVENT, NEO_MOUSE_BUTTON_PRESSED_EVENT, NEO_MOUSE_BUTTON_RELEASED_EVENT
+};
+#define NEO_EVENT_BASE(x) struct {\
+						uint8_t type = x;\
+						uint32_t window_id;\
+						bool handled = false;\
+					 }
+
 namespace neo {
- 	enum class EventType {
-		None = 0,
-		WindowClose, WindowResize, WindowFocus, WindowLostFocus,
-		KeyPressed, KeyReleased, 
-		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled 
-	};
-#define EVENT_CLASS_TYPE(type) EventType type(void) { return EventType::##type; }
-
-	class Event {
-	public:
-        Event(void) = default;
-        virtual ~Event(void) = default;
-
-		virtual EventType type(void) const = 0;
-		virtual std::string str(void) const { return "Unknown Event"; }
-
-		bool handled = false;
+	using EventType = neo_EventType;
+	struct Event {
+		NEO_EVENT_BASE(NEO_EVENT_NONE);
+		uint32_t padding1 = 0, padding2 = 0;
 	};
 
-    class KeyEvent : public Event {
-	public:
-		KeyEvent(int32_t _keycode) : m_Keycode(_keycode) {}
-		inline int keycode(void) const { return m_Keycode; }
-	protected:
-		int32_t m_Keycode;
+	struct KeyPressedEvent {
+		NEO_EVENT_BASE(NEO_KEY_PRESSED_EVENT);
+		uint16_t key;
+		bool repeat;
+		uint32_t padding = 0;
 	};
 
-	class KeyPressedEvent : public KeyEvent {
-	public:
-		KeyPressedEvent(int32_t _keycode, uint32_t _repeat_count)
-		: KeyEvent(_keycode), m_RepeatCount(_repeat_count) {}
-        inline EventType type(void) const override { return EventType::KeyPressed; }
-
-		std::string str(void) const override { return NEO_FORMAT("KeyPressedEvent: {0}, {1}", m_Keycode, m_RepeatCount); }
-        inline uint32_t repeat_count(void) const { return m_RepeatCount; }
-	private:
-		uint32_t m_RepeatCount;
+	struct KeyReleasedEvent {
+		NEO_EVENT_BASE(NEO_KEY_RELEASED_EVENT);
+		uint16_t key;
+		uint32_t padding = 0;
 	};
 
-	class KeyReleasedEvent : public KeyEvent {
-	public:
-		KeyReleasedEvent(int32_t _keycode) : KeyEvent(_keycode) {}
-        inline EventType type(void) const override { return EventType::KeyReleased; }
-
-		std::string str(void) const override { return NEO_FORMAT("KeyReleasedEvent: {0}", m_Keycode); }
+	struct WindowResizeEvent {
+		NEO_EVENT_BASE(NEO_WINDOW_RESIZE_EVENT);
+		uint32_t width, height;
 	};
 
-    class WindowEvent : public Event {
-    public:
-        WindowEvent(uint16_t _window_id) : m_WindowId(_window_id) {}
-        inline uint16_t window_id(void) const { return m_WindowId; }
-    protected:
-        uint16_t m_WindowId;
-    };
-
-    class WindowResizeEvent : public WindowEvent {
-	public:
-		WindowResizeEvent(uint32_t _width, uint32_t _height, uint16_t _window_id)
-        : m_Width(_width), m_Height(_height), WindowEvent(_window_id) {}
-        inline EventType type(void) const override { return EventType::WindowResize; }
-
-		inline uint32_t width(void) const { return m_Width; }
-		inline uint32_t height(void) const { return m_Height; }
-
-		std::string str(void) const override { return NEO_FORMAT("WindowResizeEvent: {0}, {1}, window_id: {2}", m_Width, m_Height, m_WindowId); }
-	private:
-		uint32_t m_Width, m_Height;
+	struct WindowCloseEvent {
+		NEO_EVENT_BASE(NEO_WINDOW_CLOSE_EVENT);
+		uint32_t padding1 = 0, padding2 = 0;
 	};
 
-	class WindowCloseEvent : public WindowEvent {
-	public:
-		WindowCloseEvent(uint16_t _window_id) : WindowEvent(_window_id) {}
-        inline EventType type(void) const override { return EventType::WindowClose; }
-        inline std::string str(void) const override { return NEO_FORMAT("WindowCloseEvent: {0}", m_WindowId); }
+	struct WindowFocusEvent {
+		NEO_EVENT_BASE(NEO_WINDOW_FOCUS_EVENT);
+		uint32_t padding1 = 0, padding2 = 0;
+	};
+	struct WindowLostFocusEvent {
+		NEO_EVENT_BASE(NEO_WINDOW_LOST_FOCUS_EVENT);
+		uint32_t padding1 = 0, padding2 = 0;
 	};
 
-	class WindowFocusEvent : public WindowEvent {
-	public:
-		WindowFocusEvent(uint16_t _window_id) : WindowEvent(_window_id) {}
-		inline EventType type(void) const override { return EventType::WindowFocus; }
-		inline std::string str(void) const override { return NEO_FORMAT("WindowFocusEvent: {0}", m_WindowId); }
-	};
-	class WindowLostFocusEvent : public WindowEvent {
-	public:
-		WindowLostFocusEvent(uint16_t _window_id) : WindowEvent(_window_id) {}
-		inline EventType type(void) const override { return EventType::WindowLostFocus; }
-		inline std::string str(void) const override { return NEO_FORMAT("WindowLostFocusEvent: {0}", m_WindowId); }
+    struct MouseMovedEvent {
+		NEO_EVENT_BASE(NEO_MOUSE_MOVED_EVENT);
+		float x, y;
 	};
 
-
-    class MouseMovedEvent : public Event {
-	public:
-		MouseMovedEvent(double _x, double _y) : m_X(_x), m_Y(_y) {}
-		inline EventType type(void) const override { return EventType::MouseMoved; }
-
-		inline double x(void) const { return m_X; }
-		inline double y(void) const { return m_Y; }
-
-		inline std::string str(void) const override { return NEO_FORMAT("MouseMovedEvent: {0}, {1}", m_X, m_Y); }
-	private:
-		double m_X, m_Y;
+	struct MouseScrolledEvent {
+		NEO_EVENT_BASE(NEO_MOUSE_SCROLLED_EVENT);
+		float x_offset, y_offset;
 	};
 
-	class MouseScrolledEvent : public Event {
-	public:
-		MouseScrolledEvent(double _x_offset, double _y_offset) : m_XOffset(_x_offset), m_YOffset(_y_offset) {}
-		inline EventType type(void) const override { return EventType::MouseScrolled; }
-
-		inline double x_offset(void) const { return m_XOffset;  }
-		inline double y_offset(void) const { return m_YOffset;  }
-
-		inline std::string str(void) const override { return NEO_FORMAT("MouseScrolledEvent: {0}, {1}", m_XOffset, m_YOffset); }
-	private:
-		double m_XOffset, m_YOffset;
+	struct MouseButtonPressedEvent {
+		NEO_EVENT_BASE(NEO_MOUSE_BUTTON_PRESSED_EVENT);
+		uint8_t button;
+		uint32_t padding = 0;
 	};
 
-	class MouseButtonEvent : public Event {
-	public:
-		MouseButtonEvent(int32_t _button) : m_Button(_button) {}
-		inline int32_t button(void) const { return m_Button; }
-	protected:
-		int32_t m_Button;
-	};
-
-	class MouseButtonPressedEvent : public MouseButtonEvent {
-	public: 
-		MouseButtonPressedEvent(int32_t _button) : MouseButtonEvent(_button) {}
-        inline EventType type(void) const override { return EventType::MouseButtonPressed; }
-		inline std::string str(void) const override { return NEO_FORMAT("MouseButtonPressedEvent: {0}", m_Button); }
-	};
-
-	class MouseButtonReleasedEvent : public MouseButtonEvent {
-	public:
-		MouseButtonReleasedEvent(int32_t _button) : MouseButtonEvent(_button) {}
-        inline EventType type(void) const override { return EventType::MouseButtonReleased; }
-		inline std::string str(void) const override { return NEO_FORMAT("MouseButtonReleasedEvent: {0}", m_Button); }
+	struct MouseButtonReleasedEvent {
+		NEO_EVENT_BASE(NEO_MOUSE_BUTTON_RELEASED_EVENT);
+		uint8_t button;
+		uint32_t padding = 0;
 	};
 } // namespace neo
 

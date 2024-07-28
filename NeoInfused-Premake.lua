@@ -5,6 +5,9 @@ include "dependencies/glad/glad-Premake.lua"
 include "dependencies/GLFW-Premake.lua"
 INCLUDE_DIR["glm"] = "dependencies/glm/include/"
 
+--premake.path = premake.path .. ";dependencies/premake-cmake;"
+--require "cmake"
+
 project "NeoInfused"
     location "./"
     targetname "NeoInfused-bin"

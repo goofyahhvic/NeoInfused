@@ -3,7 +3,7 @@
 
 bin/
 bin-int/
-!external/bin/
+!dependencies/premake/bin/
 obj/
 
 *.sln

@@ -3,7 +3,7 @@
 
 #include "NeoInfused/core/neo_window.hpp"
 
-enum neoRendererAPI {
+enum neo_RendererAPI {
     NEO_RENDERERAPI_NONE = 0,
     NEO_RENDERERAPI_OPENGL,
     NEO_RENDERERAPI_VULKAN
@@ -13,7 +13,7 @@ enum neoRendererAPI {
 };
 
 namespace neo {
-    using RendererAPI = neoRendererAPI;
+    using RendererAPI = neo_RendererAPI;
     class Context {
         friend class Core;
     public:
@@ -30,8 +30,6 @@ namespace neo {
         virtual void set_viewport(Window* window, uint32_t width, uint32_t height) = 0;
         virtual void new_frame(Window* window, const glm::vec4& color = {0, 0, 0, 255}) = 0;
         virtual void present(Window* window) = 0;
-    protected:
-
     protected:
         static Context* m_This;
         static RendererAPI m_API;

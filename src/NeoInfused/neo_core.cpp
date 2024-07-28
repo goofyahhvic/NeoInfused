@@ -5,10 +5,6 @@
 #include "NeoInfused/graphics/neo_context.hpp"
 
 namespace neo {
-    int    Core::m_Argc;
-    char** Core::m_Argv;
-    std::string Core::m_ExecPath, Core::m_ExecDir, Core::m_ExecName;
-
     std::string HoursMinutesSeconds(void) {
         std::time_t seconds = std::time(nullptr);
         std::string str(std::asctime(std::localtime(&seconds)));
@@ -29,32 +25,32 @@ namespace neo {
         return NEO_FORMAT("[{0}][{1}]", ymd, str);
     }
 
-    void Core::Init(const InitInfo& info) {
+    Core::Core(const InitInfo& info)
+    : m_Argc(info.argc), m_Argv(info.argv) {
+        NEO_ASSERT(!s_This, "Already has initialized NeoInfused!");
     #if !defined (NEO_CONFIG_DIST)
         NEO_DATE_TIME_LOG << '\n';
     #endif // NEO_CONFIG_DIST   
         NEO_INFO_LOG("Initializing NeoInfused!");
-        Core::m_Argc = info.argc;
-        Core::m_Argv = info.argv;
         Context::m_API = info.renderer_api;
 
-#if defined(NEO_PLATFORM_LINUX)
-        Core::m_ExecPath = std::filesystem::canonical("/proc/self/exe").string();
+    #if defined(NEO_PLATFORM_LINUX)
+        m_ExecPath = std::filesystem::canonical("/proc/self/exe").string();
         size_t index = Core::m_ExecPath.find_last_of('/');
-#elif defined(NEO_PLATFORM_WINDOWS)
+    #elif defined(NEO_PLATFORM_WINDOWS)
         char exec_path_buffer[MAX_PATH];
         GetModuleFileNameA(nullptr, exec_path_buffer, MAX_PATH);
 
-        Core::m_ExecPath = std::string(exec_path_buffer);
-        size_t index = Core::m_ExecPath.find_last_of('\\');
-#endif // NEO_PLATFORM_LINUX
-        Core::m_ExecDir = Core::m_ExecPath.substr(0, index+1);
-        Core::m_ExecName = Core::m_ExecPath.substr(
+        m_ExecPath = std::string(exec_path_buffer);
+        size_t index = m_ExecPath.find_last_of('\\');
+    #endif // NEO_PLATFORM_LINUX
+        m_ExecDir = m_ExecPath.substr(0, index+1);
+        m_ExecName = m_ExecPath.substr(
             index + 1,
-            Core::m_ExecPath.find_first_of('.', index + 1) - index - 1
+            m_ExecPath.find_first_of('.', index + 1) - index - 1
         );
 
-        if (Core::m_ExecPath.empty() || Core::m_ExecDir.empty() || Core::m_ExecName.empty())
+        if (m_ExecPath.empty() || m_ExecDir.empty() || m_ExecName.empty())
             throw std::runtime_error("Error in getting executable path!");
 
         NEO_ASSERT_FUNC(glfwInit(), "Failed to initialize glfw!");
@@ -70,16 +66,8 @@ namespace neo {
         }
     }
 
-    void Core::Terminate(void) {
+    Core::~Core(void) {
         NEO_INFO_LOG("Terminating NeoInfused, Goodbye!");
-
-        if (!Window::m_Windows.empty()) {
-            for (const auto& [id, window] : Window::m_Windows) {
-                glfwDestroyWindow(window->m_Window);
-                delete window;
-            }
-            Window::m_Windows.clear();
-        }
 
         Context::Get()->terminate();
         Context::Destroy();

@@ -13,15 +13,15 @@ enum LayerState {
 
 namespace neo {
     class Layer {
-        friend class LayerGroup;
+        friend class LayerStorage;
     public:
         Layer(int32_t priority, uint8_t _state = NEO_LAYERSTATE_ALL)
         : m_Priority(priority), state(_state) {}
         virtual ~Layer(void) = default;
 
-        virtual void on_event(const Event* e) {}
-        virtual void update(void) {}
-        virtual void draw(void) {}
+        virtual void on_event(const Event& e) = 0;
+        virtual void update(void) = 0;
+        virtual void draw(size_t window_id) = 0;
 
         inline int32_t priority(void) const { return m_Priority; }
         inline operator int32_t(void) const { return m_Priority; }

@@ -20,6 +20,7 @@
 #include <filesystem>
 #include <format>
 #include <chrono>
+#include <thread>
 
 #include <string>
 #include <array>

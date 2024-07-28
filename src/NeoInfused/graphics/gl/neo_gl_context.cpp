@@ -4,11 +4,12 @@
 namespace neo {
     Context* Context::Create_GL(void) {
         NEO_ASSERT(!Context::m_This, "Cannot create multiple Contexts!");
-        Context::m_This = new gl_Context();
+        Context::m_This = new gl::Context();
         return Context::m_This;
     }
 
-    void gl_Context::initialize(Window* window) {
+namespace gl {
+    void Context::initialize(Window* window) {
         glfwMakeContextCurrent(window->m_Window);
         NEO_ASSERT_FUNC(gladLoadGLLoader((GLADloadproc)glfwGetProcAddress), "Failed to initialize glad!");
 
@@ -20,20 +21,21 @@ namespace neo {
         );
         Context::m_Initialized = true;
     }
-    void gl_Context::terminate(void) {
+    void Context::terminate(void) {
         Context::m_Initialized = false;
     }
 
-    void gl_Context::set_viewport(Window* window, uint32_t width, uint32_t height) {
+    void Context::set_viewport(Window* window, uint32_t width, uint32_t height) {
         glfwMakeContextCurrent(window->m_Window);
         glViewport(0, 0, width, height);
     }
-    void gl_Context::new_frame(Window* window, const glm::vec4& color) {
+    void Context::new_frame(Window* window, const glm::vec4& color) {
         glfwMakeContextCurrent(window->m_Window);
         glClearColor(color.r, color.g, color.b, color.a);
         glClear(GL_COLOR_BUFFER_BIT);
     }
-    void gl_Context::present(Window* window) {
+    void Context::present(Window* window) {
         glfwSwapBuffers(window->m_Window);
     }
+} // namespace gl
 } // namespace neo

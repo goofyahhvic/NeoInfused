@@ -2,24 +2,22 @@
 #include "NeoInfused/core/neo_input.hpp"
 
 namespace neo {
-    void Input::on_event(const Event* e) {
-        switch (e->type()) {
-        case EventType::KeyPressed:
-            m_Keys[((const KeyPressedEvent*)e)->keycode()] = true;
+    void Input::on_event(const Event& e) {
+        switch (e.type) {
+        case NEO_KEY_PRESSED_EVENT:
+            m_Keys[((const KeyPressedEvent&)e).key] = true;
             break;
-        case EventType::KeyReleased:
-            m_Keys[((const KeyReleasedEvent*)e)->keycode()] = false;
+        case NEO_KEY_RELEASED_EVENT:
+            m_Keys[((const KeyReleasedEvent&)e).key] = false;
             break;
-        case EventType::MouseButtonPressed:
-            m_MBs[((const MouseButtonPressedEvent*)e)->button()] = true;
+        case NEO_MOUSE_BUTTON_PRESSED_EVENT:
+            m_MBs[((const MouseButtonPressedEvent&)e).button] = true;
             break;
-        case EventType::MouseButtonReleased:
-            m_MBs[((const MouseButtonReleasedEvent*)e)->button()] = false;
+        case NEO_MOUSE_BUTTON_RELEASED_EVENT:
+            m_MBs[((const MouseButtonReleasedEvent&)e).button] = false;
             break;
-        case EventType::MouseMoved:
-            m_MousePos = { ((const MouseMovedEvent*)e)->x(), ((const MouseMovedEvent*)e)->y() };
-            break;
-        default:
+        case NEO_MOUSE_MOVED_EVENT:
+            m_MousePos = { ((const MouseMovedEvent&)e).x, ((const MouseMovedEvent&)e).y };
             break;
         }
     }

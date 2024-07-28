@@ -18,15 +18,6 @@
 #define NEO_FONT_BOLD "\x1B[1m"           // bold
 #define NEO_FONT_UNDL "\x1B[4m"           // underline
 
-#define NEO_COLOR_BLACK {0, 0, 0, 1}
-#define NEO_COLOR_RED   {1, 0, 0, 1}
-#define NEO_COLOR_YEL   {1, 1, 0, 1}
-#define NEO_COLOR_PURPL {1, 0, 1, 1}
-#define NEO_COLOR_GREEN {0, 1, 0, 1}
-#define NEO_COLOR_CYAN  {0, 1, 1, 1}
-#define NEO_COLOR_BLUE  {0, 0, 1, 1}
-#define NEO_COLOR_WHITE {1, 1, 1, 1}
-
 #define NEO_FORMAT(...) std::format(__VA_ARGS__)
 
 #if !defined(NEO_CONFIG_DIST)
@@ -80,10 +71,14 @@
 
 #define NEO_BIT(x) (1u << x)
 
-enum neoRendererAPI;
+enum neo_RendererAPI;
 
 namespace neo {
     using byte_t = char;
+    union color32 {
+        struct { uint8_t r, g, b, a; };
+        uint32_t rgba;
+    };
 
     std::string HoursMinutesSeconds(void);
     std::string YearMonthDay(void);
@@ -95,7 +90,7 @@ namespace neo {
     struct InitInfo {
         int argc;
         char** argv;
-        neoRendererAPI renderer_api;
+        neo_RendererAPI renderer_api;
     };
 
     class GLFWError : public std::exception {
@@ -107,22 +102,24 @@ namespace neo {
     };
 
     class Core {
-        Core(void) = default;
-        ~Core(void) = default;
     public:
-        static void Init(const InitInfo& info);
-        static void Terminate();
+        static inline Core* Get(void) { return s_This; }
+        inline const std::string& exec_path(void) const { return m_ExecPath; }
+        inline const std::string& exec_dir(void) const { return m_ExecDir; }
+        inline const std::string& exec_name(void) const { return m_ExecName; }
 
-        static inline const std::string& GetExecPath(void) { return m_ExecPath; }
-        static inline const std::string& GetExecDir(void) { return m_ExecDir; }
-        static inline const std::string& GetExecName(void) { return m_ExecName; }
-
-        static int    argc(void) { return m_Argc; }
-        static char** argv(void) { return m_Argv; }
+        int    argc(void) const { return m_Argc; }
+        char** argv(void) { return m_Argv; }
     private:
-        static int m_Argc;
-        static char** m_Argv;
-        static std::string m_ExecPath, m_ExecDir, m_ExecName;
+        friend class App;
+        Core(const InitInfo& info);
+        ~Core(void);
+    private:
+        int m_Argc;
+        char** m_Argv;
+        std::string m_ExecPath, m_ExecDir, m_ExecName;
+    
+        static inline Core* s_This = nullptr;
     };
 } // namespace neo
 

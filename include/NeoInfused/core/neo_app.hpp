@@ -2,28 +2,29 @@
 #define NEO_APP_HPP
 
 #include "NeoInfused/graphics/neo_context.hpp"
-#include "neo_layer-group.hpp"
-#include "neo_frame-buffer.hpp"
+#include "neo_layer-storage.hpp"
+#include "neo_window-storage.hpp"
+#include "neo_scoped-timer.hpp"
+#include "neo_event-handler.hpp"
 
 namespace neo {
 	class App {
 	public:
-		App(int32_t width = 1280, int32_t height = 720, const std::string& title = Core::GetExecName());
-		virtual ~App(void) noexcept(false) = default;
-	public:
-		virtual void run(size_t frame_buffer_size);
-		static inline App* Get(void) { return App::m_This; }
-	protected:
-		virtual void _on_event(const Event* e);
-		virtual void _update(void);
-		virtual void _draw();
-	public:
-		Window window;
-		LayerGroup layer_group;
-		FrameBuffer frame_buffer;
-		glm::vec4 clear_color = { 0.5f, 0.5f, 1.0f, 1.0f };
+		App(const InitInfo& info, glm::vec4 clear_color = {0.5f, 0.5f, 1.0f, 1.0f});
+		~App(void) noexcept(false) = default;
+		void run(void);
+
+		static inline App* Get(void) { return s_This; }
 	private:
-		static App* m_This;
+		Core m_Core;
+		static inline App* s_This = nullptr;
+	public:
+		WindowStorage windows;
+		LayerStorage layers;
+		EventHandler event_handler;
+		glm::vec4 clear_color;
+		const std::function<void(const Event&)> on_event;
+		std::function<bool(void)> main_loop_condition;
 	};
 }
 
