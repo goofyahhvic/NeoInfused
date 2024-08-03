@@ -20,9 +20,9 @@ namespace neo {
         static Context* Create_GL(void);
         static inline void Destroy(void) { delete Context::m_This; Context::m_This = nullptr; }
     
-        static inline Context* Get(void) { return Context::m_This; }
-        static inline uint8_t GetAPI(void) { return Context::m_API; }
-        static inline bool Initialized(void) { return Context::m_Initialized; }
+        [[nodiscard]] static inline Context& Get(void) { return *Context::m_This; }
+        [[nodiscard]] static inline RendererAPI GetAPI(void) { return (RendererAPI)Context::m_API; }
+        [[nodiscard]] static inline bool Initialized(void) { return Context::m_Initialized; }
     public:
         virtual void initialize(Window* window) = 0;
         virtual void terminate(void) = 0;

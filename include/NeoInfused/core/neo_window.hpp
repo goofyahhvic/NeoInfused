@@ -8,14 +8,14 @@ namespace neo {
 
     class Window {
     public:
-        inline uint64_t id(void) const { return m_Id; }
+        [[nodiscard]] inline uint64_t id(void) const { return m_Id; }
 
-        inline uint32_t width(void) const { return m_Width; }
-        inline uint32_t height(void) const { return m_Height; }
+        [[nodiscard]] inline uint32_t width(void) const { return m_Width; }
+        [[nodiscard]] inline uint32_t height(void) const { return m_Height; }
         void set_size(uint32_t width, uint32_t height);
 
         void set_title(const char* title);
-        const char* title(void) const;
+        [[nodiscard]] const char* title(void) const;
     public:
         bool should_close = false;
     private:

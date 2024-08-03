@@ -11,13 +11,12 @@ namespace neo {
 	WindowStorage::WindowStorage(void)
 	: main_window_id(0), m_Size(0), m_WindowsNum(0), m_Capacity(32),
 	m_Windows((Window**)malloc(m_Capacity)) {
-		NEO_ASSERT(!s_This, "Cannot create multiple instances of WindowStorage!");
-		s_This = this;
 		m_Windows[0] = (Window*)0xffffffff;
 	}
 	WindowStorage::~WindowStorage(void) {
 		for (uint32_t i = 0; i < m_Size; i++)
 			delete m_Windows[i];
+		free(m_Windows);
 	}
 	void WindowStorage::clear(void) {
 		for (uint32_t i = 0; i < m_Size; i++)

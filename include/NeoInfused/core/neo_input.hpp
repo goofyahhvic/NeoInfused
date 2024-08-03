@@ -16,23 +16,23 @@ namespace neo {
 
         void on_event(const Event& e);
 
-        inline bool key(uint16_t index) const { return m_Keys[index]; }
+        [[nodiscard]] inline bool key(uint16_t index) const { return m_Keys[index]; }
         inline void set_key(uint16_t index, bool value) { m_Keys[index] = value; }
-        inline Keys& keys(void) { return m_Keys; }
+        [[nodiscard]] inline Keys& keys(void) { return m_Keys; }
         inline const Keys& keys(void) const { return m_Keys; }
 
-        inline bool mouse_button(uint8_t index) const { return m_MBs[index]; }
+        [[nodiscard]] inline bool mouse_button(uint8_t index) const { return m_MBs[index]; }
         inline void set_mouse_button(uint8_t index, bool value) { m_MBs[index] = value; }
-        inline MouseButtons& mouse_buttons(void) { return m_MBs; }
-        inline const MouseButtons& mouse_buttons(void) const { return m_MBs; }
+        [[nodiscard]] inline MouseButtons& mouse_buttons(void) { return m_MBs; }
+        [[nodiscard]] inline const MouseButtons& mouse_buttons(void) const { return m_MBs; }
 
-        inline double mouse_x(void) const { return m_MousePos.x; }
-        inline double mouse_y(void) const { return m_MousePos.y; }
+        [[nodiscard]] inline double mouse_x(void) const { return m_MousePos.x; }
+        [[nodiscard]] inline double mouse_y(void) const { return m_MousePos.y; }
         inline void set_mouse_x(double _x) { m_MousePos.x = _x; }
         inline void set_mouse_y(double _y) { m_MousePos.y = _y; }
 
-        inline MousePos& mouse_pos(void) { return m_MousePos; }
-        inline const MousePos& mouse_pos(void) const { return m_MousePos; }
+        [[nodiscard]] inline MousePos& mouse_pos(void) { return m_MousePos; }
+        [[nodiscard]] inline const MousePos& mouse_pos(void) const { return m_MousePos; }
         inline void set_mouse_pos(const MousePos& _pos) { m_MousePos = _pos; }
 
         inline void reset(void) { m_Keys.fill(false); m_MBs.fill(false); m_MousePos = {0.0f, 0.0f}; }

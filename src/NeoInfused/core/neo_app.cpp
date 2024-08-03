@@ -7,7 +7,7 @@ namespace neo {
 	: clear_color(clear_color),
 	on_event([this](const Event& e) {
 		if (e.type == NEO_WINDOW_RESIZE_EVENT) {
-			Context::Get()->set_viewport(
+			Context::Get().set_viewport(
 				windows.at(e.window_id),
 				((const neo::WindowResizeEvent&)e).width,
 				((const neo::WindowResizeEvent&)e).height
@@ -28,6 +28,7 @@ namespace neo {
 		NEO_ASSERT(!s_This, "Cannot create multiple instances of App!");
 		s_This = this;
 	}
+
 	void App::run(void) {
         while (main_loop_condition()) {
 			for (auto layer : layers)
@@ -35,11 +36,11 @@ namespace neo {
 					layer->update();
 
 			for (Window* window : windows) {
-				Context::Get()->new_frame(window, clear_color);
+				Context::Get().new_frame(window, clear_color);
 				for (auto it = layers.rbegin(); it != layers.rend(); it++)
 					if (((*it)->state & NEO_LAYERSTATE_VISIBLE) == NEO_LAYERSTATE_VISIBLE)
 						(*it)->draw(window->id());
-				Context::Get()->present(window);
+				Context::Get().present(window);
 			}
 
 			for (Event& e : event_handler.poll_events()) {

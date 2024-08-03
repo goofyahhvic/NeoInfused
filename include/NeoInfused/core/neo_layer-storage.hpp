@@ -20,31 +20,31 @@ namespace neo {
 
         void set_priority(int32_t new_priority, size_t index);
 
-        inline size_t size(void) const { return m_Layers.size(); }
+        [[nodiscard]] inline size_t size(void) const { return m_Layers.size(); }
 
-        inline Layer* operator[](size_t index) const { return m_Layers[index]; }
-        inline Layer* at(size_t index) { return m_Layers.at(index); }
+        [[nodiscard]] inline Layer* operator[](size_t index) const { return m_Layers[index]; }
+        [[nodiscard]] inline Layer* at(size_t index) { return m_Layers.at(index); }
         
-        inline bool empty(void) const { return m_Layers.empty(); }
+        [[nodiscard]] inline bool empty(void) const { return m_Layers.empty(); }
 
-        size_t find_first_of(const Layer* layer) const;
-        size_t find_last_of(const Layer* layer) const;
+        [[nodiscard]] size_t find_first_of(const Layer* layer) const;
+        [[nodiscard]] size_t find_last_of(const Layer* layer) const;
 
-        inline iterator begin(void) { return m_Layers.begin(); }
-        inline const_iterator begin(void) const { return m_Layers.begin(); }
-        inline const_iterator cbegin(void) const { return m_Layers.cbegin(); }
+        [[nodiscard]] inline iterator begin(void) { return m_Layers.begin(); }
+        [[nodiscard]] inline const_iterator begin(void) const { return m_Layers.begin(); }
+        [[nodiscard]] inline const_iterator cbegin(void) const { return m_Layers.cbegin(); }
 
-        inline iterator end(void) { return m_Layers.end(); }
-        inline const_iterator end(void) const { return m_Layers.end(); }
-        inline const_iterator cend(void) const { return m_Layers.cend(); }
+        [[nodiscard]] inline iterator end(void) { return m_Layers.end(); }
+        [[nodiscard]] inline const_iterator end(void) const { return m_Layers.end(); }
+        [[nodiscard]] inline const_iterator cend(void) const { return m_Layers.cend(); }
 
-        inline reverse_iterator rbegin(void) { return m_Layers.rbegin(); }
-        inline const_reverse_iterator rbegin(void) const { return m_Layers.rbegin(); }
-        inline const_reverse_iterator crbegin(void) const { return m_Layers.crbegin(); }
+        [[nodiscard]] inline reverse_iterator rbegin(void) { return m_Layers.rbegin(); }
+        [[nodiscard]] inline const_reverse_iterator rbegin(void) const { return m_Layers.rbegin(); }
+        [[nodiscard]] inline const_reverse_iterator crbegin(void) const { return m_Layers.crbegin(); }
 
-        inline reverse_iterator rend(void) { return m_Layers.rend(); }
-        inline const_reverse_iterator rend(void) const { return m_Layers.rend(); }
-        inline const_reverse_iterator crend(void) const { return m_Layers.crend(); }
+        [[nodiscard]] inline reverse_iterator rend(void) { return m_Layers.rend(); }
+        [[nodiscard]] inline const_reverse_iterator rend(void) const { return m_Layers.rend(); }
+        [[nodiscard]] const_reverse_iterator crend(void) const { return m_Layers.crend(); }
     private:
         Layer* _push(Layer* layer);
     private:

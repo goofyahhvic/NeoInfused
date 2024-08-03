@@ -21,8 +21,8 @@ namespace neo { namespace gl {
     
     ShaderProgram::ShaderProgram(const std::vector<uint32_t>& shaders) {
         m_Program = glCreateProgram();
-        for (auto it = shaders.begin(); it != shaders.end(); it++)
-            glAttachShader(m_Program, *it);
+        for (uint32_t shader : shaders)
+            glAttachShader(m_Program, shader);
     
         glLinkProgram(m_Program);
     
@@ -36,8 +36,8 @@ namespace neo { namespace gl {
         }
     #endif
     
-        for (auto it = shaders.begin(); it != shaders.end(); it++)
-            glDeleteShader(*it);
+        for (uint32_t shader : shaders)
+            glDeleteShader(shader);
     }
     ShaderProgram::~ShaderProgram(void) {
         glDeleteProgram(m_Program);

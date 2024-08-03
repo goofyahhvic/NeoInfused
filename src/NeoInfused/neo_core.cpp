@@ -69,10 +69,11 @@ namespace neo {
     Core::~Core(void) {
         NEO_INFO_LOG("Terminating NeoInfused, Goodbye!");
 
-        Context::Get()->terminate();
+        Context::Get().terminate();
         Context::Destroy();
         glfwTerminate();
 
+        s_This = nullptr;
         NEO_LOG_NEWLINE;
     }
 } // namespace neo

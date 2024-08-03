@@ -80,16 +80,16 @@ namespace neo {
 		inline void push_event(MouseButtonPressedEvent&& e)  { ((MouseButtonPressedEvent*)m_Events)[m_Size++] = e; }
 		inline void push_event(MouseButtonReleasedEvent&& e) { ((MouseButtonReleasedEvent*)m_Events)[m_Size++] = e; }
 
-		inline size_t size(void) const { return m_Size; }
-		inline constexpr size_t capacity(void) const { return _CAPACITY; }
+		[[nodiscard]] inline size_t size(void) const { return m_Size; }
+		[[nodiscard]] inline constexpr size_t capacity(void) const { return _CAPACITY; }
 
-		inline iterator begin(void) { return iterator(m_Events); }
-		inline const_iterator begin(void) const { return const_iterator(m_Events); }
-		inline const_iterator cbegin(void) const { return begin(); }
+		[[nodiscard]] inline iterator begin(void) { return m_Events; }
+		[[nodiscard]] inline const_iterator begin(void) const { return m_Events; }
+		[[nodiscard]] inline const_iterator cbegin(void) const { return this->begin(); }
 
-		iterator end(void) { return iterator(m_Events + m_Size); }
-		const_iterator end(void) const { return const_iterator(m_Events + m_Size); }
-		const_iterator cend(void) const { return this->end(); }
+		[[nodiscard]] iterator end(void) { return m_Events + m_Size; }
+		[[nodiscard]] const_iterator end(void) const { return m_Events + m_Size; }
+		[[nodiscard]] const_iterator cend(void) const { return this->end(); }
 	private:
 		static inline constexpr size_t _CAPACITY = 512;
 		Event m_Events[_CAPACITY];

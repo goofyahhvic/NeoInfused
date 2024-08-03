@@ -103,7 +103,7 @@ namespace neo {
 
     class Core {
     public:
-        static inline Core* Get(void) { return s_This; }
+        static inline Core& Get(void) { return *s_This; }
         inline const std::string& exec_path(void) const { return m_ExecPath; }
         inline const std::string& exec_dir(void) const { return m_ExecDir; }
         inline const std::string& exec_name(void) const { return m_ExecName; }

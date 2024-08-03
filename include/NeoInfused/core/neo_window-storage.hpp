@@ -11,10 +11,10 @@ namespace neo {
 		WindowStorage_iterator(_ThisT&& other) = default;
 
 		inline _ThisT& operator++(void) { do m_Ptr++; while (!*m_Ptr); return *this; }
-		inline _ThisT  operator++(int) { _ThisT temp(m_Ptr); do { m_Ptr++; } while (!*m_Ptr); return temp; }
+		inline _ThisT  operator++(int) { _ThisT temp(m_Ptr); do m_Ptr++; while (!*m_Ptr); return temp; }
 
-		inline _ThisT& operator--(void) { do { m_Ptr--; } while (!*m_Ptr); return *this; }
-		inline _ThisT  operator--(int) { _ThisT temp(m_Ptr); do { m_Ptr--; } while (!*m_Ptr); return temp; }
+		inline _ThisT& operator--(void) { do m_Ptr--; while (!*m_Ptr); return *this; }
+		inline _ThisT  operator--(int) { _ThisT temp(m_Ptr); do m_Ptr--; while (!*m_Ptr); return temp; }
 
 		inline Window** operator->() const { return m_Ptr; }
 		inline Window* operator*() const { return *m_Ptr; }
@@ -33,9 +33,8 @@ namespace neo {
 	public:
 		WindowStorage(void);
 		~WindowStorage(void);
-		static inline WindowStorage* Get(void) { return s_This; }
 
-		uint32_t create_window(uint32_t width, uint32_t height, const std::string& title = Core::Get()->exec_name());
+		uint32_t create_window(uint32_t width, uint32_t height, const std::string& title = Core::Get().exec_name());
 		void destroy_window(uint32_t id);
 
 		// destroys all windows and remove clear the container
@@ -56,7 +55,6 @@ namespace neo {
 	private:
 		uint32_t m_WindowsNum, m_Size, m_Capacity;
 		Window** m_Windows;
-		static inline WindowStorage* s_This = nullptr;
 	};
 }
 

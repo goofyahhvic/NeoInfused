@@ -7,7 +7,7 @@
 #define E(x) x,\
 							__window->m_Id,\
 							false
-#define PUSH_EVENT App::Get()->event_handler.push_event
+#define PUSH_EVENT App::Get().event_handler.push_event
 
 namespace neo {
     Window::Window(uint32_t id, uint32_t width, uint32_t height, const std::string& title)
@@ -17,8 +17,8 @@ namespace neo {
 		glfwSetWindowUserPointer(m_Window, (void*)this);
 
         if (!Context::Initialized())
-			Context::Get()->initialize(this);
-		Context::Get()->set_viewport(this, width, height);
+			Context::Get().initialize(this);
+		Context::Get().set_viewport(this, width, height);
 
 		Window::_SetGLFWCallbacks(m_Window);
     }
