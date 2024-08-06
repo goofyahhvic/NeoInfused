@@ -1,25 +1,19 @@
 #if !defined(NEO_GL_SHADER_HPP)
 #define NEO_GL_SHADER_HPP
 
-#include "NeoInfused/neo_core.hpp"
+#include "../neo_shader.hpp"
 
-namespace neo { namespace gl {
-    struct ShaderCreateInfo {
-        const char* src;
-        int32_t type;
-    };
-    uint32_t CreateShader(ShaderCreateInfo info);
-    class ShaderProgram {
+namespace neo::gl {
+    class ShaderProgram : public neo::ShaderProgram {
     public:
-        ShaderProgram(const std::vector<uint32_t>& shaders);
+        ShaderProgram(const char* vertex_shader_src, const char* fragment_shader_src);
         ~ShaderProgram(void);
 
         void bind(void) const;
-        inline uint32_t get(void) const { return m_Program; }
-    private:
-        uint32_t m_Program;
+        inline operator uint32_t (void) const { return program; }
+    public:
+        const uint32_t program;
     };
-} // namespace gl
-} // namespace neo
+} // namespace neo::gl
 
 #endif // NEO_GL_SHADER_HPP

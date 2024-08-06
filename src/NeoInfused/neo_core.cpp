@@ -5,6 +5,21 @@
 #include "NeoInfused/graphics/neo_context.hpp"
 
 namespace neo {
+    uint32_t SizeOf(Type type) {
+        switch (type) {
+        case Type::None:          return 0;
+        case Type::Byte:          return 1;
+        case Type::UByte:         return 1;
+        case Type::Short:         return sizeof(short);
+        case Type::UShort:        return sizeof(unsigned short);
+        case Type::Int:           return sizeof(int);
+        case Type::UInt:          return sizeof(unsigned int);
+        case Type::Float:         return sizeof(float);
+        case Type::Double:        return sizeof(double);
+        }
+        return UINT32_MAX;
+    }
+
     std::string HoursMinutesSeconds(void) {
         std::time_t seconds = std::time(nullptr);
         std::string str(std::asctime(std::localtime(&seconds)));
@@ -26,13 +41,13 @@ namespace neo {
     }
 
     Core::Core(const InitInfo& info)
-    : m_Argc(info.argc), m_Argv(info.argv) {
+    : m_Argc(info.argc), m_Argv(info.argv), m_Version("Indev1") {
         NEO_ASSERT(!s_This, "Already has initialized NeoInfused!");
     #if !defined (NEO_CONFIG_DIST)
         NEO_DATE_TIME_LOG << '\n';
     #endif // NEO_CONFIG_DIST   
-        NEO_INFO_LOG("Initializing NeoInfused!");
-        Context::m_API = info.renderer_api;
+        NEO_INFO_LOG("Initializing NeoInfused version {}", m_Version);
+        Context::s_API = info.renderer_api;
 
     #if defined(NEO_PLATFORM_LINUX)
         m_ExecPath = std::filesystem::canonical("/proc/self/exe").string();
@@ -60,7 +75,7 @@ namespace neo {
 
         if (info.renderer_api == NEO_RENDERERAPI_OPENGL) {
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 			Context::Create_GL();
         }
@@ -69,7 +84,6 @@ namespace neo {
     Core::~Core(void) {
         NEO_INFO_LOG("Terminating NeoInfused, Goodbye!");
 
-        Context::Get().terminate();
         Context::Destroy();
         glfwTerminate();
 

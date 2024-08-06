@@ -42,17 +42,17 @@
 
 #if !defined(NEO_CONFIG_DIST)
 
-    #define NEO_TRACE_LOG(...) std::cout << NEO_FORMAT(NEO_FONT_BOLD                "{0}[Neo]" NEO_COLOR_RSET " {1}\n", neo::HoursMinutesSeconds(), NEO_FORMAT(__VA_ARGS__)) 
-    #define NEO_INFO_LOG(...)  std::cout << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FGRN "{0}[Neo]" NEO_COLOR_RSET " {1}\n", neo::HoursMinutesSeconds(), NEO_FORMAT(__VA_ARGS__)) 
-    #define NEO_WARN_LOG(...)  std::cout << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FYEL "{0}[Neo]" NEO_COLOR_RSET " {1}\n", neo::HoursMinutesSeconds(), NEO_FORMAT(__VA_ARGS__)) 
-    #define NEO_ERROR_LOG(...) std::cout << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FRED "{0}[Neo]" NEO_COLOR_RSET " {1}\n", neo::HoursMinutesSeconds(), NEO_FORMAT(__VA_ARGS__))
-    #define NEO_FATAL_LOG(...) std::cout << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_BRED "{0}[Neo]" NEO_COLOR_RSET " {1}\n", neo::HoursMinutesSeconds(), NEO_FORMAT(__VA_ARGS__))
+    #define NEO_TRACE_LOG(...) std::clog << NEO_FORMAT(NEO_FONT_BOLD                "{0}[Neo]" NEO_COLOR_RSET " {1}\n", neo::HoursMinutesSeconds(), NEO_FORMAT(__VA_ARGS__)) 
+    #define NEO_INFO_LOG(...)  std::clog << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FGRN "{0}[Neo]" NEO_COLOR_RSET " {1}\n", neo::HoursMinutesSeconds(), NEO_FORMAT(__VA_ARGS__)) 
+    #define NEO_WARN_LOG(...)  std::clog << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FYEL "{0}[Neo]" NEO_COLOR_RSET " {1}\n", neo::HoursMinutesSeconds(), NEO_FORMAT(__VA_ARGS__)) 
+    #define NEO_ERROR_LOG(...) std::clog << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FRED "{0}[Neo]" NEO_COLOR_RSET " {1}\n", neo::HoursMinutesSeconds(), NEO_FORMAT(__VA_ARGS__))
+    #define NEO_FATAL_LOG(...) std::clog << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_BRED "{0}[Neo]" NEO_COLOR_RSET " {1}\n", neo::HoursMinutesSeconds(), NEO_FORMAT(__VA_ARGS__))
 
-    #define NEO_FULL_LOG(...)  std::cout << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FGRN "{0}"      NEO_COLOR_RSET "\n",     neo::DateAndTime(), NEO_FORMAT(__VA_ARGS__)) 
-    #define NEO_DATE_LOG       std::cout << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FGRN "{0}"      NEO_COLOR_RSET "\n",     neo::YearMonthDay()) 
-    #define NEO_TIME_LOG       std::cout << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FGRN "{0}"      NEO_COLOR_RSET "\n",     neo::HoursMinutesSeconds()) 
-    #define NEO_DATE_TIME_LOG  std::cout << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FGRN "{0}[{1}]" NEO_COLOR_RSET "\n",     neo::DateAndTime(), std::chrono::current_zone()->name()) 
-    #define NEO_LOG_NEWLINE    std::cout << '\n';
+    #define NEO_FULL_LOG(...)  std::clog << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FGRN "{0}"      NEO_COLOR_RSET "\n",     neo::DateAndTime(), NEO_FORMAT(__VA_ARGS__)) 
+    #define NEO_DATE_LOG       std::clog << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FGRN "{0}"      NEO_COLOR_RSET "\n",     neo::YearMonthDay()) 
+    #define NEO_TIME_LOG       std::clog << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FGRN "{0}"      NEO_COLOR_RSET "\n",     neo::HoursMinutesSeconds()) 
+    #define NEO_DATE_TIME_LOG  std::clog << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FGRN "{0}[{1}]" NEO_COLOR_RSET "\n",     neo::DateAndTime(), std::chrono::current_zone()->name()) 
+    #define NEO_LOG_NEWLINE    std::clog << '\n';
 #else
     #define NEO_TRACE_LOG(...)
     #define NEO_INFO_LOG(...)
@@ -79,6 +79,15 @@ namespace neo {
         struct { uint8_t r, g, b, a; };
         uint32_t rgba;
     };
+
+    enum class Type {
+        None = 0,
+        Byte = 0x1400, UByte = 0x1401,
+        Short = 0x1402, UShort = 0x1403,
+        Int = 0x1404, UInt = 0x1405,
+        Float = 0x1406, Double = 0x140A
+    };
+    uint32_t SizeOf(Type type);
 
     std::string HoursMinutesSeconds(void);
     std::string YearMonthDay(void);
@@ -107,6 +116,7 @@ namespace neo {
         inline const std::string& exec_path(void) const { return m_ExecPath; }
         inline const std::string& exec_dir(void) const { return m_ExecDir; }
         inline const std::string& exec_name(void) const { return m_ExecName; }
+        inline const std::string& version(void) const { return m_Version; }
 
         int    argc(void) const { return m_Argc; }
         char** argv(void) { return m_Argv; }
@@ -117,7 +127,7 @@ namespace neo {
     private:
         int m_Argc;
         char** m_Argv;
-        std::string m_ExecPath, m_ExecDir, m_ExecName;
+        std::string m_ExecPath, m_ExecDir, m_ExecName, m_Version;
     
         static inline Core* s_This = nullptr;
     };

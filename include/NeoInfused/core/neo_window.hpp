@@ -1,14 +1,18 @@
 #if !defined(NEO_WINDOW_HPP)
 #define NEO_WINDOW_HPP
 
-#include "NeoInfused/core/neo_event.hpp"
+#include "neo_event.hpp"
 
+struct GLFWwindow;
 namespace neo {
     namespace gl { class Context; }
 
     class Window {
     public:
         [[nodiscard]] inline uint64_t id(void) const { return m_Id; }
+
+        void focus(void);
+        [[nodiscard]] inline bool focused(void) const { return m_Focus; }
 
         [[nodiscard]] inline uint32_t width(void) const { return m_Width; }
         [[nodiscard]] inline uint32_t height(void) const { return m_Height; }
@@ -24,8 +28,7 @@ namespace neo {
         friend class WindowStorage;
 
         Window(void) = default;
-        Window(uint32_t id, uint32_t width, uint32_t height, const std::string& title);
-        Window(Window&& other) noexcept;
+        Window(uint32_t id, uint32_t width, uint32_t height, const char* title);
         Window(const Window& other) = delete;
         ~Window(void);
 

@@ -1,5 +1,5 @@
 #include "neo_pch.hpp"
-#include "NeoInfused/game/neo_scene-storage.hpp"
+#include "NeoInfused/data_structures/neo_scene-storage.hpp"
 
 namespace neo {
 	Scene& SceneStorage::_add_scene(std::unique_ptr<Scene>&& scene) {

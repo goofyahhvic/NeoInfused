@@ -18,22 +18,24 @@ namespace neo {
         friend class Core;
     public:
         static Context* Create_GL(void);
-        static inline void Destroy(void) { delete Context::m_This; Context::m_This = nullptr; }
+        static inline void Destroy(void) { if (s_Initialized) s_This->terminate(); delete s_This; s_This = nullptr; }
     
-        [[nodiscard]] static inline Context& Get(void) { return *Context::m_This; }
-        [[nodiscard]] static inline RendererAPI GetAPI(void) { return (RendererAPI)Context::m_API; }
-        [[nodiscard]] static inline bool Initialized(void) { return Context::m_Initialized; }
+        [[nodiscard]] static inline Context& Get(void) { return *s_This; }
+        [[nodiscard]] static inline RendererAPI API(void) { return (RendererAPI)s_API; }
+        [[nodiscard]] static inline bool Initialized(void) { return s_Initialized; }
     public:
         virtual void initialize(Window* window) = 0;
-        virtual void terminate(void) = 0;
+        virtual void terminate(void) { s_Initialized = false; s_API = NEO_RENDERERAPI_NONE; }
 
         virtual void set_viewport(Window* window, uint32_t width, uint32_t height) = 0;
         virtual void new_frame(Window* window, const glm::vec4& color = {0, 0, 0, 255}) = 0;
         virtual void present(Window* window) = 0;
     protected:
-        static Context* m_This;
-        static RendererAPI m_API;
-        static bool m_Initialized;
+        virtual inline ~Context(void) = default;
+    protected:
+        static inline Context* s_This = nullptr;
+        static inline RendererAPI s_API = NEO_RENDERERAPI_NONE;
+        static inline bool s_Initialized = false;
     };
 }
 

@@ -2,8 +2,7 @@
 #include "NeoInfused/core/neo_app.hpp"
 
 namespace neo {
-	using namespace std::chrono_literals;
-	App::App(const InitInfo& info, glm::vec4 clear_color)
+	App::App(const InitInfo& info, const glm::vec4& clear_color)
 	: clear_color(clear_color),
 	on_event([this](const Event& e) {
 		if (e.type == NEO_WINDOW_RESIZE_EVENT) {
@@ -14,7 +13,6 @@ namespace neo {
 			);
 		} else if (e.type == NEO_WINDOW_CLOSE_EVENT) {
 			windows.destroy_window(e.window_id);
-			windows.empty();
 		}
 		for (auto layer : layers) {
 			if (e.handled) break;

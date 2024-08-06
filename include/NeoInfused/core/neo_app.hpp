@@ -2,16 +2,17 @@
 #define NEO_APP_HPP
 
 #include "NeoInfused/graphics/neo_context.hpp"
-#include "neo_layer-storage.hpp"
-#include "neo_window-storage.hpp"
+#include "../data_structures/neo_layer-storage.hpp"
+#include "../data_structures/neo_window-storage.hpp"
+#include "../data_structures/neo_typed-arena.hpp"
+#include "../data_structures/neo_event-handler.hpp"
+#include "../data_structures/neo_scene-storage.hpp"
 #include "neo_scoped-timer.hpp"
-#include "neo_event-handler.hpp"
-#include "../game/neo_scene-storage.hpp"
 
 namespace neo {
 	class App {
 	public:
-		App(const InitInfo& info, glm::vec4 clear_color = {0.5f, 0.5f, 1.0f, 1.0f});
+		App(const InitInfo& info, const glm::vec4& clear_color = {0.5f, 0.5f, 1.0f, 1.0f});
 		~App(void) noexcept(false) = default;
 		void run(void);
 
@@ -29,10 +30,10 @@ namespace neo {
 		std::function<bool(void)> main_loop_condition;
 	};
 	
-	inline WindowStorage& GetWindows(void) { return App::Get().windows; }
-	inline LayerStorage&  GetLayers(void) { return App::Get().layers; }
-	inline SceneStorage&  GetScenes(void) { return App::Get().scenes; }
-	inline EventHandler&  GetEventHandler(void) { return App::Get().event_handler; }
+	[[nodiscard]] inline WindowStorage& GetWindows(void) { return App::Get().windows; }
+	[[nodiscard]] inline LayerStorage&  GetLayers(void) { return App::Get().layers; }
+	[[nodiscard]] inline SceneStorage&  GetScenes(void) { return App::Get().scenes; }
+	[[nodiscard]] inline EventHandler&  GetEventHandler(void) { return App::Get().event_handler; }
 }
 
 #endif // NEO_APP_HPP

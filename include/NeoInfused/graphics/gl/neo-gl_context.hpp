@@ -3,11 +3,10 @@
 
 #include "../neo_context.hpp"
 
-namespace neo { namespace gl {
+namespace neo::gl {
     class Context : public neo::Context {
     public:
         void initialize(Window* window) override;
-        void terminate(void) override;
 
         void set_viewport(Window* window, uint32_t width, uint32_t height);
         void new_frame(Window* window, const glm::vec4& color = { 0, 0, 0, 255 });
@@ -17,7 +16,6 @@ namespace neo { namespace gl {
         Context(void) = default;
         ~Context(void) = default;
     };
-} // namespace gl
-} // namespace neo
+} // namespace neo::gl
 
 #endif // NEO_GL_CONTEXT_HPP

@@ -1,7 +1,7 @@
 #if !defined(NEO_LAYER_STORAGE_HPP)
 #define NEO_LAYER_STORAGE_HPP
 
-#include "NeoInfused/core/neo_layer.hpp"
+#include "../core/neo_layer.hpp"
 
 namespace neo {
     class LayerStorage {
@@ -13,12 +13,13 @@ namespace neo {
     public:
         LayerStorage(void) = default;
         ~LayerStorage(void);
+        void clear(void);
 
         template<typename T, typename... _Args>
         inline T* create_layer(_Args&&... __args) { return (T*)this->_push(new T(std::forward<_Args>(__args)...)); }
-        void destroy_layer(size_t index);
+        void destroy_layer(Layer* layer);
 
-        void set_priority(int32_t new_priority, size_t index);
+        void set_priority(Layer* layer, int32_t new_priority);
 
         [[nodiscard]] inline size_t size(void) const { return m_Layers.size(); }
 
@@ -26,9 +27,6 @@ namespace neo {
         [[nodiscard]] inline Layer* at(size_t index) { return m_Layers.at(index); }
         
         [[nodiscard]] inline bool empty(void) const { return m_Layers.empty(); }
-
-        [[nodiscard]] size_t find_first_of(const Layer* layer) const;
-        [[nodiscard]] size_t find_last_of(const Layer* layer) const;
 
         [[nodiscard]] inline iterator begin(void) { return m_Layers.begin(); }
         [[nodiscard]] inline const_iterator begin(void) const { return m_Layers.begin(); }
@@ -47,6 +45,8 @@ namespace neo {
         [[nodiscard]] const_reverse_iterator crend(void) const { return m_Layers.crend(); }
     private:
         Layer* _push(Layer* layer);
+        inline void _resort(void) { std::sort(m_Layers.begin(), m_Layers.end(), _Greater); }
+        [[nodiscard]] static bool _Greater(Layer* left, Layer* right);
     private:
         std::vector<Layer*> m_Layers;
     };

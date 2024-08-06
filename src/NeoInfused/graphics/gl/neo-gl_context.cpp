@@ -3,26 +3,27 @@
 
 namespace neo {
     Context* Context::Create_GL(void) {
-        NEO_ASSERT(!Context::m_This, "Cannot create multiple Contexts!");
-        Context::m_This = new gl::Context();
-        return Context::m_This;
+        NEO_ASSERT(!s_This, "Cannot create multiple Contexts!");
+        s_This = new gl::Context();
+        return s_This;
     }
+} // namespace neo
 
-namespace gl {
+namespace neo::gl {
     void Context::initialize(Window* window) {
         glfwMakeContextCurrent(window->m_Window);
         NEO_ASSERT_FUNC(gladLoadGLLoader((GLADloadproc)glfwGetProcAddress), "Failed to initialize glad!");
 
-        NEO_TRACE_LOG(
-            "Loaded OpenGL version {0}" NEO_LOG_CONTINUE "with device {1}" NEO_LOG_CONTINUE "in GLSL version {2}",
+        NEO_INFO_LOG(
+            "Loaded OpenGL version {0}" NEO_LOG_CONTINUE
+            "with device {1}" NEO_LOG_CONTINUE
+            "in GLSL version {2}",
+
             (const char*)glGetString(GL_VERSION),
             (const char*)glGetString(GL_RENDERER),
             (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION)
         );
-        Context::m_Initialized = true;
-    }
-    void Context::terminate(void) {
-        Context::m_Initialized = false;
+        s_Initialized = true;
     }
 
     void Context::set_viewport(Window* window, uint32_t width, uint32_t height) {
@@ -37,5 +38,4 @@ namespace gl {
     void Context::present(Window* window) {
         glfwSwapBuffers(window->m_Window);
     }
-} // namespace gl
-} // namespace neo
+} // namespace neo::gl

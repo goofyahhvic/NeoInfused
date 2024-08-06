@@ -3,7 +3,7 @@
 
 #include "NeoInfused/core/neo_event.hpp"
 
-enum LayerState {
+enum neo_LayerState {
     NEO_LAYERSTATE_NONE      = 0,
     NEO_LAYERSTATE_ENABLED   = NEO_BIT(0),  // receives input
     NEO_LAYERSTATE_UPDATABLE = NEO_BIT(1),
@@ -12,6 +12,7 @@ enum LayerState {
 };
 
 namespace neo {
+    using LayerState = neo_LayerState;
     class Layer {
         friend class LayerStorage;
     public:
@@ -24,7 +25,6 @@ namespace neo {
         virtual void draw(size_t window_id) = 0;
 
         inline int32_t priority(void) const { return m_Priority; }
-        inline operator int32_t(void) const { return m_Priority; }
     public:
         uint8_t state;
     private:

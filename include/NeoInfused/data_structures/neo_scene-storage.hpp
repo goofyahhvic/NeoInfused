@@ -1,7 +1,7 @@
 #if !defined(NEO_SCENE_STORAGE_HPP)
 #define NEO_SCENE_STORAGE_HPP
 
-#include "neo_scene.hpp"
+#include "../core/neo_scene.hpp"
 
 namespace neo {
 	class SceneStorage {
