@@ -22,7 +22,7 @@ namespace neo {
 
         virtual void on_event(const Event& e) = 0;
         virtual void update(void) = 0;
-        virtual void draw(size_t window_id) = 0;
+        virtual void draw(void) = 0;
 
         inline int32_t priority(void) const { return m_Priority; }
     public:

@@ -22,16 +22,18 @@ namespace neo {
 		[[nodiscard]] inline _ThisT operator+(size_t amount) const { return _ThisT(m_Ptr + amount); }
 		[[nodiscard]] inline _ThisT operator-(size_t amount) const { return _ThisT(m_Ptr - amount); }
 
-		[[nodiscard]] inline Window** operator->() const { return m_Ptr; }
-		[[nodiscard]] inline Window* operator*() const { return *m_Ptr; }
+		[[nodiscard]] inline Window* operator->(void) const { return m_Ptr; }
+		[[nodiscard]] inline Window& operator*(void) const { return *m_Ptr; }
 
 		[[nodiscard]] inline bool operator==(const _ThisT& other) const { return (m_Ptr == other.m_Ptr); }
 		[[nodiscard]] inline auto operator<=>(const _ThisT& other) const = default;
 
-		WindowStorage_iterator(Window** const ptr)
+		inline operator Window*(void) const { return m_Ptr; }
+
+		WindowStorage_iterator(Window* const ptr)
 		: m_Ptr(ptr) { while (!*m_Ptr) m_Ptr++; }
 	private:
-		Window** m_Ptr;
+		Window* m_Ptr;
 	};
 
 	class WindowStorage_const_iterator {
@@ -52,16 +54,18 @@ namespace neo {
 		[[nodiscard]] inline _ThisT operator+(size_t amount) const { return _ThisT(m_Ptr + amount); }
 		[[nodiscard]] inline _ThisT operator-(size_t amount) const { return _ThisT(m_Ptr - amount); }
 
-		[[nodiscard]] inline const Window** operator->() const { return m_Ptr; }
-		[[nodiscard]] inline const Window* operator*() const { return *m_Ptr; }
+		[[nodiscard]] inline const Window* operator->(void) const { return m_Ptr; }
+		[[nodiscard]] inline const Window& operator*(void) const { return *m_Ptr; }
 
 		[[nodiscard]] inline bool operator==(const _ThisT& other) const { return (m_Ptr == other.m_Ptr); }
 		[[nodiscard]] inline auto operator<=>(const _ThisT& other) const = default;
 
-		inline WindowStorage_const_iterator(const Window** const ptr)
+		inline operator const Window* (void) const { return m_Ptr; }
+
+		inline WindowStorage_const_iterator(const Window* const ptr)
 		: m_Ptr(ptr) { while (!*m_Ptr) m_Ptr++; }
 	private:
-		const Window** m_Ptr;
+		const Window* m_Ptr;
 	};
 
 	class WindowStorage {
@@ -84,13 +88,18 @@ namespace neo {
 		// returns false if theres more than one living window in the container
 		[[nodiscard]] inline bool empty(void) const { return !m_WindowsNum; }
 
-		[[nodiscard]] Window* at(uint32_t id);
-		[[nodiscard]] inline Window* operator[](uint32_t id) { return this->at(id); }
-		[[nodiscard]] Window* main_window(void) { return this->at(main_window_id); }
+		[[nodiscard]] inline Window* at(uint32_t id) { return m_Windows + id; }
+		[[nodiscard]] inline const Window* at(uint32_t id) const { return m_Windows + id; }
+
+		[[nodiscard]] inline Window& operator[](uint32_t id) { return m_Windows[id]; }
+		[[nodiscard]] inline const Window& operator[](uint32_t id) const { return m_Windows[id]; }
+
+		[[nodiscard]] inline Window* main_window(void) { return m_Windows + main_window_id; }
+		[[nodiscard]] inline const Window* main_window(void) const { return m_Windows + main_window_id; }
 
 		[[nodiscard]] inline iterator begin(void) { return m_Windows; }
-		[[nodiscard]] inline const_iterator begin(void) const { return (const Window** const)m_Windows; }
-		[[nodiscard]] inline const_iterator cbegin(void) const { return (const Window** const)m_Windows; }
+		[[nodiscard]] inline const_iterator begin(void) const { return m_Windows; }
+		[[nodiscard]] inline const_iterator cbegin(void) const { return m_Windows; }
 
 		[[nodiscard]] inline iterator end(void) { return m_Windows + m_Size; }
 		[[nodiscard]] inline iterator end(void) const { return m_Windows + m_Size; }
@@ -99,7 +108,7 @@ namespace neo {
 		uint32_t main_window_id;
 	private:
 		uint32_t m_WindowsNum, m_Size, m_Capacity;
-		Window** m_Windows;
+		Window* m_Windows;
 	};
 }
 

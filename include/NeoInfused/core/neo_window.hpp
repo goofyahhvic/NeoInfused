@@ -20,6 +20,9 @@ namespace neo {
 
         void set_title(const char* title);
         [[nodiscard]] const char* title(void) const;
+
+        inline bool exists(void) const { return m_Window; }
+        inline operator bool(void) const { return m_Window; }
     public:
         bool should_close = false;
     private:
@@ -30,7 +33,8 @@ namespace neo {
         Window(void) = default;
         Window(uint32_t id, uint32_t width, uint32_t height, const char* title);
         Window(const Window& other) = delete;
-        ~Window(void);
+        void destroy(void);
+        inline ~Window(void) { if (m_Window) this->destroy(); }
 
         static void _SetGLFWCallbacks(GLFWwindow* _window);
     public:

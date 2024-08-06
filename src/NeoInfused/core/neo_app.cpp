@@ -33,11 +33,11 @@ namespace neo {
 				if ((layer->state & NEO_LAYERSTATE_UPDATABLE) == NEO_LAYERSTATE_UPDATABLE)
 					layer->update();
 
-			for (Window* window : windows) {
+			for (auto window = windows.begin(); window != windows.end(); window++) {
 				Context::Get().new_frame(window, clear_color);
 				for (auto it = layers.rbegin(); it != layers.rend(); it++)
 					if (((*it)->state & NEO_LAYERSTATE_VISIBLE) == NEO_LAYERSTATE_VISIBLE)
-						(*it)->draw(window->id());
+						(*it)->draw();
 				Context::Get().present(window);
 			}
 

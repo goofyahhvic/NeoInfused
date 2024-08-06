@@ -17,8 +17,9 @@ namespace neo {
 
 		Window::_SetGLFWCallbacks(m_Window);
     }
-	Window::~Window(void) {
+	void Window::destroy(void) {
 		glfwDestroyWindow(m_Window);
+		m_Window = nullptr;
 	}
 
 	void Window::focus(void) {
