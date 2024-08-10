@@ -28,10 +28,10 @@ namespace neo {
 		[[nodiscard]] inline bool operator==(const _ThisT& other) const { return (m_Ptr == other.m_Ptr); }
 		[[nodiscard]] inline auto operator<=>(const _ThisT& other) const = default;
 
-		inline operator Window*(void) const { return m_Ptr; }
+		inline operator Window* (void) const { return m_Ptr; }
 
 		WindowStorage_iterator(Window* const ptr)
-		: m_Ptr(ptr) { while (!*m_Ptr) m_Ptr++; }
+			: m_Ptr(ptr) { while (!*m_Ptr) m_Ptr++; }
 	private:
 		Window* m_Ptr;
 	};
@@ -63,7 +63,7 @@ namespace neo {
 		inline operator const Window* (void) const { return m_Ptr; }
 
 		inline WindowStorage_const_iterator(const Window* const ptr)
-		: m_Ptr(ptr) { while (!*m_Ptr) m_Ptr++; }
+			: m_Ptr(ptr) { while (!*m_Ptr) m_Ptr++; }
 	private:
 		const Window* m_Ptr;
 	};

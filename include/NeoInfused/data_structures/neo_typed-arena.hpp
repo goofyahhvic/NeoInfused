@@ -11,10 +11,10 @@ namespace neo {
 		using _ThisT = Arena_iterator<_Arena>;
 	public:
 		inline _ThisT& operator++(void) { m_Ptr++; return *this; }
-		inline _ThisT  operator++(int)  { m_Ptr++; return _This(m_Ptr - 1); }
+		inline _ThisT  operator++(int) { m_Ptr++; return _This(m_Ptr - 1); }
 
 		inline _ThisT& operator--(void) { m_Ptr--; return *this; }
-		inline _ThisT  operator--(int)  { m_Ptr--; return _This(m_Ptr + 1); }
+		inline _ThisT  operator--(int) { m_Ptr--; return _This(m_Ptr + 1); }
 
 		inline _ThisT& operator+=(size_t amount) { m_Ptr += amount; return *this; }
 		inline _ThisT& operator-=(size_t amount) { m_Ptr -= amount; return *this; }
@@ -23,13 +23,13 @@ namespace neo {
 		[[nodiscard]] inline _ThisT operator-(size_t amount) const { return _ThisT(m_Ptr - amount); }
 
 		[[nodiscard]] inline T* operator->(void) const { return m_Ptr; }
-		[[nodiscard]] inline T& operator*(void) const  { return *m_Ptr; }
+		[[nodiscard]] inline T& operator*(void) const { return *m_Ptr; }
 
 		[[nodiscard]] inline bool operator==(const _ThisT& other) const { return (m_Ptr == other.m_Ptr); }
 		[[nodiscard]] inline auto operator<=>(const _ThisT& other) const = default;
 
 		Arena_iterator(T* ptr)
-		: m_Ptr(ptr) {}
+			: m_Ptr(ptr) {}
 	private:
 		T* m_Ptr;
 	};
@@ -58,7 +58,7 @@ namespace neo {
 		[[nodiscard]] inline auto operator<=>(const _ThisT& other) const = default;
 
 		Arena_const_iterator(const T* const ptr)
-		: m_Ptr(ptr) {}
+			: m_Ptr(ptr) {}
 	private:
 		const T* m_Ptr;
 	};
@@ -71,13 +71,14 @@ namespace neo {
 		using T_t = T;
 	public:
 		inline Arena(uint32_t capacity)
-		: m_Capacity(capacity), m_Size(0), m_Buffer((T*)malloc(m_Capacity * sizeof(T)))
+			: m_Capacity(capacity), m_Size(0), m_Buffer((T*)malloc(m_Capacity * sizeof(T)))
 		{}
 		inline ~Arena(void) { free(m_Buffer); }
 		inline void clear(void) { m_Size = 0; }
 
 		template<typename... _Args>
-		inline T* push(_Args&&... __args) {
+		inline T* push(_Args&&... __args)
+		{
 			if (m_Size == m_Capacity)
 				m_Buffer = (T*)realloc(m_Buffer, m_Capacity * 2);
 			return new (m_Buffer + m_Size++) T(std::forward<_Args>(__args)...);

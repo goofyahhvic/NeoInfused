@@ -33,7 +33,7 @@
 #include <unordered_set>
 
 #if defined(NEO_PLATFORM_WINDOWS)
-    #include <windows.h>
+#include <windows.h>
 #endif // NEO_PLATFORM_WINDOWS
 
 #include <glad/glad.h>

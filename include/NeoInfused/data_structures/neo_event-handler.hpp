@@ -26,7 +26,7 @@ namespace neo {
 		[[nodiscard]] inline auto operator<=>(const _ThisT& other) const = default;
 
 		EventHandler_iterator(Event* ptr)
-		: m_Ptr(ptr) {}
+			: m_Ptr(ptr) {}
 	private:
 		Event* m_Ptr;
 	};
@@ -53,7 +53,7 @@ namespace neo {
 		[[nodiscard]] inline auto operator<=>(const _ThisT& other) const = default;
 
 		EventHandler_const_iterator(const Event* ptr)
-		: m_Ptr(ptr) {}
+			: m_Ptr(ptr) {}
 	private:
 		const Event* m_Ptr;
 	};
@@ -68,15 +68,15 @@ namespace neo {
 
 		inline EventHandler& poll_events(void) { m_Size = 0; Window::_GLFWPollEvents(); return *this; }
 		inline void push_event(Event&& e) { m_Events[m_Size++] = e; }
-		inline void push_event(KeyPressedEvent&& e)          { ((KeyPressedEvent*)m_Events)[m_Size++] = e; }
-		inline void push_event(KeyReleasedEvent&& e)         { ((KeyReleasedEvent*)m_Events)[m_Size++] = e; }
-		inline void push_event(WindowResizeEvent&& e)        { ((WindowResizeEvent*)m_Events)[m_Size++] = e; }
-		inline void push_event(WindowCloseEvent&& e)         { ((WindowCloseEvent*)m_Events)[m_Size++] = e; }
-		inline void push_event(WindowFocusEvent&& e)         { ((WindowFocusEvent*)m_Events)[m_Size++] = e; }
-		inline void push_event(WindowLostFocusEvent&& e)     { ((WindowLostFocusEvent*)m_Events)[m_Size++] = e; }
-		inline void push_event(MouseMovedEvent&& e)          { ((MouseMovedEvent*)m_Events)[m_Size++] = e; }
-		inline void push_event(MouseScrolledEvent&& e)       { ((MouseScrolledEvent*)m_Events)[m_Size++] = e; }
-		inline void push_event(MouseButtonPressedEvent&& e)  { ((MouseButtonPressedEvent*)m_Events)[m_Size++] = e; }
+		inline void push_event(KeyPressedEvent&& e) { ((KeyPressedEvent*)m_Events)[m_Size++] = e; }
+		inline void push_event(KeyReleasedEvent&& e) { ((KeyReleasedEvent*)m_Events)[m_Size++] = e; }
+		inline void push_event(WindowResizeEvent&& e) { ((WindowResizeEvent*)m_Events)[m_Size++] = e; }
+		inline void push_event(WindowCloseEvent&& e) { ((WindowCloseEvent*)m_Events)[m_Size++] = e; }
+		inline void push_event(WindowFocusEvent&& e) { ((WindowFocusEvent*)m_Events)[m_Size++] = e; }
+		inline void push_event(WindowLostFocusEvent&& e) { ((WindowLostFocusEvent*)m_Events)[m_Size++] = e; }
+		inline void push_event(MouseMovedEvent&& e) { ((MouseMovedEvent*)m_Events)[m_Size++] = e; }
+		inline void push_event(MouseScrolledEvent&& e) { ((MouseScrolledEvent*)m_Events)[m_Size++] = e; }
+		inline void push_event(MouseButtonPressedEvent&& e) { ((MouseButtonPressedEvent*)m_Events)[m_Size++] = e; }
 		inline void push_event(MouseButtonReleasedEvent&& e) { ((MouseButtonReleasedEvent*)m_Events)[m_Size++] = e; }
 
 		[[nodiscard]] inline size_t size(void) const { return m_Size; }

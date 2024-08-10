@@ -4,7 +4,7 @@
 #include "neo_context.hpp"
 
 namespace neo::Shaders {
-    inline const char* default_vertex = R"(
+	inline const char* default_vertex = R"(
         #version 460 core
 
         layout (location = 0) in vec3 a_VertexPosition;
@@ -17,7 +17,7 @@ namespace neo::Shaders {
         }
     )";
 
-    inline const char* default_fragment = R"(
+	inline const char* default_fragment = R"(
         #version 460 core
 
         in vec4 o_VertexColor;
@@ -27,6 +27,7 @@ namespace neo::Shaders {
             o_ScreenColor = o_VertexColor;
         }
     )";
+
 } // namespace neo::Shaders
 
 #endif // NEO_SHADER_SRC_HPP
