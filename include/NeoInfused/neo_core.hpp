@@ -71,9 +71,17 @@
 
 #define NEO_BIT(x) (1u << x)
 
-enum neo_RendererAPI;
+enum neo_RendererAPI {
+	NEO_RENDERERAPI_NONE = 0,
+	NEO_RENDERERAPI_OPENGL,
+	NEO_RENDERERAPI_VULKAN
+#if defined(NEO_PLATFORM_WINDOWS)
+	, NEO_RENDERAPI_DIRECTX
+#endif // NEO_PLATFORM_WINDOWS
+};
 
 namespace neo {
+	using RendererAPI = neo_RendererAPI;
 	using byte_t = char;
 	union color32 {
 		struct { uint8_t r, g, b, a; };

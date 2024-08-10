@@ -3,17 +3,7 @@
 
 #include "NeoInfused/core/neo_window.hpp"
 
-enum neo_RendererAPI {
-	NEO_RENDERERAPI_NONE = 0,
-	NEO_RENDERERAPI_OPENGL,
-	NEO_RENDERERAPI_VULKAN
-#if defined(NEO_PLATFORM_WINDOWS)
-	, NEO_RENDERAPI_DIRECTX
-#endif // NEO_PLATFORM_WINDOWS
-};
-
 namespace neo {
-	using RendererAPI = neo_RendererAPI;
 	class Context {
 		friend class Core;
 	public:
