@@ -19,7 +19,8 @@ namespace neo {
 			m_MBs[((const MouseButtonReleasedEvent&)e).button] = false;
 			break;
 		case NEO_MOUSE_MOVED_EVENT:
-			m_MousePos = { ((const MouseMovedEvent&)e).x, ((const MouseMovedEvent&)e).y };
+			m_MousePos.x = ((const MouseMovedEvent&)e).x;
+			m_MousePos.y = ((const MouseMovedEvent&)e).y;
 			break;
 		}
 	}
