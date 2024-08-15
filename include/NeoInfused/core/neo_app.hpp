@@ -7,7 +7,6 @@
 #include "../data_structures/neo_typed-arena.hpp"
 #include "../data_structures/neo_event-handler.hpp"
 #include "../data_structures/neo_scene-storage.hpp"
-#include "neo_scoped-timer.hpp"
 
 namespace neo {
 	class App {

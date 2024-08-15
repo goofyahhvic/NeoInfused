@@ -9,7 +9,6 @@
 #include "data_structures/neo_window-storage.hpp"
 #include "core/neo_layer.hpp"
 #include "data_structures/neo_layer-storage.hpp"
-#include "core/neo_scoped-timer.hpp"
 #include "data_structures/neo_typed-arena.hpp"
 #include "core/neo_app.hpp"
 
