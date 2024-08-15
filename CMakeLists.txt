@@ -1,6 +1,25 @@
 cmake_minimum_required(VERSION 3.29.0)
 set(CMAKE_CXX_STANDARD 20)
 
+macro(add_precompiled_header PrecompiledHeader PrecompiledSource SourcesVar Target HeaderDir)
+    if(MSVC)
+        get_filename_component(PrecompiledBasename ${PrecompiledHeader} NAME_WE)
+        set(PrecompiledBinary "${CMAKE_CURRENT_BINARY_DIR}/${PrecompiledBasename}.pch")
+        set(Sources ${${SourcesVar}})
+
+        set_source_files_properties(${PrecompiledSource}
+                                PROPERTIES COMPILE_FLAGS "/Yc\"${PrecompiledHeader}\" /Fp\"${PrecompiledBinary}\""
+                                           OBJECT_OUTPUTS "${PrecompiledBinary}")
+                                           set_source_files_properties(${Sources}
+                                PROPERTIES COMPILE_FLAGS "/Yu\"${PrecompiledHeader}\" /FI\"${PrecompiledHeader}\" /Fp\"${PrecompiledBinary}\""
+                                           OBJECT_DEPENDS "${PrecompiledBinary}")  
+
+    list(APPEND ${SourcesVar} ${PrecompiledSource})
+    else()
+        target_precompile_headers(${Target} PUBLIC ${HeaderDir}/${PrecompiledHeader})
+    endif(MSVC)
+endmacro(add_precompiled_header)
+
 add_library(NeoInfused
             ${CMAKE_CURRENT_SOURCE_DIR}/src/NeoInfused/neo_core.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/src/NeoInfused/core/neo_app.cpp
@@ -30,10 +49,9 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
 elseif(CMAKE_BUILD_TYPE STREQUAL "Distribution")
     target_compile_definitions(NeoInfused PUBLIC NEO_CONFIG_DIST)
     set(CMAKE_CXX_FLAGS "-O3")
-else()
-
 endif()
 
+add_precompiled_header("neo_pch.hpp" "neo_pch.cpp" ${CMAKE_CURRENT_SOURCE_DIR}/src NeoInfused ${CMAKE_CURRENT_SOURCE_DIR}/include/)
 
 target_include_directories(NeoInfused
                            PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
