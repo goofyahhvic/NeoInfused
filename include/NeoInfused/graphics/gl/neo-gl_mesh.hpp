@@ -9,13 +9,13 @@ namespace neo::gl {
 		Mesh(void* vertex_data,
 			uint32_t vertex_data_size,
 			const VertexDataLayout& vertex_data_layout,
-			uint32_t* indices,
-			uint32_t index_count);
+			const std::initializer_list<uint32_t>& indices);
 		~Mesh(void);
 
 		void draw(void) const;
 	private:
-		uint32_t m_VertexArray, m_IndexCount;
+		uint32_t m_VertexArray;
+		uint64_t m_IndexCount;
 		uint32_t m_Buffers[2];
 	};
 }

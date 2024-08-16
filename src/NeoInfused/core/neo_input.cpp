@@ -24,4 +24,12 @@ namespace neo {
 			break;
 		}
 	}
+	void Input::reset(void)
+	{
+		for (uint16_t i = 0; i < NEO_KEY_LAST; i++)
+			m_Keys[i] = false;
+		for (uint16_t i = 0; i < NEO_MOUSE_BUTTON_LAST; i++)
+			m_MBs[i] = false;
+		m_MousePos = (MousePos)0llu;
+	}
 } // namespace neo

@@ -82,6 +82,7 @@ namespace neo {
 			Window* __window = (Window*)glfwGetWindowUserPointer(window);
 			__window->m_Width = width;
 			__window->m_Height = height;
+			Context::Get().set_viewport(__window, width, height);
 			GetEventHandler().push_event(WindowResizeEvent{
 				NEO_WINDOW_RESIZE_EVENT,
 				__window->m_Id,

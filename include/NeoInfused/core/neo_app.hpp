@@ -25,7 +25,6 @@ namespace neo {
 		glm::vec4 clear_color;
 		LayerStorage layers;
 		SceneStorage scenes;
-		const std::function<void(const Event&)> on_event;
 		std::function<bool(void)> main_loop_condition;
 	};
 

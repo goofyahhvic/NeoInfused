@@ -46,7 +46,7 @@ namespace neo {
 	}
 
 	Core::Core(const InitInfo& info)
-		: m_Argc(info.argc), m_Argv(info.argv), m_Version("Indev1")
+	: m_Argc(info.argc), m_Argv(info.argv), m_Version("Pre-Alpha")
 	{
 		NEO_ASSERT(!s_This, "Already has initialized NeoInfused!");
 	#if !defined (NEO_CONFIG_DIST)

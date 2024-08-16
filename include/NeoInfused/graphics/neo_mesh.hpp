@@ -17,8 +17,7 @@ namespace neo {
 		static Mesh* Create(void* vertex_data,
 							uint32_t vertex_data_size,
 							const VertexDataLayout& vertex_data_layout,
-							uint32_t* indices,
-							uint32_t index_count);
+							const std::initializer_list<uint32_t>& indices);
 		virtual ~Mesh(void) = default;
 
 		virtual void draw(void) const = 0;

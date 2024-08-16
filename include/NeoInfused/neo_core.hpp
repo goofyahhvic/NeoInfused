@@ -53,6 +53,7 @@
 #define NEO_TIME_LOG       std::clog << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FGRN "{0}"      NEO_COLOR_RSET "\n",     neo::HoursMinutesSeconds()) 
 #define NEO_DATE_TIME_LOG  std::clog << NEO_FORMAT(NEO_FONT_BOLD NEO_COLOR_FGRN "{0}[{1}]" NEO_COLOR_RSET "\n",     neo::DateAndTime(), std::chrono::current_zone()->name()) 
 #define NEO_LOG_NEWLINE    std::clog << '\n';
+
 #else
 #define NEO_TRACE_LOG(...)
 #define NEO_INFO_LOG(...)
@@ -90,9 +91,9 @@ namespace neo {
 
 	enum class Type {
 		None = 0,
-		Byte = 0x1400, UByte = 0x1401,
+		Byte = 0x1400,  UByte = 0x1401,
 		Short = 0x1402, UShort = 0x1403,
-		Int = 0x1404, UInt = 0x1405,
+		Int = 0x1404,   UInt = 0x1405,
 		Float = 0x1406, Double = 0x140A
 	};
 	uint32_t SizeOf(Type type);

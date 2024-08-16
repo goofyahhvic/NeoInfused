@@ -7,11 +7,10 @@ namespace neo {
 	Mesh* Mesh::Create(void* vertex_data,
 					   uint32_t vertex_data_size,
 					   const VertexDataLayout& vertex_data_layout,
-					   uint32_t* indices,
-					   uint32_t index_count)
+					   const std::initializer_list<uint32_t>& indices)
 	{
 		if (Context::API() == NEO_RENDERERAPI_OPENGL)
-			return new gl::Mesh(vertex_data, vertex_data_size, vertex_data_layout, indices, index_count);
+			return new gl::Mesh(vertex_data, vertex_data_size, vertex_data_layout, indices);
 		return nullptr;
 	}
 }

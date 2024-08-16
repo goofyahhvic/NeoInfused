@@ -8,9 +8,8 @@ namespace neo::gl {
 	Mesh::Mesh(void* vertex_data,
 			   uint32_t vertex_data_size,
 			   const VertexDataLayout& vertex_data_layout,
-			   uint32_t* indices,
-			   uint32_t index_count)
-		: m_IndexCount(index_count)
+			   const std::initializer_list<uint32_t>& indices)
+	: m_IndexCount(indices.size())
 	{
 		glCreateVertexArrays(1, &m_VertexArray);
 		glBindVertexArray(m_VertexArray);
@@ -36,7 +35,7 @@ namespace neo::gl {
 		}
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Buffers[INDEX]);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_IndexCount * sizeof(uint32_t), indices.begin(), GL_STATIC_DRAW);
 	}
 	Mesh::~Mesh(void)
 	{

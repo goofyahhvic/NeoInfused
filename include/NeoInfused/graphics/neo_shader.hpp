@@ -6,9 +6,8 @@
 namespace neo {
 	class ShaderProgram {
 	public:
-		ShaderProgram(void) = default;
-		virtual ~ShaderProgram(void) = default;
 		static ShaderProgram* Create(const char* vertex_shader_src = Shaders::default_vertex, const char* fragment_shader_src = Shaders::default_fragment);
+		virtual ~ShaderProgram(void) = default;
 
 		virtual void bind(void) const = 0;
 	};
