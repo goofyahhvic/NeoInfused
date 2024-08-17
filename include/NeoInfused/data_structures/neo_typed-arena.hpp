@@ -24,11 +24,10 @@ namespace neo {
 
 		[[nodiscard]] inline T* operator->(void) const { return m_Ptr; }
 		[[nodiscard]] inline T& operator*(void) const { return *m_Ptr; }
+		[[nodiscard]] inline T* get(void) { return m_Ptr; }
 
 		[[nodiscard]] inline bool operator==(const _ThisT& other) const { return (m_Ptr == other.m_Ptr); }
 		[[nodiscard]] inline auto operator<=>(const _ThisT& other) const = default;
-
-		[[nodiscard]] inline T* get(void) { return m_Ptr; }
 
 		Arena_iterator(T* ptr)
 		: m_Ptr(ptr) {}
@@ -55,11 +54,10 @@ namespace neo {
 
 		[[nodiscard]] inline const T* operator->(void) const { return m_Ptr; }
 		[[nodiscard]] inline const T& operator*(void) const { return *m_Ptr; }
+		[[nodiscard]] inline const T* get(void) { return m_Ptr; }
 
 		[[nodiscard]] inline bool operator==(const _ThisT& other) const { return (m_Ptr == other.m_Ptr); }
 		[[nodiscard]] inline auto operator<=>(const _ThisT& other) const = default;
-
-		[[nodiscard]] inline const T* get(void) { return m_Ptr; }
 
 		Arena_const_iterator(const T* const ptr)
 		: m_Ptr(ptr) {}
@@ -75,9 +73,22 @@ namespace neo {
 		using T_t = T;
 	public:
 		inline Arena(size_t capacity)
-		: m_Capacity(capacity), m_Size(0), m_Buffer((T*)malloc(m_Capacity * sizeof(T)))
+		: m_Capacity(capacity), m_Size(0), m_Buffer((T*)malloc(capacity * sizeof(T)))
 		{}
-		inline ~Arena(void) { free(m_Buffer); }
+		inline ~Arena(void) {
+			for (size_t i = 0; i < m_Size; i++)
+			{
+				for (byte_t* it = (byte_t*)(m_Buffer + i); it != (byte_t*)(m_Buffer + i + 1); it++)
+				{
+					if (*it != 0)
+					{
+						m_Buffer[i].~T();
+						break;
+					}
+				}
+			}
+			free(m_Buffer);
+		}
 		inline void clear(void) { m_Size = 0; }
 
 		inline void reallocate(size_t new_capacity)
@@ -87,16 +98,19 @@ namespace neo {
 		}
 
 		template<typename... _Args>
-		inline T* push(_Args&&... __args)
+		inline size_t push(_Args&&... __args)
 		{
 			if (m_Size == m_Capacity - 1)
 				this->reallocate(m_Capacity * 2);
-			return new (m_Buffer + m_Size++) T(std::forward<_Args>(__args)...);
+			new (m_Buffer + m_Size) T(std::forward<_Args>(__args)...);
+			return m_Size++;
 		}
-		inline void destroy(T* what)
+		inline void destroy(size_t index)
 		{
-			what->~T();
-			memset(what, 0, sizeof(T));
+			if (index == m_Size - 1)
+				m_Size--;
+			m_Buffer[index].~T();
+			memset(m_Buffer + index, 0, sizeof(T));
 		}
 
 		[[nodiscard]] inline iterator begin(void) { return m_Buffer; }
@@ -120,6 +134,9 @@ namespace neo {
 		size_t m_Capacity, m_Size;
 		T* m_Buffer;
 	};
+
+	template<typename T>
+	using TypedArena = Arena<T>;
 }
 
 #endif // NEO_TYPED_ARENA_HPP

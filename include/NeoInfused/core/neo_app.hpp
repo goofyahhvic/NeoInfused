@@ -29,9 +29,9 @@ namespace neo {
 	};
 
 	[[nodiscard]] inline WindowStorage& GetWindows(void) { return App::Get().windows; }
-	[[nodiscard]] inline LayerStorage& GetLayers(void) { return App::Get().layers; }
-	[[nodiscard]] inline SceneStorage& GetScenes(void) { return App::Get().scenes; }
-	[[nodiscard]] inline EventHandler& GetEventHandler(void) { return App::Get().event_handler; }
+	[[nodiscard]] inline LayerStorage&  GetLayers(void) { return App::Get().layers; }
+	[[nodiscard]] inline SceneStorage&  GetScenes(void) { return App::Get().scenes; }
+	[[nodiscard]] inline EventHandler&  GetEventHandler(void) { return App::Get().event_handler; }
 }
 
 #endif // NEO_APP_HPP
