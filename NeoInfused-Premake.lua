@@ -1,12 +1,8 @@
 INCLUDE_DIR = {}
 LIB_DIR = {}
 
-include "dependencies/glad/glad-Premake.lua"
 include "dependencies/GLFW-Premake.lua"
 INCLUDE_DIR["glm"] = "dependencies/glm/include/"
-
---premake.path = premake.path .. ";dependencies/premake-cmake;"
---require "cmake"
 
 project "NeoInfused"
     location "./"
@@ -31,12 +27,10 @@ project "NeoInfused"
     includedirs {
         "include/",
         "%{INCLUDE_DIR.GLFW}",
-        "%{INCLUDE_DIR.glad}",
         "%{INCLUDE_DIR.glm}"
     }
 
     links {
-        "glad",
         "GLFW"
     }
 
@@ -50,7 +44,7 @@ project "NeoInfused"
             "NEO_PLATFORM_WINDOWS",
             "_CRT_SECURE_NO_WARNINGS"
         }
-    
+
     filter "configurations:dbg"
         symbols "On"
         runtime "Debug"

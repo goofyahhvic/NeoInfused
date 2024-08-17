@@ -35,7 +35,6 @@
 #include <windows.h>
 #endif // NEO_PLATFORM_WINDOWS
 
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
