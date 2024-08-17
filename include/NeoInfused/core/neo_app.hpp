@@ -1,7 +1,6 @@
 #if !defined(NEO_APP_HPP)
 #define NEO_APP_HPP
 
-#include "NeoInfused/graphics/neo_context.hpp"
 #include "../data_structures/neo_layer-storage.hpp"
 #include "../data_structures/neo_window-storage.hpp"
 #include "../data_structures/neo_typed-arena.hpp"

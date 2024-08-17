@@ -21,11 +21,9 @@ namespace neo {
 
 			for (auto& window : windows)
 			{
-				Context::Get().new_frame(&window, clear_color);
 				for (auto it = layers.rbegin(); it != layers.rend(); it++)
 					if (((*it)->state & NEO_LAYERSTATE_VISIBLE) == NEO_LAYERSTATE_VISIBLE)
 						(*it)->draw();
-				Context::Get().present(&window);
 			}
 
 			for (Event& e : event_handler.poll_events())

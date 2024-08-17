@@ -2,7 +2,6 @@
 #include "NeoInfused/core/neo_window.hpp"
 
 #include "NeoInfused/core/neo_app.hpp"
-#include "NeoInfused/graphics/neo_context.hpp"
 
 namespace neo {
 	Window::Window(uint32_t id, uint32_t width, uint32_t height, const char* title)
@@ -11,10 +10,6 @@ namespace neo {
 	{
 		NEO_ASSERT(m_Window, "Failed to create glfw window!");
 		glfwSetWindowUserPointer(m_Window, (void*)this);
-
-		if (!Context::Initialized())
-			Context::Get().initialize(this);
-		Context::Get().set_viewport(this, width, height);
 
 		Window::_SetGLFWCallbacks(m_Window);
 	}
@@ -84,7 +79,7 @@ namespace neo {
 			Window* __window = (Window*)glfwGetWindowUserPointer(window);
 			__window->m_Width = width;
 			__window->m_Height = height;
-			Context::Get().set_viewport(__window, width, height);
+			//Context::Get().set_viewport(__window, width, height);
 			GetEventHandler().push_event(WindowResizeEvent{
 				NEO_WINDOW_RESIZE_EVENT,
 				__window->m_Id,

@@ -12,8 +12,4 @@
 #include "data_structures/neo_typed-arena.hpp"
 #include "core/neo_app.hpp"
 
-#include "graphics/neo_shader.hpp"
-#include "graphics/neo_context.hpp"
-#include "graphics/neo_mesh.hpp"
-
 #endif // NEOINFUSED_HPP

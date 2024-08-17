@@ -2,7 +2,6 @@
 #include "NeoInfused/neo_core.hpp"
 
 #include "NeoInfused/core/neo_window.hpp"
-#include "NeoInfused/graphics/neo_context.hpp"
 
 namespace neo {
 	uint32_t SizeOf(Type type)
@@ -53,7 +52,6 @@ namespace neo {
 		NEO_DATE_TIME_LOG << '\n';
 	#endif // NEO_CONFIG_DIST   
 		NEO_INFO_LOG("Initializing NeoInfused version {}", m_Version);
-		Context::s_API = info.renderer_api;
 
 	#if defined(NEO_PLATFORM_LINUX)
 		m_ExecPath = std::filesystem::canonical("/proc/self/exe").string();
@@ -80,20 +78,13 @@ namespace neo {
 			throw GLFWError(error, description);
 		});
 
-		if (info.renderer_api == NEO_RENDERERAPI_OPENGL)
-		{
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-			Context::Create_GL();
-		}
+		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	}
 
 	Core::~Core(void)
 	{
 		NEO_INFO_LOG("Terminating NeoInfused, Goodbye!");
 
-		Context::Destroy();
 		glfwTerminate();
 
 		s_This = nullptr;
