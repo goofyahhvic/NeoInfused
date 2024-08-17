@@ -4,9 +4,11 @@ LIB_DIR = {}
 include "dependencies/GLFW-Premake.lua"
 INCLUDE_DIR["glm"] = "dependencies/glm/include/"
 
+include "Influx/Influx-Premake.lua"
+
 project "NeoInfused"
     location "./"
-    targetname "NeoInfused-bin"
+    targetname "%{prj.name}-bin"
     kind "StaticLib"
     staticruntime "Off"
 
@@ -27,7 +29,8 @@ project "NeoInfused"
     includedirs {
         "include/",
         "%{INCLUDE_DIR.GLFW}",
-        "%{INCLUDE_DIR.glm}"
+        "%{INCLUDE_DIR.glm}",
+        "%{INCLUDE_DIR.inf}"
     }
 
     links {
