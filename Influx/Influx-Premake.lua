@@ -10,6 +10,9 @@ project "InfluxRenderer"
     cppdialect "C++20"
     systemversion "latest"
 
+    pchheader "inf_pch.hpp"
+    pchsource "src/inf_pch.cpp"
+
     files {
         "include/**.hpp",
         "src/**.hpp",
@@ -30,8 +33,7 @@ project "InfluxRenderer"
         toolset "msc"
         defines {
             "NEO_PLATFORM_WINDOWS",
-            "_CRT_SECURE_NO_WARNINGS",
-            "INF_BUILD_DLL"
+            "_CRT_SECURE_NO_WARNINGS"
         }
 
     filter "configurations:dbg"
@@ -59,6 +61,9 @@ project "Influx-vk"
     cppdialect "C++20"
     systemversion "latest"
 
+    pchheader "ivk_pch.hpp"
+    pchsource "vk/ivk_pch.cpp"
+
     files {
         "vk/**.hpp",
         "vk/**.cpp"
@@ -76,10 +81,10 @@ project "Influx-vk"
         defines { "NEO_PLATFORM_LINUX" }
     filter "system:windows"
         toolset "msc"
+        kind "SharedLib"
         defines {
             "NEO_PLATFORM_WINDOWS",
-            "_CRT_SECURE_NO_WARNINGS",
-            "INF_BUILD_DLL"
+            "_CRT_SECURE_NO_WARNINGS"
         }
 
     filter "configurations:dbg"
