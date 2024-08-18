@@ -32,7 +32,9 @@
 #include <unordered_set>
 
 #if defined(NEO_PLATFORM_WINDOWS)
-#include <windows.h>
+	#include <Windows.h>
+#elif defined(NEO_PLATFORM_LINUX)
+	#include <dlfcn.h>
 #endif // NEO_PLATFORM_WINDOWS
 
 #include <GLFW/glfw3.h>

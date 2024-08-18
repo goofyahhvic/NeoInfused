@@ -1,6 +1,10 @@
-#include "inf_core.hpp"
+#if !defined(INF_HELLO_WORLD_HPP)
+#define INF_HELLO_WORLD_HPP
 
 namespace inf {
-	void INF_EXPORT hello(void);
-	void world(void);
+	typedef void (*HelloWorld)(void);
+	inline HelloWorld hello_world = nullptr;
+	void init(void);
 }
+
+#endif // INF_HELLO_WORLD_HPP
