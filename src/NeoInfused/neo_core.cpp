@@ -48,6 +48,7 @@ namespace neo {
 	: m_Argc(info.argc), m_Argv(info.argv), m_Version("Pre-Alpha")
 	{
 		NEO_ASSERT(!s_This, "Already has initialized NeoInfused!");
+		s_This = this;
 	#if !defined (NEO_CONFIG_DIST)
 		NEO_DATE_TIME_LOG << '\n';
 	#endif // NEO_CONFIG_DIST   

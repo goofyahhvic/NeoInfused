@@ -16,7 +16,7 @@ namespace inf {
 #elif defined(NEO_PLATFORM_LINUX)
 	void* LoadLib(const char* name)
 	{
-		return dlopen(std::format("{}.so", name).c_str(), RTLD_LAZY);
+		return dlopen(std::format("{}lib{}.so", neo::Core::Get().exec_dir(), name).c_str(), RTLD_NOW);
 	}
 #endif
 
