@@ -81,7 +81,6 @@ project "Influx-vk"
         defines { "NEO_PLATFORM_LINUX" }
     filter "system:windows"
         toolset "msc"
-        kind "SharedLib"
         defines {
             "NEO_PLATFORM_WINDOWS",
             "_CRT_SECURE_NO_WARNINGS"
