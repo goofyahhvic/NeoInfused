@@ -3,11 +3,11 @@
 
 #if defined(NEO_PLATFORM_WINDOWS)
 
-	#define IVK_API extern "C" __declspec(dllexport)
+	#define EXPORT_FN extern "C" __declspec(dllexport)
 
 #elif defined(NEO_PLATFORM_LINUX)
 
-	#define IVK_API extern "C" __attribute__((visibility("default")))
+	#define EXPORT_FN extern "C" __attribute__((visibility("default")))
 
 #endif
 
