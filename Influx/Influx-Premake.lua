@@ -61,8 +61,8 @@ project "Influx-vk"
     cppdialect "C++20"
     systemversion "latest"
 
-    pchheader "ivk_pch.hpp"
-    pchsource "vk/ivk_pch.cpp"
+    pchheader "vk_pch.hpp"
+    pchsource "vk/vk_pch.cpp"
 
     files {
         "vk/**.hpp",
