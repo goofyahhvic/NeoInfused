@@ -1,6 +1,6 @@
 #include "ivk_pch.hpp"
 
-IVK_API void ivk_HelloWorld(void)
+EXPORT_FN void HelloWorldE(void)
 {
 	IVK_TRACE_LOG("Hello, world!");
 }
