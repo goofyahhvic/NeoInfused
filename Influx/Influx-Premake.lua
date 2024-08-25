@@ -72,6 +72,7 @@ project "Influx-vk"
     includedirs {
         "include/",
         "../include/",
+        "vk/",
         "../%{INCLUDE_DIR.GLFW}",
         "../%{INCLUDE_DIR.glm}"
     }
