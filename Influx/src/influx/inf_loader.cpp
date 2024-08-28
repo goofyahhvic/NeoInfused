@@ -4,12 +4,12 @@
 namespace inf {
 	static void* currentLibrary = nullptr;
 
-	static void loadLibrary(const char* dll, const char* so)
+	static void loadLibrary(const char* lib_name)
 	{
 	#if defined(NEO_PLATFORM_WINDOWS)
-		currentLibrary = LoadLibraryA(dll);
+		currentLibrary = LoadLibraryA(std::format("{}.dll", lib_name).c_str());
 	#elif defined(NEO_PLATFORM_LINUX)
-		currentLibrary = dlopen(so, RTLD_LAZY);
+		currentLibrary = dlopen(std::format("{}/lib{}.so", std::filesystem::canonical("/proc/self/exe").parent_path().string(), lib_name).c_str(), RTLD_LAZY);
 	#endif
 	}
 
@@ -26,7 +26,7 @@ namespace inf {
 	void Loader::Load(RendererAPI api)
 	{
 		if (api == INF_API_VULKAN)
-			loadLibrary("Influx-vk-bin.dll", "libInflux-vk-bin.so");
+			loadLibrary("Influx-vk-bin");
 
 		extension_count = getFn<ExtensionCount>("ExtensionCountE");
 	}
