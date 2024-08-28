@@ -25,20 +25,36 @@ namespace inf {
 
 	void Loader::Load(RendererAPI api)
 	{
-		if (api == INF_API_VULKAN)
-			loadLibrary("Influx-vk-bin");
+		s_RendererAPI = INF_API_NONE;
+		if (!api)
+		{
+			if (!currentLibrary) return;
 
-		extension_count = getFn<ExtensionCount>("ExtensionCountE");
-	}
-	void Loader::Unload(void)
-	{
-		extension_count = nullptr;
+			extension_count = nullptr;
 
-	#if defined(NEO_PLATFORM_WINDOWS)
-		FreeLibrary((HMODULE)currentLibrary);
-	#elif defined(NEO_PLATFORM_LINUX)
-		dlclose(currentLibrary);
-	#endif
-		currentLibrary = nullptr;
+		#if defined(NEO_PLATFORM_WINDOWS)
+			FreeLibrary((HMODULE)currentLibrary);
+		#elif defined(NEO_PLATFORM_LINUX)
+			dlclose(currentLibrary);
+		#endif
+			currentLibrary = nullptr;
+			return;
+		}
+		if (currentLibrary)
+		{
+		#if defined(NEO_PLATFORM_WINDOWS)
+			FreeLibrary((HMODULE)currentLibrary);
+		#elif defined(NEO_PLATFORM_LINUX)
+			dlclose(currentLibrary);
+		#endif
+		}
+
+		switch(api) {
+			case INF_API_VULKAN: loadLibrary("Influx-vk-bin");
+		};
+
+		extension_count = getFn<ExtensionCountFn>("ExtensionCountE");
+
+		s_RendererAPI = api;
 	}
 }
