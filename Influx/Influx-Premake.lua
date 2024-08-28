@@ -1,4 +1,5 @@
 INCLUDE_DIR["inf"] = "Influx/include/"
+VULKAN_SDK = os.getenv("VULKAN_SDK")
 
 project "InfluxRenderer"
     location "./"
@@ -76,16 +77,33 @@ project "Influx-vk"
         "../%{INCLUDE_DIR.GLFW}",
         "../%{INCLUDE_DIR.glm}"
     }
+	links {
+		"GLFW"
+	}
 
     filter "system:linux"
         toolset "gcc"
         defines { "NEO_PLATFORM_LINUX" }
+		
+		links {
+			"vulkan"
+		}
     filter "system:windows"
         toolset "msc"
         defines {
             "NEO_PLATFORM_WINDOWS",
             "_CRT_SECURE_NO_WARNINGS"
         }
+		
+		includedirs {
+			"%{VULKAN_SDK}/Include"
+		}
+		libdirs {
+			"%{VULKAN_SDK}/Lib"
+		}
+		links {
+			"vulkan-1"
+		}
 
     filter "configurations:dbg"
         symbols "On"

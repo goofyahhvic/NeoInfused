@@ -72,17 +72,7 @@
 
 #define NEO_BIT(x) (1u << x)
 
-enum neo_RendererAPI {
-	NEO_RENDERERAPI_NONE = 0,
-	NEO_RENDERERAPI_OPENGL,
-	NEO_RENDERERAPI_VULKAN
-#if defined(NEO_PLATFORM_WINDOWS)
-	, NEO_RENDERAPI_DIRECTX
-#endif // NEO_PLATFORM_WINDOWS
-};
-
 namespace neo {
-	using RendererAPI = neo_RendererAPI;
 	using byte_t = char;
 	union color32 {
 		struct { uint8_t r, g, b, a; };
@@ -105,12 +95,6 @@ namespace neo {
 	inline int32_t Round32(float num) { return (int32_t)floor(num + 0.5f); }
 	inline int64_t Round64(double num) { return (int64_t)floor(num + 0.5f); }
 
-	struct InitInfo {
-		int argc;
-		char** argv;
-		neo_RendererAPI renderer_api;
-	};
-
 	class GLFWError : public std::exception {
 	public:
 		GLFWError(int error, const char* description) : m_Msg(NEO_FORMAT("GLFW Error #{0}: {1}", error, description)) {}
@@ -121,24 +105,13 @@ namespace neo {
 
 	class Core {
 	public:
-		static inline Core& Get(void) { return *s_This; }
-		inline const std::string& exec_path(void) const { return m_ExecPath; }
-		inline const std::string& exec_dir(void) const { return m_ExecDir; }
-		inline const std::string& exec_name(void) const { return m_ExecName; }
-		inline const std::string& version(void) const { return m_Version; }
-
-		int    argc(void) const { return m_Argc; }
-		char** argv(void) { return m_Argv; }
-	private:
-		friend class App;
-		Core(const InitInfo& info);
+		Core(int argc, char** argv);
 		~Core(void);
-	private:
-		int m_Argc;
-		char** m_Argv;
-		std::string m_ExecPath, m_ExecDir, m_ExecName, m_Version;
-
-		static inline Core* s_This = nullptr;
+		[[nodiscard]] static Core& Get(void);
+	public:
+		const int argc;
+		char** const argv;
+		const std::string exec_path, exec_dir, exec_name, version;
 	};
 } // namespace neo
 

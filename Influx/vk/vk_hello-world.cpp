@@ -1,7 +1,8 @@
 #include "vk_pch.hpp"
-#include "vk_core.hpp"
 
-EXPORT_FN void HelloWorldE(void)
+EXPORT_FN uint32_t ExtensionCountE(void)
 {
-	VK_TRACE_LOG("Hello, world!");
+	uint32_t extension_count = 0;
+	vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, nullptr);
+	return extension_count;
 }

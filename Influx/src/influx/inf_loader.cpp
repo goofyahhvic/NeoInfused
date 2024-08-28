@@ -25,14 +25,14 @@ namespace inf {
 
 	void Loader::Load(RendererAPI api)
 	{
-		if (api == RendererAPI::Vulkan)
+		if (api == INF_API_VULKAN)
 			loadLibrary("Influx-vk-bin.dll", "libInflux-vk-bin.so");
 
-		hello_world = getFn<HelloWorld>("HelloWorldE");
+		extension_count = getFn<ExtensionCount>("ExtensionCountE");
 	}
 	void Loader::Unload(void)
 	{
-		hello_world = nullptr;
+		extension_count = nullptr;
 
 	#if defined(NEO_PLATFORM_WINDOWS)
 		FreeLibrary((HMODULE)currentLibrary);

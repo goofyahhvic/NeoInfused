@@ -1,17 +1,18 @@
 #if !defined(INF_LOADER_HPP)
 #define INF_LOADER_HPP
 
-namespace inf {
-	enum class RendererAPI {
-		None = 0, Vulkan = 1
-	};
+enum inf_RendererAPI {
+	INF_API_NONE = 0, INF_API_VULKAN
+};
 
+namespace inf {
+	using RendererAPI = inf_RendererAPI;
 	namespace Loader {
 		void Load(RendererAPI api);
 		void Unload(void);
 
-		typedef void (*HelloWorld)(void);
-		inline HelloWorld hello_world = nullptr;
+		typedef uint32_t (*ExtensionCount)(void);
+		inline ExtensionCount extension_count = nullptr;
 	}
 } // namespace inf
 

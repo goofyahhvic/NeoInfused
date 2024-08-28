@@ -2,13 +2,16 @@
 #include "NeoInfused/core/neo_app.hpp"
 
 namespace neo {
-	App::App(const InitInfo& info, const glm::vec4& clear_color)
+	static App* _This = nullptr;
+	App& App::Get(void) { return *_This; }
+
+	App::App(int argc, char** argv, const glm::vec4& clear_color)
 	: clear_color(clear_color),
 	main_loop_condition([this]() -> bool { return !windows.empty(); }),
-	m_Core(info)
+	m_Core(argc, argv)
 	{
-		NEO_ASSERT(!s_This, "Cannot create multiple instances of App!");
-		s_This = this;
+		NEO_ASSERT(!_This, "Cannot create multiple instances of App!");
+		_This = this;
 	}
 
 	void App::run(void)
@@ -19,12 +22,9 @@ namespace neo {
 				if ((layer->state & NEO_LAYERSTATE_UPDATABLE) == NEO_LAYERSTATE_UPDATABLE)
 					layer->update();
 
-			for (auto& window : windows)
-			{
-				for (auto it = layers.rbegin(); it != layers.rend(); it++)
-					if (((*it)->state & NEO_LAYERSTATE_VISIBLE) == NEO_LAYERSTATE_VISIBLE)
-						(*it)->draw();
-			}
+			for (auto it = layers.rbegin(); it != layers.rend(); it++)
+				if (((*it)->state & NEO_LAYERSTATE_VISIBLE) == NEO_LAYERSTATE_VISIBLE)
+					(*it)->draw();
 
 			for (Event& e : event_handler.poll_events())
 			{
