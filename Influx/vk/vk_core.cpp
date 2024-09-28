@@ -7,12 +7,14 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
     const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
     void* pUserData)
 {
+#if !defined(NEO_CONFIG_DIST)
     if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
         VK_ERROR_LOG("{}", pCallbackData->pMessage);
     else if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
         VK_WARN_LOG("{}", pCallbackData->pMessage);
     else if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)
         VK_INFO_LOG("{}", pCallbackData->pMessage);
+#endif
 
     return VK_FALSE;
 }
@@ -35,7 +37,8 @@ static void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMesse
 
 namespace vk {
     static std::vector<const char*> extensions,
-        validationLayers = { "VK_LAYER_KHRONOS_validation" };
+        validationLayers = { "VK_LAYER_KHRONOS_validation" },
+        requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
     static bool validationLayersSupported(void)
     {
@@ -104,6 +107,22 @@ namespace vk {
         return indices;
     }
 
+    static bool areRequiredDeviceExtensionsSupported(VkPhysicalDevice device)
+    {
+        uint32_t available_extensions_count;
+        vkEnumerateDeviceExtensionProperties(device, nullptr, &available_extensions_count, nullptr);
+
+        VkExtensionProperties* available_extensions = new VkExtensionProperties[available_extensions_count];
+        vkEnumerateDeviceExtensionProperties(device, nullptr, &available_extensions_count, available_extensions);
+
+        std::unordered_set<std::string> required_extensions(requiredDeviceExtensions.begin(), requiredDeviceExtensions.end());
+        for (uint32_t i = 0; i < available_extensions_count; i++)
+            required_extensions.erase(available_extensions[i].extensionName);
+
+        delete[] available_extensions;
+        return required_extensions.empty();
+    }
+
     static int32_t ratePhysicalDevice(VkPhysicalDevice device)
     {
         if (!device)
@@ -119,6 +138,9 @@ namespace vk {
             return 0;
 
         if (!getQueueFamilies(device).complete())
+            return 0;
+
+        if (!areRequiredDeviceExtensionsSupported(device))
             return 0;
 
         if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
@@ -244,10 +266,13 @@ namespace vk {
         VkDeviceCreateInfo create_info = {};
         create_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
         create_info.pQueueCreateInfos = &queue_create_infos[0];
-        create_info.queueCreateInfoCount = queue_create_infos.size();
+        create_info.queueCreateInfoCount = (uint32_t)queue_create_infos.size();
 
         VkPhysicalDeviceFeatures device_features = {};
         create_info.pEnabledFeatures = &device_features;
+
+        create_info.enabledExtensionCount = (uint32_t)requiredDeviceExtensions.size();
+        create_info.ppEnabledExtensionNames = &requiredDeviceExtensions[0];
 
         if (vkCreateDevice(m_PhysicalDevice, &create_info, nullptr, &m_LogicalDevice) != VK_SUCCESS)
             throw std::runtime_error("Failed to create logical device!");

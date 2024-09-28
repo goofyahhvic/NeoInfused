@@ -23,11 +23,10 @@ namespace neo {
 		[[nodiscard]] const char* title(void) const;
 
 		inline operator bool(void) const { return m_Window; }
-	public:
-		bool should_close = false;
+
+		// inf::WindowSurface surface
+		// bool should_close
 	private:
-		friend class gl::Context;
-		friend class Context;
 		friend class WindowStorage;
 
 		Window(void) = default;
@@ -39,14 +38,14 @@ namespace neo {
 		Window& operator=(const Window&) = delete;
 
 		static void _SetGLFWCallbacks(GLFWwindow* _window);
-	public:
-		static void _GLFWPollEvents(void);
 	private:
 		GLFWwindow* m_Window;
-		inf::WindowSurface m_Surface;
 		uint32_t m_Width, m_Height;
 		uint32_t m_Id;
-		bool m_Focus;
+		bool m_Focus = true;
+	public:
+		inf::WindowSurface surface;
+		bool should_close = false;
 	};
 } // namespace neo
 

@@ -1,11 +1,11 @@
-#if !defined(NEO_EVENT_HANDLER_HPP)
-#define NEO_EVENT_HANDLER_HPP
+#if !defined(NEO_EVENT_QUEUE_HPP)
+#define NEO_EVENT_QUEUE_HPP
 
 #include "../core/neo_window.hpp"
 
 namespace neo {
-	class EventHandler_iterator {
-		using _ThisT = EventHandler_iterator;
+	class EventQueue_iterator {
+		using _ThisT = EventQueue_iterator;
 	public:
 		inline _ThisT& operator++(void) { m_Ptr++; return *this; }
 		inline _ThisT  operator++(int) { m_Ptr++; return _ThisT(m_Ptr - 1); }
@@ -25,14 +25,14 @@ namespace neo {
 		[[nodiscard]] inline bool operator==(const _ThisT& other) const { return (m_Ptr == other.m_Ptr); }
 		[[nodiscard]] inline auto operator<=>(const _ThisT& other) const = default;
 
-		EventHandler_iterator(Event* ptr)
+		EventQueue_iterator(Event* ptr)
 			: m_Ptr(ptr) {}
 	private:
 		Event* m_Ptr;
 	};
 
-	class EventHandler_const_iterator {
-		using _ThisT = EventHandler_const_iterator;
+	class EventQueue_const_iterator {
+		using _ThisT = EventQueue_const_iterator;
 	public:
 		inline _ThisT& operator++(void) { m_Ptr++; return *this; }
 		inline _ThisT  operator++(int) { m_Ptr++; return _ThisT(m_Ptr - 1); }
@@ -52,21 +52,21 @@ namespace neo {
 		[[nodiscard]] inline bool operator==(const _ThisT& other) const { return (m_Ptr == other.m_Ptr); }
 		[[nodiscard]] inline auto operator<=>(const _ThisT& other) const = default;
 
-		EventHandler_const_iterator(const Event* ptr)
+		EventQueue_const_iterator(const Event* ptr)
 			: m_Ptr(ptr) {}
 	private:
 		const Event* m_Ptr;
 	};
 
-	class EventHandler {
+	class EventQueue {
 	public:
-		using iterator = EventHandler_iterator;
-		using const_iterator = EventHandler_const_iterator;
+		using iterator = EventQueue_iterator;
+		using const_iterator = EventQueue_const_iterator;
 	public:
-		EventHandler(void) : m_Size(0) {}
-		~EventHandler(void) = default;
+		EventQueue(void) = default;
+		~EventQueue(void) = default;
 
-		inline EventHandler& poll_events(void) { m_Size = 0; Window::_GLFWPollEvents(); return *this; }
+		EventQueue& poll_events(void);
 		inline void push_event(Event&& e) { m_Events[m_Size++] = e; }
 		inline void push_event(KeyPressedEvent&& e) { ((KeyPressedEvent*)m_Events)[m_Size++] = e; }
 		inline void push_event(KeyReleasedEvent&& e) { ((KeyReleasedEvent*)m_Events)[m_Size++] = e; }
@@ -92,8 +92,8 @@ namespace neo {
 	private:
 		static inline constexpr size_t _CAPACITY = 512;
 		Event m_Events[_CAPACITY];
-		size_t m_Size;
+		size_t m_Size = 0;
 	};
 }
 
-#endif // NEO_EVENT_HANDLER_HPP
+#endif // NEO_EVENT_QUEUE_HPP

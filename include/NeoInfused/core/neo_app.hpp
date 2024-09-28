@@ -4,11 +4,13 @@
 #include "../data_structures/neo_layer-storage.hpp"
 #include "../data_structures/neo_window-storage.hpp"
 #include "../data_structures/neo_typed-arena.hpp"
-#include "../data_structures/neo_event-handler.hpp"
+#include "../data_structures/neo_event-queue.hpp"
 #include "../data_structures/neo_scene-storage.hpp"
 
 namespace neo {
 	class App {
+	public:
+		typedef bool (*LoopConditionFn)(void);
 	public:
 		App(int argc, char** argv, const glm::vec4& clear_color = { 0.12f, 0.12f, 0.18f, 1.0f });
 		~App(void) noexcept(false) = default;
@@ -19,9 +21,9 @@ namespace neo {
 		Core m_Core;
 	public:
 		glm::vec4 clear_color;
-		std::function<bool(void)> main_loop_condition;
 		WindowStorage windows;
-		EventHandler event_handler;
+		LoopConditionFn loop_condition;
+		EventQueue event_queue;
 		LayerStorage layers;
 		SceneStorage scenes;
 	};
@@ -29,7 +31,7 @@ namespace neo {
 	[[nodiscard]] inline WindowStorage& GetWindows(void) { return App::Get().windows; }
 	[[nodiscard]] inline LayerStorage&  GetLayers(void) { return App::Get().layers; }
 	[[nodiscard]] inline SceneStorage&  GetScenes(void) { return App::Get().scenes; }
-	[[nodiscard]] inline EventHandler&  GetEventHandler(void) { return App::Get().event_handler; }
+	[[nodiscard]] inline EventQueue&    GetEventHandler(void) { return App::Get().event_queue; }
 }
 
 #endif // NEO_APP_HPP

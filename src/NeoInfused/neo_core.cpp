@@ -88,6 +88,7 @@ namespace neo {
 	{
 		NEO_INFO_LOG("Shutting down NeoInfused, Goodbye!");
 
+		inf::ShutdownAPI();
 		glfwTerminate();
 
 		_This = nullptr;

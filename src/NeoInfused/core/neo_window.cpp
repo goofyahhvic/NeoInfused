@@ -7,19 +7,18 @@
 namespace neo {
 	Window::Window(uint32_t id, uint32_t width, uint32_t height, const char* title)
 		: m_Window(glfwCreateWindow(width, height, title, nullptr, nullptr)),
-		m_Surface(m_Window),
-		m_Width(width), m_Height(height), m_Focus(true), m_Id(id)
+		m_Width(width), m_Height(height), m_Id(id),
+		surface(m_Window)
 	{
 		NEO_ASSERT(m_Window, "Failed to create glfw window!");
-		NEO_ASSERT(m_Surface, "Failed to create window surface!");
-		glfwSetWindowUserPointer(m_Window, (void*)this);
+		NEO_ASSERT(surface, "Failed to create window surface!");
+		glfwSetWindowUserPointer(m_Window, this);
 
 		Window::_SetGLFWCallbacks(m_Window);
-
 	}
 	void Window::destroy(void)
 	{
-		m_Surface.destroy();
+		surface.destroy();
 		glfwDestroyWindow(m_Window);
 		m_Window = nullptr;
 	}
@@ -84,7 +83,6 @@ namespace neo {
 			Window* __window = (Window*)glfwGetWindowUserPointer(window);
 			__window->m_Width = width;
 			__window->m_Height = height;
-			//Context::Get().set_viewport(__window, width, height);
 			GetEventHandler().push_event(WindowResizeEvent{
 				NEO_WINDOW_RESIZE_EVENT,
 				__window->m_Id,
@@ -165,11 +163,6 @@ namespace neo {
 				break;
 			}
 		});
-	}
-
-	void Window::_GLFWPollEvents(void)
-	{
-		glfwPollEvents();
 	}
 
 } // namespace neo

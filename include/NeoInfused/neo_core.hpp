@@ -72,6 +72,8 @@
 
 #define NEO_BIT(x) (1u << x)
 
+using namespace std::chrono_literals;
+
 namespace neo {
 	using byte_t = char;
 	using ubyte_t = unsigned char;

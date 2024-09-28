@@ -21,7 +21,7 @@ namespace neo {
 		{}
 		virtual ~Layer(void) = default;
 
-		virtual void on_event(const Event& e) = 0;
+		virtual void on_event(Event& e) = 0;
 		virtual void update(void) = 0;
 		virtual void draw(void) = 0;
 
