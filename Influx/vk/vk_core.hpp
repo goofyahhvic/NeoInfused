@@ -31,4 +31,29 @@
 #endif // NEO_CONFIG_DIST
 #define VK_LOG_CONTINUE "\n\t\t"
 
+namespace vk {
+    namespace Core {
+        void InitializeGLFW(void);
+        void CreateInstance(void);
+        void CreateDebugMessenger(void);
+        void CreateInitializationSurface(void);
+        void PickPhysicalDevice(void);
+        void CreateLogicalDevice(void);
+
+    #if !defined(NEO_CONFIG_DIST)
+        inline constexpr bool VALIDATION_LAYERS_ENABLED = true;
+    #else
+        inline constexpr bool VALIDATION_LAYERS_ENABLED = false;
+    #endif
+        inline VkInstance               m_Instance       = VK_NULL_HANDLE;
+        inline VkDebugUtilsMessengerEXT m_DebugMessenger = VK_NULL_HANDLE;
+        inline VkSurfaceKHR             m_InitSurface    = VK_NULL_HANDLE;
+        inline VkPhysicalDevice         m_PhysicalDevice = VK_NULL_HANDLE;
+        inline VkDevice                 m_LogicalDevice  = VK_NULL_HANDLE;
+
+        inline VkQueue m_GraphicsQueue = VK_NULL_HANDLE;
+        inline VkQueue m_PresentQueue  = VK_NULL_HANDLE;
+    }
+}
+
 #endif // VK_CORE_HPP

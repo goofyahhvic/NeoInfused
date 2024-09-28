@@ -2,6 +2,7 @@
 #define NEO_WINDOW_HPP
 
 #include "neo_event.hpp"
+#include "influx/inf_window-surface.hpp"
 
 struct GLFWwindow;
 namespace neo {
@@ -21,7 +22,6 @@ namespace neo {
 		void set_title(const char* title);
 		[[nodiscard]] const char* title(void) const;
 
-		inline bool exists(void) const { return m_Window; }
 		inline operator bool(void) const { return m_Window; }
 	public:
 		bool should_close = false;
@@ -32,15 +32,18 @@ namespace neo {
 
 		Window(void) = default;
 		Window(uint32_t id, uint32_t width, uint32_t height, const char* title);
-		Window(const Window& other) = delete;
 		void destroy(void);
 		inline ~Window(void) { if (m_Window) this->destroy(); }
+
+		Window(const Window&) = delete;
+		Window& operator=(const Window&) = delete;
 
 		static void _SetGLFWCallbacks(GLFWwindow* _window);
 	public:
 		static void _GLFWPollEvents(void);
 	private:
 		GLFWwindow* m_Window;
+		inf::WindowSurface m_Surface;
 		uint32_t m_Width, m_Height;
 		uint32_t m_Id;
 		bool m_Focus;

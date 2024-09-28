@@ -37,7 +37,6 @@ namespace neo {
 					if ((layer->state & NEO_LAYERSTATE_ENABLED) != NEO_LAYERSTATE_ENABLED) continue;
 					layer->on_event(e);
 				}
-
 			}
 		}
 	}

@@ -28,7 +28,9 @@
 #include <list>
 #include <tuple>
 #include <memory>
+#include <map>
 #include <unordered_map>
+#include <set>
 #include <unordered_set>
 
 #if defined(NEO_PLATFORM_WINDOWS)

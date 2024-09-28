@@ -2,19 +2,24 @@
 #include "NeoInfused/core/neo_window.hpp"
 
 #include "NeoInfused/core/neo_app.hpp"
+#include "influx/inf_loader.hpp"
 
 namespace neo {
 	Window::Window(uint32_t id, uint32_t width, uint32_t height, const char* title)
 		: m_Window(glfwCreateWindow(width, height, title, nullptr, nullptr)),
+		m_Surface(m_Window),
 		m_Width(width), m_Height(height), m_Focus(true), m_Id(id)
 	{
 		NEO_ASSERT(m_Window, "Failed to create glfw window!");
+		NEO_ASSERT(m_Surface, "Failed to create window surface!");
 		glfwSetWindowUserPointer(m_Window, (void*)this);
 
 		Window::_SetGLFWCallbacks(m_Window);
+
 	}
 	void Window::destroy(void)
 	{
+		m_Surface.destroy();
 		glfwDestroyWindow(m_Window);
 		m_Window = nullptr;
 	}
@@ -163,6 +168,8 @@ namespace neo {
 	}
 
 	void Window::_GLFWPollEvents(void)
-	{ glfwPollEvents(); }
+	{
+		glfwPollEvents();
+	}
 
 } // namespace neo

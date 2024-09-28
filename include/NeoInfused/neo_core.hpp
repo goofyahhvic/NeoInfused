@@ -18,7 +18,7 @@
 #define NEO_FONT_BOLD "\x1B[1m"           // bold
 #define NEO_FONT_UNDL "\x1B[4m"           // underline
 
-#define NEO_FORMAT(...) std::format(__VA_ARGS__)
+#define NEO_FORMAT std::format
 
 #if !defined(NEO_CONFIG_DIST)
 
@@ -74,17 +74,18 @@
 
 namespace neo {
 	using byte_t = char;
-	union color32 {
-		struct { uint8_t r, g, b, a; };
-		uint32_t rgba;
-	};
+	using ubyte_t = unsigned char;
 
-	enum class Type {
+	enum class Type: unsigned char {
 		None = 0,
-		Byte = 0x1400,  UByte = 0x1401,
-		Short = 0x1402, UShort = 0x1403,
-		Int = 0x1404,   UInt = 0x1405,
-		Float = 0x1406, Double = 0x140A
+		Byte,        UByte,
+		Char = Byte, UChar = UByte,
+		Int8 = Byte, UInt8 = UByte,
+		Int16,       UInt16,
+		Int32,       UInt32,
+		Int64,       UInt64,
+		Float,
+		Double
 	};
 	uint32_t SizeOf(Type type);
 
@@ -94,14 +95,6 @@ namespace neo {
 
 	inline int32_t Round32(float num) { return (int32_t)floor(num + 0.5f); }
 	inline int64_t Round64(double num) { return (int64_t)floor(num + 0.5f); }
-
-	class GLFWError : public std::exception {
-	public:
-		GLFWError(int error, const char* description) : m_Msg(NEO_FORMAT("GLFW Error #{0}: {1}", error, description)) {}
-		inline const char* what(void) const noexcept override { return m_Msg.c_str(); }
-	private:
-		std::string m_Msg;
-	};
 
 	class Core {
 	public:
@@ -113,6 +106,7 @@ namespace neo {
 		char** const argv;
 		const std::string exec_path, exec_dir, exec_name, version;
 	};
+	using Init = Core;
 } // namespace neo
 
 #endif // NEO_CORE_HPP
