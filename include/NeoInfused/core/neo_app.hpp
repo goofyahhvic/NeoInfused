@@ -8,21 +8,20 @@
 #include "../data_structures/neo_scene-storage.hpp"
 
 namespace neo {
+	[[nodiscard]] inline WindowStorage& GetWindows(void);
+
 	class App {
 	public:
 		typedef bool (*LoopConditionFn)(void);
 	public:
-		App(int argc, char** argv, const glm::vec4& clear_color = { 0.12f, 0.12f, 0.18f, 1.0f });
-		~App(void) noexcept(false) = default;
+		App(void);
+		~App(void) noexcept(false);
 		void run(void);
 
 		[[nodiscard]] static App& Get(void);
-	private:
-		Core m_Core;
 	public:
-		glm::vec4 clear_color;
 		WindowStorage windows;
-		LoopConditionFn loop_condition;
+		LoopConditionFn loop_condition = [](void) -> bool { return !GetWindows().empty(); };
 		EventQueue event_queue;
 		LayerStorage layers;
 		SceneStorage scenes;

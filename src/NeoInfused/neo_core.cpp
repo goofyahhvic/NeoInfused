@@ -58,22 +58,37 @@ namespace neo {
 	#endif
 	}
 
-#define INDEX exec_path.find_last_of('/')
+#define INDEX initData->exec_path.find_last_of('/')
 
-	static Core* _This = nullptr;
-	Core& Core::Get(void) { return *_This; }
+	struct InitData {
+		int argc;
+		char** argv;
+		inf::RendererAPI api;
+		std::string exec_path;
+		std::string_view version, exec_dir, exec_name;
+	};
+	static InitData* initData = nullptr;
 
-	Core::Core(int argc, char** argv)
-	: argc(argc), argv(argv), version("Pre-Alpha"),
-	exec_path(getExecPath()), exec_dir(exec_path.substr(0, INDEX+1)),
-	exec_name(exec_path.substr(INDEX+1, exec_path.find_last_of('.')))
+	void Init(const init& init)
 	{
-		NEO_ASSERT(!_This, "Already has initialized NeoInfused!");
-		_This = this;
+		NEO_ASSERT(!initData, "Already has initialized NeoInfused!");
+		initData = (InitData*)malloc(sizeof(InitData));
+
+		initData->argc = init.argc;
+		initData->argv = init.argv;
+		initData->api = init.api;
+
+		new (&(initData->exec_path)) std::string(getExecPath());
+		new (&(initData->version))   std::string_view("Pre-Alpha");
+		new (&(initData->exec_dir))  std::string_view(initData->exec_path.substr(0, INDEX + 1));
+		new (&(initData->exec_name)) std::string_view(initData->exec_path.substr(INDEX + 1, initData->exec_path.find_last_of('.')));
+
 	#if !defined (NEO_CONFIG_DIST)
 		NEO_DATE_TIME_LOG << '\n';
 	#endif // NEO_CONFIG_DIST   
-		NEO_INFO_LOG("Initializing NeoInfused version {}", version);
+		NEO_INFO_LOG("Initializing NeoInfused version {}", initData->version);
+
+		inf::Loader::Load(init.api);
 
 		glfwSetErrorCallback([](int error, const char* description)
 		{
@@ -83,16 +98,33 @@ namespace neo {
 		NEO_ASSERT_FUNC(glfwInit(), "Failed to initialize glfw!");
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	}
-
-	Core::~Core(void)
+	void Shutdown(void)
 	{
 		NEO_INFO_LOG("Shutting down NeoInfused, Goodbye!");
 
 		inf::ShutdownAPI();
 		glfwTerminate();
 
-		_This = nullptr;
-		NEO_LOG_NEWLINE;
+		inf::Loader::Unload();
+
+		initData->exec_path.~basic_string();
+		delete initData;
+		initData = nullptr;
+	}
+
+	const std::string& ExecPath(void)
+	{
+		return initData->exec_path;
+	}
+
+	std::string_view ExecDir(void)
+	{
+		return initData->exec_dir;
+	}
+
+	std::string_view ExecName(void)
+	{
+		return initData->exec_name;
 	}
 
 } // namespace neo

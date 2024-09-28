@@ -5,14 +5,12 @@ namespace neo {
 	static App* _This = nullptr;
 	App& App::Get(void) { return *_This; }
 
-	App::App(int argc, char** argv, const glm::vec4& clear_color)
-	: clear_color(clear_color),
-	loop_condition([](void) -> bool { return !GetWindows().empty(); }),
-	m_Core(argc, argv)
+	App::App(void)
 	{
 		NEO_ASSERT(!_This, "Cannot create multiple instances of App!");
 		_This = this;
 	}
+	App::~App(void) noexcept(false) { _This = nullptr; }
 
 	void App::run(void)
 	{

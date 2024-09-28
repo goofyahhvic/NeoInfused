@@ -74,6 +74,8 @@
 
 using namespace std::chrono_literals;
 
+namespace inf { using RendererAPI = unsigned char; }
+
 namespace neo {
 	using byte_t = char;
 	using ubyte_t = unsigned char;
@@ -98,17 +100,18 @@ namespace neo {
 	inline int32_t Round32(float num) { return (int32_t)floor(num + 0.5f); }
 	inline int64_t Round64(double num) { return (int64_t)floor(num + 0.5f); }
 
-	class Core {
-	public:
-		Core(int argc, char** argv);
-		~Core(void);
-		[[nodiscard]] static Core& Get(void);
-	public:
-		const int argc;
-		char** const argv;
-		const std::string exec_path, exec_dir, exec_name, version;
+	struct init {
+		int argc;
+		char** argv;
+		inf::RendererAPI api;
 	};
-	using Init = Core;
+	void Init(const init& init);
+	void Shutdown(void);
+
+	const std::string& ExecPath(void);
+	std::string_view ExecDir(void);
+	std::string_view ExecName(void);
+
 } // namespace neo
 
 #endif // NEO_CORE_HPP

@@ -7,7 +7,6 @@
 #define INF_API_VULKAN 1
 
 namespace inf {
-	using RendererAPI = unsigned char;
 	// class that *loads* a rendering api library
 	class Loader {
 	public:
