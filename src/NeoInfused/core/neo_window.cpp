@@ -51,7 +51,7 @@ namespace neo {
 			switch (action)
 			{
 			case GLFW_PRESS:
-				GetEventHandler().push_event(KeyPressedEvent{
+				GetEventQueue().emplace(KeyPressedEvent{
 					NEO_KEY_PRESSED_EVENT,
 					((Window*)glfwGetWindowUserPointer(window))->m_Id,
 					false,
@@ -60,7 +60,7 @@ namespace neo {
 				});
 				break;
 			case GLFW_REPEAT:
-				GetEventHandler().push_event(KeyPressedEvent{
+				GetEventQueue().emplace(KeyPressedEvent{
 					NEO_KEY_PRESSED_EVENT,
 					((Window*)glfwGetWindowUserPointer(window))->m_Id,
 					false,
@@ -69,7 +69,7 @@ namespace neo {
 				});
 				break;
 			case GLFW_RELEASE:
-				GetEventHandler().push_event(KeyReleasedEvent{
+				GetEventQueue().emplace(KeyReleasedEvent{
 					NEO_KEY_RELEASED_EVENT,
 					((Window*)glfwGetWindowUserPointer(window))->m_Id,
 					false,
@@ -83,7 +83,7 @@ namespace neo {
 			Window* __window = (Window*)glfwGetWindowUserPointer(window);
 			__window->m_Width = width;
 			__window->m_Height = height;
-			GetEventHandler().push_event(WindowResizeEvent{
+			GetEventQueue().emplace(WindowResizeEvent{
 				NEO_WINDOW_RESIZE_EVENT,
 				__window->m_Id,
 				false,
@@ -94,7 +94,7 @@ namespace neo {
 		{
 			Window* __window = (Window*)glfwGetWindowUserPointer(window);
 			__window->should_close = true;
-			GetEventHandler().push_event(WindowCloseEvent{
+			GetEventQueue().emplace(WindowCloseEvent{
 				NEO_WINDOW_CLOSE_EVENT,
 				__window->m_Id,
 				false
@@ -106,7 +106,7 @@ namespace neo {
 			if (focus == GLFW_TRUE)
 			{
 				__window->m_Focus = true;
-				GetEventHandler().push_event(WindowFocusEvent{
+				GetEventQueue().emplace(WindowFocusEvent{
 					NEO_WINDOW_FOCUS_EVENT,
 					__window->m_Id,
 					false
@@ -114,7 +114,7 @@ namespace neo {
 			} else
 			{
 				__window->m_Focus = false;
-				GetEventHandler().push_event(WindowLostFocusEvent{
+				GetEventQueue().emplace(WindowLostFocusEvent{
 					NEO_WINDOW_LOST_FOCUS_EVENT,
 					__window->m_Id,
 					false
@@ -125,7 +125,7 @@ namespace neo {
 		glfwSetCursorPosCallback(_window, [](GLFWwindow* window, double x, double y)
 		{
 			Window* __window = (Window*)glfwGetWindowUserPointer(window);
-			GetEventHandler().push_event(MouseMovedEvent{
+			GetEventQueue().emplace(MouseMovedEvent{
 				NEO_MOUSE_MOVED_EVENT,
 				((Window*)glfwGetWindowUserPointer(window))->m_Id,
 				false,
@@ -134,7 +134,7 @@ namespace neo {
 		});
 		glfwSetScrollCallback(_window, [](GLFWwindow* window, double x_offset, double y_offset)
 		{
-			GetEventHandler().push_event(MouseScrolledEvent{
+			GetEventQueue().emplace(MouseScrolledEvent{
 				NEO_MOUSE_SCROLLED_EVENT,
 				((Window*)glfwGetWindowUserPointer(window))->m_Id,
 				false,
@@ -146,7 +146,7 @@ namespace neo {
 			switch (action)
 			{
 			case GLFW_PRESS:
-				GetEventHandler().push_event(MouseButtonPressedEvent{
+				GetEventQueue().emplace(MouseButtonPressedEvent{
 					NEO_MOUSE_BUTTON_PRESSED_EVENT,
 					((Window*)glfwGetWindowUserPointer(window))->m_Id,
 					false,
@@ -154,7 +154,7 @@ namespace neo {
 				});
 				break;
 			case GLFW_RELEASE:
-				GetEventHandler().push_event(MouseButtonReleasedEvent{
+				GetEventQueue().emplace(MouseButtonReleasedEvent{
 					NEO_MOUSE_BUTTON_RELEASED_EVENT,
 					((Window*)glfwGetWindowUserPointer(window))->m_Id,
 					false,

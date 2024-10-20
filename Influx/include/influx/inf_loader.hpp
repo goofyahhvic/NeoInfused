@@ -6,6 +6,8 @@
 #define INF_API_NONE 0
 #define INF_API_VULKAN 1
 
+#include "inf_error.hpp"
+
 namespace inf {
 	// class that *loads* a rendering api library
 	class Loader {
@@ -26,11 +28,14 @@ namespace inf {
 
 		struct WindowSurface;
 
-		typedef WindowSurface* (*CreateWindowSurfaceFN)(GLFWwindow*);
+		typedef WindowSurface* (*CreateWindowSurfaceFN)(GLFWwindow* window);
 		static inline CreateWindowSurfaceFN create_window_surface = nullptr;
 
-		typedef void (*DestroyWindowSurfaceFN)(WindowSurface*);
+		typedef void (*DestroyWindowSurfaceFN)(WindowSurface* surface);
 		static inline DestroyWindowSurfaceFN destroy_window_surface = nullptr;
+	private:
+		typedef void (*SetErrorCallbackFn)(ErrorCallbackFn error_callback);
+		static inline SetErrorCallbackFn s_SetErrorCallback = nullptr;
 	private:
 		static inline RendererAPI s_RendererAPI = INF_API_NONE;
 		static inline void* s_CurrentLibrary = nullptr;

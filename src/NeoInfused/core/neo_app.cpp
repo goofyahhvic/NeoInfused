@@ -2,10 +2,17 @@
 #include "NeoInfused/core/neo_app.hpp"
 
 namespace neo {
+	void PollEvents(EventQueue& queue)
+	{
+		queue.resize(0);
+		glfwPollEvents();
+	}
+
 	static App* _This = nullptr;
 	App& App::Get(void) { return *_This; }
 
-	App::App(void)
+	App::App(LoopConditionFn loop_condition)
+	: event_queue(64), loop_condition(loop_condition)
 	{
 		NEO_ASSERT(!_This, "Cannot create multiple instances of App!");
 		_This = this;
@@ -24,7 +31,8 @@ namespace neo {
 				if ((*it)->state & NEO_LAYERSTATE_VISIBLE)
 					(*it)->draw();
 
-			for (Event& e : event_queue.poll_events())
+			PollEvents(event_queue);
+			for (Event& e : event_queue)
 			{
 				if (e.type == NEO_WINDOW_CLOSE_EVENT)
 					windows.destroy_window(e.window_id);

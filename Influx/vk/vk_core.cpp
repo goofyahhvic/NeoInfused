@@ -1,6 +1,8 @@
 #include "vk_pch.hpp"
 #include "vk_core.hpp"
 
+#include "vk_swapchain-support.hpp"
+
 static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
     VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
     VkDebugUtilsMessageTypeFlagsEXT messageType,
@@ -36,7 +38,7 @@ static void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMesse
 }
 
 namespace vk {
-    static std::vector<const char*> extensions,
+    static neo::Arena<const char*> extensions,
         validationLayers = { "VK_LAYER_KHRONOS_validation" },
         requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
@@ -45,8 +47,8 @@ namespace vk {
         uint32_t layer_count;
         vkEnumerateInstanceLayerProperties(&layer_count, nullptr);
 
-        std::vector<VkLayerProperties> available_layers(layer_count);
-        vkEnumerateInstanceLayerProperties(&layer_count, available_layers.data());
+        neo::Arena<VkLayerProperties> available_layers(layer_count, layer_count);
+        vkEnumerateInstanceLayerProperties(&layer_count, available_layers.ptr());
 
         for (const char* requested_layer : validationLayers)
         {
@@ -74,19 +76,13 @@ namespace vk {
         create_info->pfnUserCallback = debugCallback;
     }
 
-    struct QueueFamilyIndices {
-        uint32_t graphics = UINT32_MAX,
-                 present  = UINT32_MAX;
-
-        inline bool complete(void) const { return graphics != UINT32_MAX && present != UINT32_MAX ; }
-    };
-    static QueueFamilyIndices getQueueFamilies(VkPhysicalDevice device)
+    QueueFamilyIndices Core::GetQueueFamilies(VkPhysicalDevice device)
     {
         uint32_t queue_family_count = 0;
         vkGetPhysicalDeviceQueueFamilyProperties(device, &queue_family_count, nullptr);
 
-        VkQueueFamilyProperties* queue_families = new VkQueueFamilyProperties[queue_family_count];
-        vkGetPhysicalDeviceQueueFamilyProperties(device, &queue_family_count, queue_families);
+        neo::Arena<VkQueueFamilyProperties> queue_families(queue_family_count, queue_family_count);
+        vkGetPhysicalDeviceQueueFamilyProperties(device, &queue_family_count, queue_families.ptr());
 
         QueueFamilyIndices indices;
         for (uint32_t i = 0; i < queue_family_count; i++)
@@ -95,14 +91,13 @@ namespace vk {
                 indices.graphics = i;
 
             VkBool32 present_support = false;
-            vkGetPhysicalDeviceSurfaceSupportKHR(device, i, Core::m_InitSurface, &present_support);
+            vkGetPhysicalDeviceSurfaceSupportKHR(device, i, Core::g_InitSurface, &present_support);
             if (present_support)
                 indices.present = i;
 
-            if (indices.complete())
+            if (indices)
                 break;
         }
-        delete[] queue_families;
 
         return indices;
     }
@@ -112,14 +107,18 @@ namespace vk {
         uint32_t available_extensions_count;
         vkEnumerateDeviceExtensionProperties(device, nullptr, &available_extensions_count, nullptr);
 
-        VkExtensionProperties* available_extensions = new VkExtensionProperties[available_extensions_count];
-        vkEnumerateDeviceExtensionProperties(device, nullptr, &available_extensions_count, available_extensions);
+        neo::Arena<VkExtensionProperties> available_extensions(available_extensions_count, available_extensions_count);
+        vkEnumerateDeviceExtensionProperties(device, nullptr, &available_extensions_count, available_extensions.ptr());
 
-        std::unordered_set<std::string> required_extensions(requiredDeviceExtensions.begin(), requiredDeviceExtensions.end());
-        for (uint32_t i = 0; i < available_extensions_count; i++)
-            required_extensions.erase(available_extensions[i].extensionName);
+        neo::Arena<std::string> required_extensions(requiredDeviceExtensions.capacity());
+        for (const char* required_extension : requiredDeviceExtensions)
+        {
+            required_extensions.emplace(required_extension);
+            for (const VkExtensionProperties& available_extension : available_extensions)
+                if (required_extensions.last() == available_extension.extensionName)
+                    required_extensions.pop();
+        }
 
-        delete[] available_extensions;
         return required_extensions.empty();
     }
 
@@ -137,10 +136,13 @@ namespace vk {
         if (!deviceFeatures.geometryShader)
             return 0;
 
-        if (!getQueueFamilies(device).complete())
+        if (!Core::GetQueueFamilies(device))
             return 0;
 
         if (!areRequiredDeviceExtensionsSupported(device))
+            return 0;
+
+        if (!SwapchainSupport(device, Core::g_InitSurface))
             return 0;
 
         if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
@@ -153,17 +155,18 @@ namespace vk {
     {
         glfwSetErrorCallback([](int error, const char* description)
         {
-            VK_ERROR_LOG("GLFW Error#{}: {}", error, description);
-            throw std::runtime_error(NEO_FORMAT("GLFW Error #{}", error));
+            g_ErrorCallback(INF_GLFW_ERROR, description, nullptr);
         });
-        NEO_ASSERT_FUNC(glfwInit(), "Failed to initialize glfw!");
+        if (!glfwInit())
+            g_ErrorCallback(INF_GLFW_ERROR, "Failed to initialize GLFW!", nullptr);
+
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     }
 
     void Core::CreateInstance(void)
     {
         if (VALIDATION_LAYERS_ENABLED && !validationLayersSupported())
-            throw std::runtime_error("Validation Layers requested, but not supported!");
+            g_ErrorCallback(INF_ERROR_NONE, "Validation Layers requested, but not supported!", nullptr);
 
         VkApplicationInfo app_info {};
         app_info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -176,14 +179,14 @@ namespace vk {
         {
             uint32_t required_extension_count = 0;
             const char** required_extensions = glfwGetRequiredInstanceExtensions(&required_extension_count);
-            extensions = std::vector<const char*>(required_extensions, required_extensions + required_extension_count);
+            extensions = neo::Arena<const char*>(copy, required_extensions, required_extension_count);
         }
         VkDebugUtilsMessengerCreateInfoEXT debug_create_info{};
         if (VALIDATION_LAYERS_ENABLED)
         {
-            extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+            extensions.emplace(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
             create_info.enabledLayerCount = (uint32_t)validationLayers.size();
-            create_info.ppEnabledLayerNames = &validationLayers[0];
+            create_info.ppEnabledLayerNames = validationLayers.ptr();
 
             populateDebugMessengerCreateInfo(&debug_create_info);
             create_info.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debug_create_info;
@@ -192,10 +195,10 @@ namespace vk {
             create_info.enabledLayerCount = 0;
         }
         create_info.enabledExtensionCount = (uint32_t)extensions.size();
-        create_info.ppEnabledExtensionNames = &extensions[0];
+        create_info.ppEnabledExtensionNames = extensions.ptr();
 
-        if (vkCreateInstance(&create_info, nullptr, &m_Instance) != VK_SUCCESS)
-            throw std::runtime_error("failed to create instance!");
+        if (vkCreateInstance(&create_info, nullptr, &g_Instance) != VK_SUCCESS)
+            g_ErrorCallback(INF_ERROR_NONE, "Failed to create instance!", nullptr);
     }
 
     void Core::CreateDebugMessenger(void)
@@ -206,27 +209,27 @@ namespace vk {
         VkDebugUtilsMessengerCreateInfoEXT create_info{};
         populateDebugMessengerCreateInfo(&create_info);
 
-        if (CreateDebugUtilsMessengerEXT(m_Instance, &create_info, nullptr, &m_DebugMessenger) != VK_SUCCESS)
-            throw std::runtime_error("failed to set up debug messenger!");
+        if (CreateDebugUtilsMessengerEXT(g_Instance, &create_info, nullptr, &g_DebugMessenger) != VK_SUCCESS)
+            g_ErrorCallback(INF_ERROR_NONE, "Failed to set up debug messenger!", nullptr);
     }
 
     void Core::CreateInitializationSurface(void)
     {
         GLFWwindow* init_window = glfwCreateWindow(1, 1, "", nullptr, nullptr);
-        if (glfwCreateWindowSurface(m_Instance, init_window, nullptr, &m_InitSurface) != VK_SUCCESS)
-            throw std::runtime_error("Failed to create Vulkan initialization surface!");
+        if (glfwCreateWindowSurface(g_Instance, init_window, nullptr, &g_InitSurface) != VK_SUCCESS)
+            g_ErrorCallback(INF_ERROR_NONE, "Failed to create Vulkan initialization surface!", nullptr);
         glfwDestroyWindow(init_window);
     }
 
     void Core::PickPhysicalDevice(void)
     {
         uint32_t device_count;
-        vkEnumeratePhysicalDevices(m_Instance, &device_count, nullptr);
+        vkEnumeratePhysicalDevices(g_Instance, &device_count, nullptr);
         if (!device_count)
-            throw std::runtime_error("No GPUs with Vulkan support!");
+            g_ErrorCallback(INF_ERROR_NONE, "No GPUs with Vulkan support!", nullptr);
 
-        VkPhysicalDevice* available_devices = new VkPhysicalDevice[device_count];
-        vkEnumeratePhysicalDevices(m_Instance, &device_count, available_devices);
+        neo::Arena<VkPhysicalDevice> available_devices(device_count, device_count);
+        vkEnumeratePhysicalDevices(g_Instance, &device_count, available_devices.ptr());
 
         int32_t high_score = 0;
         for (uint32_t i = 0; i < device_count; i++)
@@ -234,14 +237,12 @@ namespace vk {
             if (ratePhysicalDevice(available_devices[i]) > high_score)
             {
                 high_score = ratePhysicalDevice(available_devices[i]);
-                m_PhysicalDevice = available_devices[i];
+                g_PhysicalDevice = available_devices[i];
             }
         }
 
-        delete[] available_devices;
-
         if (!high_score)
-            throw std::runtime_error("No suitable GPU found!");
+            g_ErrorCallback(INF_ERROR_NONE, "No suitable GPU found!", nullptr);
     }
 
     static const float priorities[] = { 1.0f };
@@ -257,31 +258,35 @@ namespace vk {
 
     void Core::CreateLogicalDevice(void)
     {
-        QueueFamilyIndices indices = getQueueFamilies(m_PhysicalDevice);
-        std::vector<VkDeviceQueueCreateInfo> queue_create_infos;
-        queue_create_infos.push_back(createQueueCreateInfo(indices.graphics));
+        QueueFamilyIndices indices = GetQueueFamilies(g_PhysicalDevice);
+        neo::Arena<VkDeviceQueueCreateInfo> queue_create_infos;
+        queue_create_infos.emplace(createQueueCreateInfo(indices.graphics));
         if (indices.graphics != indices.present)
-            queue_create_infos.push_back(createQueueCreateInfo(indices.present));
+            queue_create_infos.emplace(createQueueCreateInfo(indices.present));
 
         VkDeviceCreateInfo create_info = {};
         create_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-        create_info.pQueueCreateInfos = &queue_create_infos[0];
         create_info.queueCreateInfoCount = (uint32_t)queue_create_infos.size();
+        create_info.pQueueCreateInfos = queue_create_infos.ptr();
 
         VkPhysicalDeviceFeatures device_features = {};
         create_info.pEnabledFeatures = &device_features;
 
         create_info.enabledExtensionCount = (uint32_t)requiredDeviceExtensions.size();
-        create_info.ppEnabledExtensionNames = &requiredDeviceExtensions[0];
+        create_info.ppEnabledExtensionNames = requiredDeviceExtensions.ptr();
 
-        if (vkCreateDevice(m_PhysicalDevice, &create_info, nullptr, &m_LogicalDevice) != VK_SUCCESS)
-            throw std::runtime_error("Failed to create logical device!");
+        if (vkCreateDevice(g_PhysicalDevice, &create_info, nullptr, &g_LogicalDevice) != VK_SUCCESS)
+            g_ErrorCallback(INF_ERROR_NONE, "Failed to create logical device!", nullptr);
 
-        vkGetDeviceQueue(m_LogicalDevice, indices.graphics, 0, &m_GraphicsQueue);
-        vkGetDeviceQueue(m_LogicalDevice, indices.present,  0, &m_PresentQueue);
+        vkGetDeviceQueue(g_LogicalDevice, indices.graphics, 0, &g_GraphicsQueue);
+        vkGetDeviceQueue(g_LogicalDevice, indices.present,  0, &g_PresentQueue);
     }
 }
 using namespace vk;
+EXPORT_FN void SetErrorCallback(ErrorCallbackFn error_callback)
+{
+    g_ErrorCallback = error_callback;
+}
 
 EXPORT_FN void InitAPI(void)
 {
@@ -295,10 +300,10 @@ EXPORT_FN void InitAPI(void)
 
 EXPORT_FN void ShutdownAPI(void)
 {
-    vkDestroyDevice(Core::m_LogicalDevice, nullptr);
-    vkDestroySurfaceKHR(Core::m_Instance, Core::m_InitSurface, nullptr);
+    vkDestroyDevice(Core::g_LogicalDevice, nullptr);
+    vkDestroySurfaceKHR(Core::g_Instance, Core::g_InitSurface, nullptr);
     if (Core::VALIDATION_LAYERS_ENABLED)
-        DestroyDebugUtilsMessengerEXT(Core::m_Instance, Core::m_DebugMessenger, nullptr);
-    vkDestroyInstance(Core::m_Instance, nullptr);
+        DestroyDebugUtilsMessengerEXT(Core::g_Instance, Core::g_DebugMessenger, nullptr);
+    vkDestroyInstance(Core::g_Instance, nullptr);
     glfwTerminate();
 }

@@ -31,8 +31,18 @@
 #endif // NEO_CONFIG_DIST
 #define VK_LOG_CONTINUE "\n\t\t"
 
+#include "influx/inf_error.hpp"
+
 namespace vk {
+    struct QueueFamilyIndices {
+        uint32_t graphics = UINT32_MAX,
+                 present = UINT32_MAX;
+
+        inline operator bool (void) const { return graphics != UINT32_MAX && present != UINT32_MAX; }
+    };
+
     namespace Core {
+
         void InitializeGLFW(void);
         void CreateInstance(void);
         void CreateDebugMessenger(void);
@@ -45,15 +55,20 @@ namespace vk {
     #else
         inline constexpr bool VALIDATION_LAYERS_ENABLED = false;
     #endif
-        inline VkInstance               m_Instance       = VK_NULL_HANDLE;
-        inline VkDebugUtilsMessengerEXT m_DebugMessenger = VK_NULL_HANDLE;
-        inline VkSurfaceKHR             m_InitSurface    = VK_NULL_HANDLE;
-        inline VkPhysicalDevice         m_PhysicalDevice = VK_NULL_HANDLE;
-        inline VkDevice                 m_LogicalDevice  = VK_NULL_HANDLE;
+        inline VkInstance               g_Instance       = VK_NULL_HANDLE;
+        inline VkDebugUtilsMessengerEXT g_DebugMessenger = VK_NULL_HANDLE;
+        inline VkSurfaceKHR             g_InitSurface    = VK_NULL_HANDLE;
+        inline VkPhysicalDevice         g_PhysicalDevice = VK_NULL_HANDLE;
+        inline VkDevice                 g_LogicalDevice  = VK_NULL_HANDLE;
 
-        inline VkQueue m_GraphicsQueue = VK_NULL_HANDLE;
-        inline VkQueue m_PresentQueue  = VK_NULL_HANDLE;
+        QueueFamilyIndices GetQueueFamilies(VkPhysicalDevice device);
+
+        inline VkQueue g_GraphicsQueue = VK_NULL_HANDLE;
+        inline VkQueue g_PresentQueue  = VK_NULL_HANDLE;
     }
+
+    using ErrorCallbackFn = inf::ErrorCallbackFn;
+    inline ErrorCallbackFn g_ErrorCallback = nullptr;
 }
 
 #endif // VK_CORE_HPP

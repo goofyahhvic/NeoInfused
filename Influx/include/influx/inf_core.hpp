@@ -1,9 +1,9 @@
 #if !defined(INF_CORE_HPP)
 #define INF_CORE_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
-namespace {
+namespace inf {
 	union color32 {
 		struct { uint8_t r, g, b, a; };
 		uint32_t rgba;

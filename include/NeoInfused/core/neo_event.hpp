@@ -17,10 +17,6 @@ enum neo_EventType {
 
 namespace neo {
 	using EventType = neo_EventType;
-	struct Event {
-		NEO_EVENT_BASE(NEO_EVENT_NONE);
-		uint32_t padding1 = 0, padding2 = 0;
-	};
 
 	struct KeyPressedEvent {
 		NEO_EVENT_BASE(NEO_KEY_PRESSED_EVENT);
@@ -74,6 +70,24 @@ namespace neo {
 		NEO_EVENT_BASE(NEO_MOUSE_BUTTON_RELEASED_EVENT);
 		uint8_t button;
 		uint32_t padding = 0;
+	};
+
+	struct Event {
+		uint8_t type;
+		uint32_t window_id;
+		bool handled;
+		uint32_t padding1, padding2;
+		inline Event(Event&& e) { memcpy(this, &e, sizeof(Event)); }
+		inline Event(KeyPressedEvent&& e) { memcpy(this, &e, sizeof(Event)); }
+		inline Event(KeyReleasedEvent&& e) { memcpy(this, &e, sizeof(Event)); }
+		inline Event(WindowResizeEvent&& e) { memcpy(this, &e, sizeof(Event)); }
+		inline Event(WindowCloseEvent&& e) { memcpy(this, &e, sizeof(Event)); }
+		inline Event(WindowFocusEvent&& e) { memcpy(this, &e, sizeof(Event)); }
+		inline Event(WindowLostFocusEvent&& e) { memcpy(this, &e, sizeof(Event)); }
+		inline Event(MouseMovedEvent&& e) { memcpy(this, &e, sizeof(Event)); }
+		inline Event(MouseScrolledEvent&& e) { memcpy(this, &e, sizeof(Event)); }
+		inline Event(MouseButtonPressedEvent&& e) { memcpy(this, &e, sizeof(Event)); }
+		inline Event(MouseButtonReleasedEvent&& e) { memcpy(this, &e, sizeof(Event)); }
 	};
 } // namespace neo
 

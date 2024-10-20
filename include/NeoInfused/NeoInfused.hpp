@@ -9,7 +9,7 @@
 #include "data_structures/neo_window-storage.hpp"
 #include "core/neo_layer.hpp"
 #include "data_structures/neo_layer-storage.hpp"
-#include "data_structures/neo_typed-arena.hpp"
+#include "template/neo_typed-arena.hpp"
 #include "core/neo_app.hpp"
 
 #endif // NEOINFUSED_HPP

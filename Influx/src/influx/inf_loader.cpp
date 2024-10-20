@@ -45,6 +45,12 @@ namespace inf {
 		create_window_surface  =  (CreateWindowSurfaceFN)GET_FN("CreateWindowSurface");
 		destroy_window_surface = (DestroyWindowSurfaceFN)GET_FN("DestroyWindowSurface");
 
+		s_SetErrorCallback = (SetErrorCallbackFn)GET_FN("SetErrorCallback");
+		s_SetErrorCallback([](ErrorType type, const char* msg, void* data)
+		{
+			throw std::runtime_error(msg);
+		});
+
 		s_RendererAPI = api;
 	}
 }

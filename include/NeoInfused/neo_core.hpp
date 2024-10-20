@@ -76,9 +76,15 @@ using namespace std::chrono_literals;
 
 namespace inf { using RendererAPI = unsigned char; }
 
+enum Copy { copy };
+enum Move { move };
+enum Set  { set };
+
+enum CreateElements { create_elements };
+
+
 namespace neo {
-	using byte_t = char;
-	using ubyte_t = unsigned char;
+	using byte_t = unsigned char;
 
 	enum class Type: unsigned char {
 		None = 0,
@@ -93,12 +99,36 @@ namespace neo {
 	};
 	uint32_t SizeOf(Type type);
 
+	template<typename T>
+	inline T* malloc_t(size_t size)
+	{
+		return (T*)malloc(size * sizeof(T));
+	}
+
+	template<typename T>
+	inline T* realloc_t(T* buffer, size_t size)
+	{
+		return (T*)realloc(buffer, size * sizeof(T));
+	}
+
 	std::string HoursMinutesSeconds(void);
 	std::string YearMonthDay(void);
 	std::string DateAndTime(void);
 
 	inline int32_t Round32(float num) { return (int32_t)floor(num + 0.5f); }
 	inline int64_t Round64(double num) { return (int64_t)floor(num + 0.5f); }
+
+	template<typename T>
+	T::reverse_iterator Reverse(typename T::iterator it) { return it.get(); }
+
+	template<typename T>
+	T::iterator Reverse(typename T::reverse_iterator it) { return it.get(); }
+
+	template<typename T>
+	T::const_reverse_iterator Reverse(typename T::const_iterator it) { return it.get(); }
+
+	template<typename T>
+	T::const_iterator Reverse(typename T::const_reverse_iterator it) { return it.get(); }
 
 	struct init {
 		int argc;
