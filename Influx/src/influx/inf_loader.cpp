@@ -3,21 +3,21 @@
 
 namespace inf {
 #if defined(NEO_PLATFORM_WINDOWS)
-	#define LOAD_LIBRARY(x) s_CurrentLibrary = LoadLibraryA(x ".dll")
-	#define UNLOAD_LIBRARY() FreeLibrary((HMODULE)s_CurrentLibrary)
-	#define GET_FN(x) GetProcAddress((HMODULE)s_CurrentLibrary, x)
+	#define LOAD_LIBRARY(x) current_library = LoadLibraryA(x ".dll")
+	#define UNLOAD_LIBRARY() FreeLibrary((HMODULE)current_library)
+	#define GET_FN(x) GetProcAddress((HMODULE)current_library, x)
 #elif defined(NEO_PLATFORM_LINUX)
 	#define LOAD_LIBRARY(x) s_CurrentLibrary = dlopen(std::format("{}/lib" x ".so", std::filesystem::canonical("/proc/self/exe").parent_path().string()).c_str(), RTLD_LAZY)
 	#define UNLOAD_LIBRARY() dlclose(s_CurrentLibrary)
 	#define GET_FN(x) dlsym(s_CurrentLibrary, x)
 #endif
 
-	void Loader::Load(RendererAPI api)
+	void Loader::Load(renderer_api_t api)
 	{
-		s_RendererAPI = INF_API_NONE;
+		renderer_api = INF_API_NONE;
 		if (!api)
 		{
-			if (!s_CurrentLibrary)
+			if (!current_library)
 				return;
 
 			init_api = nullptr;
@@ -26,10 +26,10 @@ namespace inf {
 			destroy_window_surface = nullptr;
 
 			UNLOAD_LIBRARY();
-			s_CurrentLibrary = nullptr;
+			current_library = nullptr;
 			return;
 		}
-		if (s_CurrentLibrary)
+		if (current_library)
 			UNLOAD_LIBRARY();
 
 		if (api == INF_API_VULKAN)
@@ -37,20 +37,20 @@ namespace inf {
 		else
 			throw std::runtime_error("unknown rendering api requested!");
 
-		NEO_ASSERT(s_CurrentLibrary, "Could not load the requested renderer api library!");
+		NEO_ASSERT(current_library, "Could not load the requested renderer api library!");
 
-		init_api     =     (InitAPIFn)GET_FN("InitAPI");
-		shutdown_api = (ShutdownAPIFn)GET_FN("ShutdownAPI");
+		init_api = (init_api_fn)GET_FN("InitAPI");
+		shutdown_api = (shutdown_api_fn)GET_FN("ShutdownAPI");
 
-		create_window_surface  =  (CreateWindowSurfaceFN)GET_FN("CreateWindowSurface");
-		destroy_window_surface = (DestroyWindowSurfaceFN)GET_FN("DestroyWindowSurface");
+		create_window_surface  =  (create_window_surface_fn)GET_FN("CreateWindowSurface");
+		destroy_window_surface = (destroy_window_surface_fn)GET_FN("DestroyWindowSurface");
 
-		s_SetErrorCallback = (SetErrorCallbackFn)GET_FN("SetErrorCallback");
-		s_SetErrorCallback([](ErrorType type, const char* msg, void* data)
+		set_error_callback = (set_error_callback_fn)GET_FN("SetErrorCallback");
+		set_error_callback([](error::type_t type, const char* msg, void* data)
 		{
 			throw std::runtime_error(msg);
 		});
 
-		s_RendererAPI = api;
+		renderer_api = api;
 	}
 }

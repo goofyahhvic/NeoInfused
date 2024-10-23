@@ -9,36 +9,29 @@
 #include "inf_error.hpp"
 
 namespace inf {
-	// class that *loads* a rendering api library
-	class Loader {
-	public:
-		inline Loader(RendererAPI api) { Loader::Load(api); }
-		inline ~Loader(void) { Loader::Load(INF_API_NONE); }
+	namespace Loader {
+		void Load(renderer_api_t api);
+		inline void Unload(void) { Loader::Load(INF_API_NONE); };
 
-		static void Load(RendererAPI api);
-		static inline void Unload(void) { Loader::Load(INF_API_NONE); };
+		typedef void (*init_api_fn)(void);
+		inline init_api_fn init_api = nullptr;
 
-		static inline RendererAPI GetRendererAPI(void) { return s_RendererAPI; }
-	public: // loaded functions
-		typedef void (*InitAPIFn)(void);
-		static inline InitAPIFn init_api = nullptr;
+		typedef void (*shutdown_api_fn)(void);
+		inline shutdown_api_fn shutdown_api = nullptr;
 
-		typedef void (*ShutdownAPIFn)(void);
-		static inline ShutdownAPIFn shutdown_api = nullptr;
+		struct window_surface_t;
 
-		struct WindowSurface;
+		typedef window_surface_t* (*create_window_surface_fn)(GLFWwindow* window);
+		inline create_window_surface_fn create_window_surface = nullptr;
 
-		typedef WindowSurface* (*CreateWindowSurfaceFN)(GLFWwindow* window);
-		static inline CreateWindowSurfaceFN create_window_surface = nullptr;
+		typedef void (*destroy_window_surface_fn)(window_surface_t* surface);
+		inline destroy_window_surface_fn destroy_window_surface = nullptr;
 
-		typedef void (*DestroyWindowSurfaceFN)(WindowSurface* surface);
-		static inline DestroyWindowSurfaceFN destroy_window_surface = nullptr;
-	private:
-		typedef void (*SetErrorCallbackFn)(ErrorCallbackFn error_callback);
-		static inline SetErrorCallbackFn s_SetErrorCallback = nullptr;
-	private:
-		static inline RendererAPI s_RendererAPI = INF_API_NONE;
-		static inline void* s_CurrentLibrary = nullptr;
+		typedef void (*set_error_callback_fn)(error::callback_fn error_callback);
+		inline set_error_callback_fn set_error_callback = nullptr;
+
+		inline renderer_api_t renderer_api = INF_API_NONE;
+		inline void* current_library = nullptr;
 	};
 
 	inline bool g_Initialized = false;

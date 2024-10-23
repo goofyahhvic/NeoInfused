@@ -3,50 +3,47 @@
 
 #include "neo_event.hpp"
 #include "influx/inf_window-surface.hpp"
+#include "../template/neo_linked-list.hpp"
 
 struct GLFWwindow;
 namespace neo {
-	namespace gl { class Context; }
+	namespace window {
+		class window_t {
+		public:
+			void focus(void);
+			[[nodiscard]] inline bool focused(void) const { return m_Focus; }
 
-	class Window {
-	public:
-		[[nodiscard]] inline uint64_t id(void) const { return m_Id; }
+			[[nodiscard]] inline uint32_t width(void) const { return m_Width; }
+			[[nodiscard]] inline uint32_t height(void) const { return m_Height; }
+			void set_size(uint32_t width, uint32_t height);
 
-		void focus(void);
-		[[nodiscard]] inline bool focused(void) const { return m_Focus; }
+			void set_title(const char* title);
+			[[nodiscard]] const char* title(void) const;
 
-		[[nodiscard]] inline uint32_t width(void) const { return m_Width; }
-		[[nodiscard]] inline uint32_t height(void) const { return m_Height; }
-		void set_size(uint32_t width, uint32_t height);
+			inline operator bool(void) const { return m_Window; }
 
-		void set_title(const char* title);
-		[[nodiscard]] const char* title(void) const;
+			// inf::window_surface_t surface
+			// bool should_close
+		public:
+			window_t(uint32_t width, uint32_t height, const char* title);
+			void destroy(void);
+			inline ~window_t(void) { if (m_Window) this->destroy(); }
 
-		inline operator bool(void) const { return m_Window; }
+			window_t(const window_t&) = delete;
+			window_t& operator=(const window_t&) = delete;
 
-		// inf::WindowSurface surface
-		// bool should_close
-	private:
-		friend class WindowStorage;
-
-		Window(void) = default;
-		Window(uint32_t id, uint32_t width, uint32_t height, const char* title);
-		void destroy(void);
-		inline ~Window(void) { if (m_Window) this->destroy(); }
-
-		Window(const Window&) = delete;
-		Window& operator=(const Window&) = delete;
-
-		static void _SetGLFWCallbacks(GLFWwindow* _window);
-	private:
-		GLFWwindow* m_Window;
-		uint32_t m_Width, m_Height;
-		uint32_t m_Id;
-		bool m_Focus = true;
-	public:
-		inf::WindowSurface surface;
-		bool should_close = false;
-	};
+			static void _SetGLFWCallbacks(GLFWwindow* _window);
+		private:
+			GLFWwindow* m_Window;
+			uint32_t m_Width, m_Height;
+			bool m_Focus = true;
+		public:
+			inf::window_surface_t surface;
+			bool should_close = false;
+		};
+		using storage_t = list_t<window_t>;
+	} // namespace window
+	using window_t = window::window_t;
 } // namespace neo
 
 #endif // NEO_WINDOW_HPP

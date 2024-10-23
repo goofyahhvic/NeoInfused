@@ -42,7 +42,6 @@ namespace vk {
     };
 
     namespace Core {
-
         void InitializeGLFW(void);
         void CreateInstance(void);
         void CreateDebugMessenger(void);
@@ -67,8 +66,8 @@ namespace vk {
         inline VkQueue g_PresentQueue  = VK_NULL_HANDLE;
     }
 
-    using ErrorCallbackFn = inf::ErrorCallbackFn;
-    inline ErrorCallbackFn g_ErrorCallback = nullptr;
+    using error_callback_fn = inf::error::callback_fn;
+    inline error_callback_fn g_ErrorCallback = nullptr;
 }
 
 #endif // VK_CORE_HPP

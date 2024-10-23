@@ -6,18 +6,18 @@
 struct GLFWwindow;
 
 namespace inf {
-	class WindowSurface {
+	class window_surface_t {
 	public:
-		WindowSurface(GLFWwindow* window);
+		window_surface_t(GLFWwindow* window);
 		void destroy(void);
-		inline ~WindowSurface(void) { if (m_Surface) this->destroy(); }
+		inline ~window_surface_t(void) { if (m_Surface) this->destroy(); }
 
-		WindowSurface(const WindowSurface&) = delete;
-		WindowSurface& operator=(const WindowSurface&) = delete;
+		window_surface_t(const window_surface_t&) = delete;
+		window_surface_t& operator=(const window_surface_t&) = delete;
 
 		inline operator bool(void) const { return m_Surface; }
 	private:
-		Loader::WindowSurface* m_Surface;
+		Loader::window_surface_t* m_Surface;
 	};
 } // namespace inf
 

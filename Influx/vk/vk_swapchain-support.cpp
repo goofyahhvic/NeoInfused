@@ -2,7 +2,7 @@
 #include "vk_swapchain-support.hpp"
 
 namespace vk {
-	SwapchainSupport::SwapchainSupport(VkPhysicalDevice device, VkSurfaceKHR surface)
+	swapchain_support_t::swapchain_support_t(VkPhysicalDevice device, VkSurfaceKHR surface)
 	: formats(0), present_modes(0)
 	{
 		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &capabilities);

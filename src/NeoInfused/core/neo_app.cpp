@@ -2,24 +2,18 @@
 #include "NeoInfused/core/neo_app.hpp"
 
 namespace neo {
-	void PollEvents(EventQueue& queue)
-	{
-		queue.resize(0);
-		glfwPollEvents();
-	}
+	static app_t* app = nullptr;
+	app_t& app_t::Get(void) { return *app; }
 
-	static App* _This = nullptr;
-	App& App::Get(void) { return *_This; }
-
-	App::App(LoopConditionFn loop_condition)
+	app_t::app_t(loop_condition_fn loop_condition)
 	: event_queue(64), loop_condition(loop_condition)
 	{
-		NEO_ASSERT(!_This, "Cannot create multiple instances of App!");
-		_This = this;
+		NEO_ASSERT(!app, "Cannot create multiple instances of App!");
+		app = this;
 	}
-	App::~App(void) noexcept(false) { _This = nullptr; }
+	app_t::~app_t(void) noexcept(false) { app = nullptr; }
 
-	void App::run(void)
+	void app_t::run(void)
 	{
 		while (loop_condition())
 		{
@@ -31,13 +25,12 @@ namespace neo {
 				if ((*it)->state & NEO_LAYERSTATE_VISIBLE)
 					(*it)->draw();
 
-			PollEvents(event_queue);
-			for (Event& e : event_queue)
+			for (event_t& e : event::poll(event_queue))
 			{
 				if (e.type == NEO_WINDOW_CLOSE_EVENT)
-					windows.destroy_window(e.window_id);
+					windows.pop(e.window);
 
-				for (Layer* layer : layers)
+				for (layer_t* layer : layers)
 				{
 					if (!(layer->state & NEO_LAYERSTATE_ENABLED)) continue;
 					layer->on_event(e);
@@ -48,4 +41,4 @@ namespace neo {
 			std::this_thread::sleep_for(16ms);
 		}
 	}
-}
+} // namespace neo

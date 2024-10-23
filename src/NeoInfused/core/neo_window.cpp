@@ -5,73 +5,73 @@
 #include "influx/inf_loader.hpp"
 
 namespace neo {
-	Window::Window(uint32_t id, uint32_t width, uint32_t height, const char* title)
-		: m_Window(glfwCreateWindow(width, height, title, nullptr, nullptr)),
-		m_Width(width), m_Height(height), m_Id(id),
-		surface(m_Window)
+	window_t::window_t(uint32_t width, uint32_t height, const char* title)
+	: m_Window(glfwCreateWindow(width, height, title, nullptr, nullptr)),
+	m_Width(width), m_Height(height),
+	surface(m_Window)
 	{
 		NEO_ASSERT(m_Window, "Failed to create glfw window!");
 		NEO_ASSERT(surface, "Failed to create window surface!");
 		glfwSetWindowUserPointer(m_Window, this);
 
-		Window::_SetGLFWCallbacks(m_Window);
+		window_t::_SetGLFWCallbacks(m_Window);
 	}
-	void Window::destroy(void)
+	void window_t::destroy(void)
 	{
 		surface.destroy();
 		glfwDestroyWindow(m_Window);
 		m_Window = nullptr;
 	}
 
-	void Window::focus(void)
+	void window_t::focus(void)
 	{
 		glfwFocusWindow(m_Window);
 	}
 
-	void Window::set_size(uint32_t width, uint32_t height)
+	void window_t::set_size(uint32_t width, uint32_t height)
 	{
 		glfwSetWindowSize(m_Window, width, height);
 		m_Width = width;
 		m_Height = height;
 	}
-	void Window::set_title(const char* title)
+	void window_t::set_title(const char* title)
 	{
 		glfwSetWindowTitle(m_Window, title);
 	}
 
-	const char* Window::title(void) const
+	const char* window_t::title(void) const
 	{
 		return glfwGetWindowTitle(m_Window);
 	}
 
-	void Window::_SetGLFWCallbacks(GLFWwindow* _window)
+	void window_t::_SetGLFWCallbacks(GLFWwindow* _window)
 	{
 		glfwSetKeyCallback(_window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
 		{
 			switch (action)
 			{
 			case GLFW_PRESS:
-				GetEventQueue().emplace(KeyPressedEvent{
+				GetEventQueue().emplace(event::key_pressed_t{
 					NEO_KEY_PRESSED_EVENT,
-					((Window*)glfwGetWindowUserPointer(window))->m_Id,
+					((window_t*)glfwGetWindowUserPointer(window)),
 					false,
 					(uint16_t)key,
 					false
 				});
 				break;
 			case GLFW_REPEAT:
-				GetEventQueue().emplace(KeyPressedEvent{
+				GetEventQueue().emplace(event::key_pressed_t {
 					NEO_KEY_PRESSED_EVENT,
-					((Window*)glfwGetWindowUserPointer(window))->m_Id,
+					((window_t*)glfwGetWindowUserPointer(window)),
 					false,
 					(uint16_t)key,
 					true
 				});
 				break;
 			case GLFW_RELEASE:
-				GetEventQueue().emplace(KeyReleasedEvent{
+				GetEventQueue().emplace(event::key_released_t {
 					NEO_KEY_RELEASED_EVENT,
-					((Window*)glfwGetWindowUserPointer(window))->m_Id,
+					((window_t*)glfwGetWindowUserPointer(window)),
 					false,
 					(uint16_t)key
 				});
@@ -80,43 +80,43 @@ namespace neo {
 		});
 		glfwSetWindowSizeCallback(_window, [](GLFWwindow* window, int width, int height)
 		{
-			Window* __window = (Window*)glfwGetWindowUserPointer(window);
+			window_t* __window = (window_t*)glfwGetWindowUserPointer(window);
 			__window->m_Width = width;
 			__window->m_Height = height;
-			GetEventQueue().emplace(WindowResizeEvent{
+			GetEventQueue().emplace(event::window_resize_t{
 				NEO_WINDOW_RESIZE_EVENT,
-				__window->m_Id,
+				__window,
 				false,
 				(uint32_t)width, (uint32_t)height
 			});
 		});
 		glfwSetWindowCloseCallback(_window, [](GLFWwindow* window)
 		{
-			Window* __window = (Window*)glfwGetWindowUserPointer(window);
+			window_t* __window = (window_t*)glfwGetWindowUserPointer(window);
 			__window->should_close = true;
-			GetEventQueue().emplace(WindowCloseEvent{
+			GetEventQueue().emplace(event::window_close_t{
 				NEO_WINDOW_CLOSE_EVENT,
-				__window->m_Id,
+				__window,
 				false
 			});
 		});
 		glfwSetWindowFocusCallback(_window, [](GLFWwindow* window, int focus)
 		{
-			Window* __window = (Window*)glfwGetWindowUserPointer(window);
+			window_t* __window = (window_t*)glfwGetWindowUserPointer(window);
 			if (focus == GLFW_TRUE)
 			{
 				__window->m_Focus = true;
-				GetEventQueue().emplace(WindowFocusEvent{
+				GetEventQueue().emplace(event::window_focus_t{
 					NEO_WINDOW_FOCUS_EVENT,
-					__window->m_Id,
+					__window,
 					false
 				});
 			} else
 			{
 				__window->m_Focus = false;
-				GetEventQueue().emplace(WindowLostFocusEvent{
+				GetEventQueue().emplace(event::window_lost_focus_t{
 					NEO_WINDOW_LOST_FOCUS_EVENT,
-					__window->m_Id,
+					__window,
 					false
 				});
 			}
@@ -124,19 +124,19 @@ namespace neo {
 		});
 		glfwSetCursorPosCallback(_window, [](GLFWwindow* window, double x, double y)
 		{
-			Window* __window = (Window*)glfwGetWindowUserPointer(window);
-			GetEventQueue().emplace(MouseMovedEvent{
+			window_t* __window = (window_t*)glfwGetWindowUserPointer(window);
+			GetEventQueue().emplace(event::mouse_moved_t{
 				NEO_MOUSE_MOVED_EVENT,
-				((Window*)glfwGetWindowUserPointer(window))->m_Id,
+				((window_t*)glfwGetWindowUserPointer(window)),
 				false,
 				(float)x, (float)y
 			});
 		});
 		glfwSetScrollCallback(_window, [](GLFWwindow* window, double x_offset, double y_offset)
 		{
-			GetEventQueue().emplace(MouseScrolledEvent{
+			GetEventQueue().emplace(event::mouse_scrolled_t{
 				NEO_MOUSE_SCROLLED_EVENT,
-				((Window*)glfwGetWindowUserPointer(window))->m_Id,
+				((window_t*)glfwGetWindowUserPointer(window)),
 				false,
 				(float)x_offset, (float)y_offset
 			});
@@ -146,17 +146,17 @@ namespace neo {
 			switch (action)
 			{
 			case GLFW_PRESS:
-				GetEventQueue().emplace(MouseButtonPressedEvent{
+				GetEventQueue().emplace(event::mouse_button_pressed_t{
 					NEO_MOUSE_BUTTON_PRESSED_EVENT,
-					((Window*)glfwGetWindowUserPointer(window))->m_Id,
+					((window_t*)glfwGetWindowUserPointer(window)),
 					false,
 					(uint8_t)button
 				});
 				break;
 			case GLFW_RELEASE:
-				GetEventQueue().emplace(MouseButtonReleasedEvent{
+				GetEventQueue().emplace(event::mouse_button_released_t{
 					NEO_MOUSE_BUTTON_RELEASED_EVENT,
-					((Window*)glfwGetWindowUserPointer(window))->m_Id,
+					((window_t*)glfwGetWindowUserPointer(window)),
 					false,
 					(uint8_t)button
 				});

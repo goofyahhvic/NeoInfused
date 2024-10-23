@@ -38,7 +38,7 @@ static void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMesse
 }
 
 namespace vk {
-    static neo::Arena<const char*> extensions,
+    static neo::array_list_t<const char*> extensions,
         validationLayers = { "VK_LAYER_KHRONOS_validation" },
         requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
@@ -47,7 +47,7 @@ namespace vk {
         uint32_t layer_count;
         vkEnumerateInstanceLayerProperties(&layer_count, nullptr);
 
-        neo::Arena<VkLayerProperties> available_layers(layer_count, layer_count);
+        neo::array_list_t<VkLayerProperties> available_layers(layer_count, layer_count);
         vkEnumerateInstanceLayerProperties(&layer_count, available_layers.ptr());
 
         for (const char* requested_layer : validationLayers)
@@ -81,7 +81,7 @@ namespace vk {
         uint32_t queue_family_count = 0;
         vkGetPhysicalDeviceQueueFamilyProperties(device, &queue_family_count, nullptr);
 
-        neo::Arena<VkQueueFamilyProperties> queue_families(queue_family_count, queue_family_count);
+        neo::array_list_t<VkQueueFamilyProperties> queue_families(queue_family_count, queue_family_count);
         vkGetPhysicalDeviceQueueFamilyProperties(device, &queue_family_count, queue_families.ptr());
 
         QueueFamilyIndices indices;
@@ -107,15 +107,15 @@ namespace vk {
         uint32_t available_extensions_count;
         vkEnumerateDeviceExtensionProperties(device, nullptr, &available_extensions_count, nullptr);
 
-        neo::Arena<VkExtensionProperties> available_extensions(available_extensions_count, available_extensions_count);
+        neo::array_list_t<VkExtensionProperties> available_extensions(available_extensions_count, available_extensions_count);
         vkEnumerateDeviceExtensionProperties(device, nullptr, &available_extensions_count, available_extensions.ptr());
 
-        neo::Arena<std::string> required_extensions(requiredDeviceExtensions.capacity());
+        neo::array_list_t<std::string> required_extensions(requiredDeviceExtensions.capacity());
         for (const char* required_extension : requiredDeviceExtensions)
         {
             required_extensions.emplace(required_extension);
             for (const VkExtensionProperties& available_extension : available_extensions)
-                if (required_extensions.last() == available_extension.extensionName)
+                if (required_extensions.tail() == available_extension.extensionName)
                     required_extensions.pop();
         }
 
@@ -142,7 +142,7 @@ namespace vk {
         if (!areRequiredDeviceExtensionsSupported(device))
             return 0;
 
-        if (!SwapchainSupport(device, Core::g_InitSurface))
+        if (!swapchain_support_t(device, Core::g_InitSurface))
             return 0;
 
         if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
@@ -179,7 +179,7 @@ namespace vk {
         {
             uint32_t required_extension_count = 0;
             const char** required_extensions = glfwGetRequiredInstanceExtensions(&required_extension_count);
-            extensions = neo::Arena<const char*>(copy, required_extensions, required_extension_count);
+            extensions = neo::array_list_t<const char*>(neo::array_list::copy, required_extensions, required_extension_count);
         }
         VkDebugUtilsMessengerCreateInfoEXT debug_create_info{};
         if (VALIDATION_LAYERS_ENABLED)
@@ -228,7 +228,7 @@ namespace vk {
         if (!device_count)
             g_ErrorCallback(INF_ERROR_NONE, "No GPUs with Vulkan support!", nullptr);
 
-        neo::Arena<VkPhysicalDevice> available_devices(device_count, device_count);
+        neo::array_list_t<VkPhysicalDevice> available_devices(device_count, device_count);
         vkEnumeratePhysicalDevices(g_Instance, &device_count, available_devices.ptr());
 
         int32_t high_score = 0;
@@ -259,7 +259,7 @@ namespace vk {
     void Core::CreateLogicalDevice(void)
     {
         QueueFamilyIndices indices = GetQueueFamilies(g_PhysicalDevice);
-        neo::Arena<VkDeviceQueueCreateInfo> queue_create_infos;
+        neo::array_list_t<VkDeviceQueueCreateInfo> queue_create_infos;
         queue_create_infos.emplace(createQueueCreateInfo(indices.graphics));
         if (indices.graphics != indices.present)
             queue_create_infos.emplace(createQueueCreateInfo(indices.present));
@@ -283,7 +283,7 @@ namespace vk {
     }
 }
 using namespace vk;
-EXPORT_FN void SetErrorCallback(ErrorCallbackFn error_callback)
+EXPORT_FN void SetErrorCallback(error_callback_fn error_callback)
 {
     g_ErrorCallback = error_callback;
 }

@@ -63,13 +63,13 @@ namespace neo {
 	struct InitData {
 		int argc;
 		char** argv;
-		inf::RendererAPI api;
+		inf::renderer_api_t api;
 		std::string exec_path;
 		std::string_view version, exec_dir, exec_name;
 	};
 	static InitData* initData = nullptr;
 
-	void Init(const init& init)
+	void Init(const init_t& init)
 	{
 		NEO_ASSERT(!initData, "Already has initialized NeoInfused!");
 		initData = (InitData*)malloc(sizeof(InitData));

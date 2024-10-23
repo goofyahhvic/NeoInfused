@@ -4,7 +4,7 @@
 #include "vk_swapchain-support.hpp"
 
 namespace vk {
-	static VkSurfaceFormatKHR pickSurfaceFormat(const neo::Arena<VkSurfaceFormatKHR>& formats)
+	static VkSurfaceFormatKHR pickSurfaceFormat(const neo::array_list_t<VkSurfaceFormatKHR>& formats)
 	{
 		for (auto it = formats.begin(); it != formats.end(); it++)
 			if (it->format == VK_FORMAT_R8G8B8A8_SRGB &&
@@ -13,7 +13,7 @@ namespace vk {
 		return formats[0];
 	}
 
-	static VkPresentModeKHR pickPresentMode(const neo::Arena<VkPresentModeKHR>& present_modes)
+	static VkPresentModeKHR pickPresentMode(const neo::array_list_t<VkPresentModeKHR>& present_modes)
 	{
 		for (auto it = present_modes.begin(); it != present_modes.end(); it++)
 			if (*it == VK_PRESENT_MODE_MAILBOX_KHR)
@@ -32,7 +32,7 @@ namespace vk {
 		};
 	}
 
-	static VkSwapchainKHR createSwapchain(GLFWwindow* window, VkSurfaceKHR surface, SwapchainSupport& swapchain_support)
+	static VkSwapchainKHR createSwapchain(GLFWwindow* window, VkSurfaceKHR surface, swapchain_support_t& swapchain_support)
 	{
 		int window_width = 0, window_height = 0;
 		glfwGetWindowSize(window, &window_height, &window_height);
@@ -78,9 +78,9 @@ namespace vk {
 		return swapchain;
 	}
 
-	WindowSurface* CreateWindowSurface(GLFWwindow* window)
+	window_surface_t* CreateWindowSurface(GLFWwindow* window)
 	{
-		WindowSurface* _this = new WindowSurface;
+		window_surface_t* _this = new window_surface_t;
 
 		if (glfwCreateWindowSurface(Core::g_Instance, window, nullptr, &_this->surface) != VK_SUCCESS)
 		{
@@ -89,7 +89,7 @@ namespace vk {
 			return nullptr;
 		}
 
-		SwapchainSupport swapchain_support(Core::g_PhysicalDevice, _this->surface);
+		swapchain_support_t swapchain_support(Core::g_PhysicalDevice, _this->surface);
 		if (!swapchain_support)
 		{
 			delete _this;
@@ -102,7 +102,7 @@ namespace vk {
 		return _this;
 	}
 
-	void DestroyWindowSurface(WindowSurface* _this)
+	void DestroyWindowSurface(window_surface_t* _this)
 	{
 		vkDestroySwapchainKHR(Core::g_LogicalDevice, _this->swapchain, nullptr);
 		vkDestroySurfaceKHR(Core::g_Instance, _this->surface, nullptr);
@@ -110,5 +110,5 @@ namespace vk {
 	}
 }
 
-EXPORT_FN vk::WindowSurface* CreateWindowSurface(GLFWwindow* window) { return vk::CreateWindowSurface(window); }
-EXPORT_FN void DestroyWindowSurface(vk::WindowSurface* _this) { return vk::DestroyWindowSurface(_this); }
+EXPORT_FN vk::window_surface_t* CreateWindowSurface(GLFWwindow* window) { return vk::CreateWindowSurface(window); }
+EXPORT_FN void DestroyWindowSurface(vk::window_surface_t* _this) { return vk::DestroyWindowSurface(_this); }
