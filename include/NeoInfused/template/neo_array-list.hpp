@@ -243,19 +243,19 @@ namespace neo {
 					this->emplace_d();
 			}
 
-			template<typename... _Args>
-			inline size_t emplace(_Args&&... __args)
+			template<typename... ArgsT>
+			inline size_t emplace(ArgsT&&... __args)
 			{
 				if (m_Size == m_Capacity)
 					this->reallocate(m_Capacity * 2);
-				new (m_Buffer + m_Size) T(std::forward<_Args>(__args)...);
+				new (m_Buffer + m_Size) T(std::forward<ArgsT>(__args)...);
 				return m_Size++;
 			}
 
-			template<typename... _Args>
-			inline size_t emplace_d(_Args&&... __args)
+			template<typename... ArgsT>
+			inline size_t emplace_d(ArgsT&&... __args)
 			{
-				new (m_Buffer + m_Size) T(std::forward<_Args>(__args)...);
+				new (m_Buffer + m_Size) T(std::forward<ArgsT>(__args)...);
 				return m_Size++;
 			}
 

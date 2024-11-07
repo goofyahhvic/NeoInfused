@@ -32,8 +32,11 @@ namespace vk {
 		};
 	}
 
-	static VkSwapchainKHR createSwapchain(GLFWwindow* window, VkSurfaceKHR surface, swapchain_support_t& swapchain_support)
+	static std::tuple<VkSwapchainKHR, VkFormat, VkExtent2D> createSwapchain(GLFWwindow* window, VkSurfaceKHR surface, swapchain_support_t& swapchain_support)
 	{
+		std::tuple<VkSwapchainKHR, VkFormat, VkExtent2D> swapchain_info;
+		auto&[swapchain, format, extent] = swapchain_info;
+
 		int window_width = 0, window_height = 0;
 		glfwGetWindowSize(window, &window_height, &window_height);
 
@@ -42,8 +45,13 @@ namespace vk {
 		create_info.surface = surface;
 
 		create_info.imageFormat = pickSurfaceFormat(swapchain_support.formats).format;
-		create_info.imageColorSpace = pickSurfaceFormat(swapchain_support.formats).colorSpace;
+		format = create_info.imageFormat;
+
 		create_info.imageExtent = pickResolution(swapchain_support.capabilities, window_width, window_height);
+		extent = create_info.imageExtent;
+
+		create_info.imageColorSpace = pickSurfaceFormat(swapchain_support.formats).colorSpace;
+
 		create_info.imageArrayLayers = 1;
 		create_info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
@@ -72,10 +80,13 @@ namespace vk {
 		create_info.clipped = VK_TRUE;
 		create_info.oldSwapchain = VK_NULL_HANDLE;
 
-		VkSwapchainKHR swapchain;
 		if (vkCreateSwapchainKHR(Core::g_LogicalDevice, &create_info, nullptr, &swapchain) != VK_SUCCESS)
-			throw std::runtime_error("Failed to create swapchain!");
-		return swapchain;
+		{
+			g_ErrorCallback(INF_ERROR_NONE, "Failed to create window surface!", nullptr);
+			swapchain = nullptr;
+		}
+
+		return swapchain_info;
 	}
 
 	window_surface_t* CreateWindowSurface(GLFWwindow* window)
@@ -97,7 +108,17 @@ namespace vk {
 			return nullptr;
 		}
 
-		_this->swapchain = createSwapchain(window, _this->surface, swapchain_support);
+		{
+			auto[swapchain, format, extent] = createSwapchain(window, _this->surface, swapchain_support);
+			_this->swapchain = swapchain;
+			_this->format = format;
+			_this->extent = extent;
+		}
+
+		uint32_t image_count;
+		vkGetSwapchainImagesKHR(Core::g_LogicalDevice, _this->swapchain, &image_count, nullptr);
+		_this->images.reallocate(image_count, image_count);
+		vkGetSwapchainImagesKHR(Core::g_LogicalDevice, _this->swapchain, &image_count, _this->images.ptr());
 
 		return _this;
 	}

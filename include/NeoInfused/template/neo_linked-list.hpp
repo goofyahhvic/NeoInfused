@@ -214,9 +214,9 @@ namespace neo {
 		class list_t {
 		public:
 			struct node_t {
-				template<typename... _Args>
-				node_t(node_t* next, node_t* previous, _Args&&... __args)
-				: next(next), previous(previous), data(std::forward<_Args>(__args)...) {}
+				template<typename... ArgsT>
+				node_t(node_t* next, node_t* previous, ArgsT&&... __args)
+				: next(next), previous(previous), data(std::forward<ArgsT>(__args)...) {}
 
 				node_t* next,* previous;
 				T data;
@@ -284,40 +284,40 @@ namespace neo {
 				return *this;
 			}
 
-			template<typename... _Args>
-			T* emplace_back(_Args&&... __args)
+			template<typename... ArgsT>
+			T* emplace_back(ArgsT&&... __args)
 			{
 				if (!m_Size++)
-					return &(this->_emplace_empty(std::forward<_Args>(__args)...)->data);
+					return &(this->_emplace_empty(std::forward<ArgsT>(__args)...)->data);
 
-				m_Tail = new node_t(nullptr, m_Tail, std::forward<_Args>(__args)...);
+				m_Tail = new node_t(nullptr, m_Tail, std::forward<ArgsT>(__args)...);
 				return &((m_Tail->previous->next = m_Tail)->data);
 			}
 
-			template<typename... _Args>
-			T* emplace_front(_Args&&... __args)
+			template<typename... ArgsT>
+			T* emplace_front(ArgsT&&... __args)
 			{
 				if (!m_Size++)
-					return &(this->_emplace_empty(std::forward<_Args>(__args)...)->data);
+					return &(this->_emplace_empty(std::forward<ArgsT>(__args)...)->data);
 
-				m_Head = new node_t(m_Head, nullptr, std::forward<_Args>(__args)...);
+				m_Head = new node_t(m_Head, nullptr, std::forward<ArgsT>(__args)...);
 				return &((m_Head->next->previous = m_Head)->data);
 			}
 
-			template<typename... _Args>
-			T* emplace_at(size_t index, _Args&&... __args)
+			template<typename... ArgsT>
+			T* emplace_at(size_t index, ArgsT&&... __args)
 			{
 				if (!m_Size++)
-					return &(this->_emplace_empty(std::forward<_Args>(__args)...)->data);
+					return &(this->_emplace_empty(std::forward<ArgsT>(__args)...)->data);
 
 				if (index >= m_Size)
 				{
-					m_Tail = new node_t(nullptr, m_Tail, std::forward<_Args>(__args)...);
+					m_Tail = new node_t(nullptr, m_Tail, std::forward<ArgsT>(__args)...);
 					return &((m_Tail->previous->next = m_Tail)->data);
 				}
 
 				node_t* node = this->at(index).node;
-				node = new node_t(node, node->previous, std::forward<_Args>(__args)...);
+				node = new node_t(node, node->previous, std::forward<ArgsT>(__args)...);
 				if (node->previous)
 					node->previous->next= node;
 				return &((node->next->previous= node)->data);
@@ -456,10 +456,10 @@ namespace neo {
 			[[nodiscard]] inline size_t size(void) { return m_Size; }
 			[[nodiscard]] inline size_t empty(void) { return !m_Size; }
 		private:
-			template<typename... _Args>
-			node_t* _emplace_empty(_Args&&... __args)
+			template<typename... ArgsT>
+			node_t* _emplace_empty(ArgsT&&... __args)
 			{
-				m_Head = new node_t(nullptr, nullptr, std::forward<_Args>(__args)...);
+				m_Head = new node_t(nullptr, nullptr, std::forward<ArgsT>(__args)...);
 				return m_Tail = m_Head;
 			}
 		private:

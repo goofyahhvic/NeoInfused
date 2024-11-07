@@ -17,8 +17,8 @@ namespace neo {
 			~storage_t(void);
 			void clear(void);
 
-			template<typename T, typename... _Args>
-			inline T* create_layer(_Args&&... __args) { return (T*)this->_push(new T(std::forward<_Args>(__args)...)); }
+			template<typename T, typename... ArgsT>
+			inline T* create_layer(ArgsT&&... __args) { return (T*)this->_push(new T(std::forward<ArgsT>(__args)...)); }
 			void destroy_layer(layer_t* layer);
 
 			void set_priority(layer_t* layer, int32_t new_priority);

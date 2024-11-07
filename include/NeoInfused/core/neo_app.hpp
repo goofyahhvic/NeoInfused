@@ -15,10 +15,8 @@ namespace neo {
 
 		[[nodiscard]] static app_t& Get(void);
 
-		template<typename... _Args>
-		inline window_t* create_window(_Args&&... __args) { return windows.emplace_back(std::forward<_Args>(__args)...); }
-
-		inline bool destroy_window(window_t* window) { return windows.pop(window); }
+		inline window_t* add_window(uint32_t width = 1280, uint32_t height = 720, const char* title = "Untitled") { return windows.emplace_back(width, height, title); }
+		inline bool remove_window(window_t* window) { return windows.pop(window); }
 	public:
 		loop_condition_fn loop_condition;
 		window::storage_t windows;

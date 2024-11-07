@@ -5,6 +5,9 @@ namespace vk {
 	struct window_surface_t {
 		VkSurfaceKHR surface = VK_NULL_HANDLE;
 		VkSwapchainKHR swapchain = VK_NULL_HANDLE;
+		VkFormat format;
+		VkExtent2D extent;
+		neo::array_list_t<VkImage> images = neo::array_list_t<VkImage>(0);
 	};
 
 	window_surface_t* CreateWindowSurface(GLFWwindow* window);
