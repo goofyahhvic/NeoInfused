@@ -10,10 +10,14 @@ namespace inf {
 	public:
 		window_surface_t(GLFWwindow* window);
 		void destroy(void);
-		inline ~window_surface_t(void) { if (m_Surface) this->destroy(); }
+		inline ~window_surface_t(void) { this->destroy(); }
 
 		window_surface_t(const window_surface_t&) = delete;
 		window_surface_t& operator=(const window_surface_t&) = delete;
+
+		inline glm::uvec2 size(void) const { return Loader::get_window_surface_size(m_Surface); }
+		inline uint32_t  width(void) const { return Loader::get_window_surface_size(m_Surface).x; }
+		inline uint32_t height(void) const { return Loader::get_window_surface_size(m_Surface).y; }
 
 		inline operator bool(void) const { return m_Surface; }
 	private:

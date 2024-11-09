@@ -7,9 +7,9 @@ namespace inf {
 	#define UNLOAD_LIBRARY() FreeLibrary((HMODULE)current_library)
 	#define GET_FN(x) GetProcAddress((HMODULE)current_library, x)
 #elif defined(NEO_PLATFORM_LINUX)
-	#define LOAD_LIBRARY(x) s_CurrentLibrary = dlopen(std::format("{}/lib" x ".so", std::filesystem::canonical("/proc/self/exe").parent_path().string()).c_str(), RTLD_LAZY)
-	#define UNLOAD_LIBRARY() dlclose(s_CurrentLibrary)
-	#define GET_FN(x) dlsym(s_CurrentLibrary, x)
+	#define LOAD_LIBRARY(x) current_library = dlopen(std::format("{}/lib" x ".so", std::filesystem::canonical("/proc/self/exe").parent_path().string()).c_str(), RTLD_LAZY)
+	#define UNLOAD_LIBRARY() dlclose(current_library)
+	#define GET_FN(x) dlsym(current_library, x)
 #endif
 
 	void Loader::Load(renderer_api_t api)
@@ -22,8 +22,12 @@ namespace inf {
 
 			init_api = nullptr;
 			shutdown_api = nullptr;
+
 			create_window_surface = nullptr;
 			destroy_window_surface = nullptr;
+			get_window_surface_size = nullptr;
+
+			set_error_callback = nullptr;
 
 			UNLOAD_LIBRARY();
 			current_library = nullptr;
@@ -42,8 +46,9 @@ namespace inf {
 		init_api = (init_api_fn)GET_FN("InitAPI");
 		shutdown_api = (shutdown_api_fn)GET_FN("ShutdownAPI");
 
-		create_window_surface  =  (create_window_surface_fn)GET_FN("CreateWindowSurface");
-		destroy_window_surface = (destroy_window_surface_fn)GET_FN("DestroyWindowSurface");
+		create_window_surface   = (create_window_surface_fn)GET_FN("CreateWindowSurface");
+		destroy_window_surface  = (destroy_window_surface_fn)GET_FN("DestroyWindowSurface");
+		get_window_surface_size = (get_window_surface_size_fn)GET_FN("GetWindowSurfaceSize");
 
 		set_error_callback = (set_error_callback_fn)GET_FN("SetErrorCallback");
 		set_error_callback([](error::type_t type, const char* msg, void* data)

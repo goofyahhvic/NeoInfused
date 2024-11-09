@@ -12,6 +12,8 @@ namespace inf {
 	}
 	void window_surface_t::destroy(void)
 	{
+		if (!m_Surface)
+			return;
 		Loader::destroy_window_surface(m_Surface);
 		m_Surface = nullptr;
 	}

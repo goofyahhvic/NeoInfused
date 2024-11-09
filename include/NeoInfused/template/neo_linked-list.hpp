@@ -249,7 +249,7 @@ namespace neo {
 			: list_t(copy, list.begin(), list.size()) {}
 
 			list_t(const list_t& other)
-			: m_Head(nullptr), m_Tail(nullptr), m_Size(0)
+			: list_t()
 			{
 				for (const T& data : other)
 					this->emplace_back(data);
@@ -415,6 +415,40 @@ namespace neo {
 				return false;
 			}
 
+			bool swap(node_t* node1, node_t* node2)
+			{
+				if (!node1 || !node2 || node1 == node2)
+					return false;
+				
+				node_t* temp = node1->next;
+
+				if (node1->next = node2->next)
+					node1->next->previous = node1;
+				else
+					m_Tail = node1;
+
+				if (node2->next = temp)
+					node2->next->previous = node2;
+				else
+					m_Tail = node2;
+
+				temp = node1->previous;
+
+				if (node1->previous = node2->previous)
+					node1->previous->next = node1;
+				else
+					m_Head = node1;
+
+				if (node2->previous = temp)
+					node2->previous->next = node2;
+				else
+					m_Head = node2;
+
+				return true;
+			}
+			inline bool swap(size_t index1, size_t index2) { return this->swap(this->at(index1).node, this->at(index2).node); }
+			inline bool swap(iterator_t it1, iterator_t it2) { return this->swap(it1.node, it2.node); }
+
 			[[nodiscard]] inline iterator_t begin(void) { return m_Head; }
 			[[nodiscard]] inline const_iterator_t begin(void) const { return m_Head; }
 			[[nodiscard]] inline const_iterator_t cbegin(void) const { return m_Head; }
@@ -434,14 +468,14 @@ namespace neo {
 			[[nodiscard]] iterator_t at(size_t index)
 			{
 				if (index > m_Size * 0.5)
-					return iterator_t(m_Head, index, forward);
-				return iterator_t(m_Tail, index, backwards);
+					return iterator_t(m_Tail, m_Size - index - 1, backwards);
+				return iterator_t(m_Head, index, forward);
 			}
 			[[nodiscard]] const_iterator_t at(size_t index) const
 			{
 				if (index > m_Size * 0.5)
-					return const_iterator_t(m_Head, index, forward);
-				return const_iterator_t(m_Tail, index, backwards);
+					return const_iterator_t(m_Tail, m_Size - index - 1, backwards);
+				return const_iterator_t(m_Head, index, forward);
 			}
 
 			[[nodiscard]] T& operator[](size_t index) { return *(this->at(index)); }
@@ -466,6 +500,9 @@ namespace neo {
 			node_t* m_Head,* m_Tail;
 			size_t m_Size;
 		};
+
+		template<typename T>
+		using node_t = list_t<T>::node_t;
 	} // namespace list
 	template<typename T>
 	using list_t = list::list_t<T>;

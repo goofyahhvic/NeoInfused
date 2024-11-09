@@ -32,10 +32,17 @@ namespace vk {
 		};
 	}
 
-	static std::tuple<VkSwapchainKHR, VkFormat, VkExtent2D> createSwapchain(GLFWwindow* window, VkSurfaceKHR surface, swapchain_support_t& swapchain_support)
+	struct swapchain_info_t
 	{
-		std::tuple<VkSwapchainKHR, VkFormat, VkExtent2D> swapchain_info;
-		auto&[swapchain, format, extent] = swapchain_info;
+		VkSwapchainKHR swapchain;
+		VkSurfaceFormatKHR format;
+		VkExtent2D extent;
+	};
+
+	static swapchain_info_t createSwapchain(GLFWwindow* window, VkSurfaceKHR surface, swapchain_support_t& swapchain_support)
+	{
+		swapchain_info_t swapchain_info;
+		swapchain_info.format = pickSurfaceFormat(swapchain_support.formats);
 
 		int window_width = 0, window_height = 0;
 		glfwGetWindowSize(window, &window_height, &window_height);
@@ -44,11 +51,10 @@ namespace vk {
 		create_info.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
 		create_info.surface = surface;
 
-		create_info.imageFormat = pickSurfaceFormat(swapchain_support.formats).format;
-		format = create_info.imageFormat;
+		create_info.imageFormat = swapchain_info.format.format;
 
 		create_info.imageExtent = pickResolution(swapchain_support.capabilities, window_width, window_height);
-		extent = create_info.imageExtent;
+		swapchain_info.extent = create_info.imageExtent;
 
 		create_info.imageColorSpace = pickSurfaceFormat(swapchain_support.formats).colorSpace;
 
@@ -80,10 +86,10 @@ namespace vk {
 		create_info.clipped = VK_TRUE;
 		create_info.oldSwapchain = VK_NULL_HANDLE;
 
-		if (vkCreateSwapchainKHR(Core::g_LogicalDevice, &create_info, nullptr, &swapchain) != VK_SUCCESS)
+		if (vkCreateSwapchainKHR(Core::g_LogicalDevice, &create_info, nullptr, &swapchain_info.swapchain) != VK_SUCCESS)
 		{
 			g_ErrorCallback(INF_ERROR_NONE, "Failed to create window surface!", nullptr);
-			swapchain = nullptr;
+			swapchain_info.swapchain = nullptr;
 		}
 
 		return swapchain_info;
@@ -109,10 +115,12 @@ namespace vk {
 		}
 
 		{
-			auto[swapchain, format, extent] = createSwapchain(window, _this->surface, swapchain_support);
-			_this->swapchain = swapchain;
-			_this->format = format;
-			_this->extent = extent;
+			swapchain_info_t swapchain_info = createSwapchain(window, _this->surface, swapchain_support);
+			_this->swapchain = swapchain_info.swapchain;
+			_this->format = swapchain_info.format.format;
+			
+			_this->size.x = swapchain_info.extent.width;
+			_this->size.y = swapchain_info.extent.height;
 		}
 
 		uint32_t image_count;
@@ -133,3 +141,5 @@ namespace vk {
 
 EXPORT_FN vk::window_surface_t* CreateWindowSurface(GLFWwindow* window) { return vk::CreateWindowSurface(window); }
 EXPORT_FN void DestroyWindowSurface(vk::window_surface_t* _this) { return vk::DestroyWindowSurface(_this); }
+
+EXPORT_FN glm::uvec2 GetWindowSurfaceSize(vk::window_surface_t* _this) { return _this->size; }

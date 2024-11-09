@@ -27,6 +27,9 @@ namespace inf {
 		typedef void (*destroy_window_surface_fn)(window_surface_t* surface);
 		inline destroy_window_surface_fn destroy_window_surface = nullptr;
 
+		typedef glm::uvec2 (*get_window_surface_size_fn)(window_surface_t* surface);
+		inline get_window_surface_size_fn get_window_surface_size = nullptr;
+
 		typedef void (*set_error_callback_fn)(error::callback_fn error_callback);
 		inline set_error_callback_fn set_error_callback = nullptr;
 
