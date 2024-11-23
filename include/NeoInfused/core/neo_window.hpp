@@ -27,7 +27,7 @@ namespace neo {
 		public:
 			window_t(uint32_t width, uint32_t height, const char* title);
 			void destroy(void);
-			inline ~window_t(void) { if (m_Window) this->destroy(); }
+			inline ~window_t(void) { this->destroy(); }
 
 			window_t(const window_t&) = delete;
 			window_t& operator=(const window_t&) = delete;

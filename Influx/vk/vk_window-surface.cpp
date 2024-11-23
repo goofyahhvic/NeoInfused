@@ -125,6 +125,7 @@ namespace vk {
 
 		uint32_t image_count;
 		vkGetSwapchainImagesKHR(Core::g_LogicalDevice, _this->swapchain, &image_count, nullptr);
+
 		_this->images.reallocate(image_count, image_count);
 		vkGetSwapchainImagesKHR(Core::g_LogicalDevice, _this->swapchain, &image_count, _this->images.ptr());
 

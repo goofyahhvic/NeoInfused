@@ -94,7 +94,8 @@ namespace neo {
 		};
 
 		using queue_t = array_list_t<event_t>;
-		queue_t& poll(queue_t& queue);
+		inline queue_t g_Queue(64, 0);
+		queue_t& poll(void);
 	} // namespace event
 	using event_t = event::event_t;
 } // namespace neo

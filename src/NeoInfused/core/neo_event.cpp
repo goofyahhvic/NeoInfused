@@ -2,10 +2,10 @@
 #include "NeoInfused/core/neo_event.hpp"
 
 namespace neo {
-	event::queue_t& event::poll(event::queue_t& queue)
+	event::queue_t& event::poll()
 	{
-		queue.resize(0);
+		g_Queue.resize(0);
 		glfwPollEvents();
-		return queue;
+		return g_Queue;
 	}
 } // namespace neo

@@ -3,6 +3,7 @@
 
 #include "../data_structures/neo_layer-storage.hpp"
 #include "neo_window.hpp"
+#include "neo_timer.hpp"
 
 namespace neo {
 	class app_t {
@@ -20,13 +21,11 @@ namespace neo {
 	public:
 		loop_condition_fn loop_condition;
 		window::storage_t windows;
-		event::queue_t event_queue;
 		layer::storage_t layers;
 	};
 
 	[[nodiscard]] inline window::storage_t& GetWindows(void) { return app_t::Get().windows; }
 	[[nodiscard]] inline layer::storage_t&  GetLayers(void) { return app_t::Get().layers; }
-	[[nodiscard]] inline event::queue_t&    GetEventQueue(void) { return app_t::Get().event_queue; }
 }
 
 #endif // NEO_APP_HPP

@@ -229,7 +229,8 @@ namespace neo {
 			using T_t = T;
 		public:
 			inline list_t(void) : m_Head(nullptr), m_Tail(nullptr), m_Size(0) {}
-			inline ~list_t(void) { clear(); }
+			inline ~list_t(void) { this->clear(); }
+			inline void clear(void) { while (this->pop_back()); }
 
 			list_t(copy_t, const T* buffer, size_t size)
 			: m_Head(nullptr), m_Tail(nullptr), m_Size(0)
@@ -319,14 +320,14 @@ namespace neo {
 				node_t* node = this->at(index).node;
 				node = new node_t(node, node->previous, std::forward<ArgsT>(__args)...);
 				if (node->previous)
-					node->previous->next= node;
-				return &((node->next->previous= node)->data);
+					node->previous->next = node;
+				return &((node->next->previous = node)->data);
 			}
 
-			void pop_back(void)
+			bool pop_back(void)
 			{
 				if (!m_Head)
-					return;
+					return false;
 
 				m_Size--;
 				if (m_Tail = m_Tail->previous)
@@ -338,12 +339,13 @@ namespace neo {
 					delete m_Head;
 					m_Head = nullptr;
 				}
+				return true;
 			}
 
-			void pop_front(void)
+			bool pop_front(void)
 			{
 				if (!m_Head)
-					return;
+					return false;
 
 				m_Size--;
 				if (m_Head = m_Head->next)
@@ -355,18 +357,19 @@ namespace neo {
 					delete m_Tail;
 					m_Tail = nullptr;
 				}
+				return true;
 			}
 
-			void pop_at(size_t index)
+			bool pop_at(size_t index)
 			{
 				if (!m_Head)
-					return;
+					return false;
 
 				if (!--m_Size && index)
-					return;
+					return false;
 
 				if (index > m_Size)
-					return;
+					return false;
 
 				node_t* node = this->at(index).node;
 
@@ -381,6 +384,7 @@ namespace neo {
 					m_Head = node->next;
 
 				delete node;
+				return true;
 			}
 
 			bool pop(T* data)
@@ -403,8 +407,6 @@ namespace neo {
 				delete node;
 				return true;
 			}
-
-			inline void clear(void) { while (m_Head) this->pop_back(); }
 
 			[[nodiscard]] bool find(const T* data) const
 			{

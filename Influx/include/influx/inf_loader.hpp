@@ -7,8 +7,10 @@
 #define INF_API_VULKAN 1
 
 #include "inf_error.hpp"
+#include "NeoInfused/core/neo_dynamic-library.hpp"
 
 namespace inf {
+	using neo::dll_t;
 	namespace Loader {
 		void Load(renderer_api_t api);
 		inline void Unload(void) { Loader::Load(INF_API_NONE); };
@@ -34,7 +36,7 @@ namespace inf {
 		inline set_error_callback_fn set_error_callback = nullptr;
 
 		inline renderer_api_t renderer_api = INF_API_NONE;
-		inline void* current_library = nullptr;
+		inline dll_t lib;
 	};
 
 	inline bool g_Initialized = false;
