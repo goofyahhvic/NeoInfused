@@ -38,9 +38,13 @@ static void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMesse
 }
 
 namespace vk {
-    static neo::array_list_t<const char*> extensions,
-        validationLayers = { "VK_LAYER_KHRONOS_validation" },
-        requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+    static neo::array_list_t<const char*> extensions;
+    static neo::array_list_t<const char*> validationLayers = {
+        "VK_LAYER_KHRONOS_validation"
+    };
+    static neo::array_list_t<const char*> requiredDeviceExtensions = {
+        VK_KHR_SWAPCHAIN_EXTENSION_NAME
+    };
 
     static bool validationLayersSupported(void)
     {
@@ -71,8 +75,16 @@ namespace vk {
     static void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT* create_info)
     {
         create_info->sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-        create_info->messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-        create_info->messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+
+        create_info->messageSeverity =
+            VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
+            VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+
+        create_info->messageType =
+            VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
+            VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
+            VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+
         create_info->pfnUserCallback = debugCallback;
     }
 
@@ -179,7 +191,10 @@ namespace vk {
         {
             uint32_t required_extension_count = 0;
             const char** required_extensions = glfwGetRequiredInstanceExtensions(&required_extension_count);
-            extensions = neo::array_list_t<const char*>(neo::array_list::copy, required_extensions, required_extension_count);
+
+            extensions.reallocate(required_extension_count);
+            for (uint32_t i = 0; i < required_extension_count; i++)
+                extensions.emplace(required_extensions[i]);
         }
         VkDebugUtilsMessengerCreateInfoEXT debug_create_info{};
         if (VALIDATION_LAYERS_ENABLED)

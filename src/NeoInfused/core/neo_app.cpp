@@ -2,46 +2,55 @@
 #include "NeoInfused/core/neo_app.hpp"
 
 namespace neo {
-	static app_t* app = nullptr;
-	app_t& app_t::Get(void) { return *app; }
-
-	app_t::app_t(loop_condition_fn loop_condition)
-	: loop_condition(loop_condition)
+	void app_t::add_system(app::system_type_t type, void* fn)
 	{
-		NEO_ASSERT(!app, "Cannot create multiple instances of App!");
-		app = this;
+		switch (type)
+		{
+		case NEO_SYSTEMTYPE_INIT:
+			m_Systems.init.emplace((void (*)(void))fn);
+			break;
+		case NEO_SYSTEMTYPE_SHUTDOWN:
+			m_Systems.shutdown.emplace((void (*)(void))fn);
+			break;
+		case NEO_SYSTEMTYPE_UPDATE:
+			m_Systems.update.emplace((void (*)(void))fn);
+			break;
+		case NEO_SYSTEMTYPE_DRAW:
+			m_Systems.draw.emplace((void (*)(void))fn);
+			break;
+		case NEO_SYSTEMTYPE_ONEVENT:
+			m_Systems.on_event.emplace((void (*)(event_t&))fn);
+			break;
+		default:
+			return;
+		}
 	}
-	app_t::~app_t(void) noexcept(false) { app = nullptr; }
 
 	void app_t::run(void)
 	{
-		while (loop_condition())
-		{
-			for (auto it = layers.begin(); it != layers.end(); it++)
-				if ((*it)->state & NEO_LAYERSTATE_UPDATABLE)
-					(*it)->update();
+		for (auto init_fn : m_Systems.init)
+			init_fn();
 
-			for (auto it = layers.rbegin(); it != layers.rend(); it++)
-				if ((*it)->state & NEO_LAYERSTATE_VISIBLE)
-					(*it)->draw();
+		while (!should_close)
+		{
+			for (auto update_fn : m_Systems.update)
+				update_fn();
+
+			for (auto draw_fn : m_Systems.draw)
+				draw_fn();
 
 			for (event_t& e : event::poll())
 			{
-				if (e.type == NEO_WINDOW_CLOSE_EVENT)
-					windows.pop(e.window);
-
-				for (layer_t* layer : layers)
+				for (auto on_event_fn : m_Systems.on_event)
 				{
-					if (!(layer->state & NEO_LAYERSTATE_ENABLED))
-						continue;
-
-					layer->on_event(e);
-
+					on_event_fn(e);
 					if (e.handled)
 						break;
 				}
 			}
-			std::this_thread::sleep_for(16ms);
 		}
+
+		for (auto shutdown_fn : m_Systems.shutdown)
+			shutdown_fn();
 	}
 } // namespace neo

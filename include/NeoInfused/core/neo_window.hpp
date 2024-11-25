@@ -3,7 +3,7 @@
 
 #include "neo_event.hpp"
 #include "influx/inf_window-surface.hpp"
-#include "../template/neo_linked-list.hpp"
+#include "../template/neo_double-list.hpp"
 
 struct GLFWwindow;
 namespace neo {
@@ -41,7 +41,7 @@ namespace neo {
 			inf::window_surface_t surface;
 			bool should_close = false;
 		};
-		using storage_t = list_t<window_t>;
+		using storage_t = double_list_t<window_t>;
 	} // namespace window
 	using window_t = window::window_t;
 } // namespace neo

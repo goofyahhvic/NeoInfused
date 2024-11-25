@@ -111,12 +111,7 @@ namespace neo {
 	inline int32_t Round32(float num) { return (int32_t)floor(num + 0.5f); }
 	inline int64_t Round64(double num) { return (int64_t)floor(num + 0.5f); }
 
-	struct init_t {
-		int argc;
-		char** argv;
-		inf::renderer_api_t api;
-	};
-	void Init(const init_t& init);
+	void Init(void);
 	void Shutdown(void);
 
 	const std::string& ExecPath(void);

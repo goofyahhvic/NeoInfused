@@ -61,22 +61,18 @@ namespace neo {
 #define INDEX initData->exec_path.find_last_of('/')
 
 	struct InitData {
-		int argc;
-		char** argv;
 		inf::renderer_api_t api;
 		std::string exec_path;
 		std::string_view version, exec_dir, exec_name;
 	};
 	static InitData* initData = nullptr;
 
-	void Init(const init_t& init)
+	void Init(void)
 	{
 		NEO_ASSERT(!initData, "Already has initialized NeoInfused!");
 		initData = (InitData*)malloc(sizeof(InitData));
 
-		initData->argc = init.argc;
-		initData->argv = init.argv;
-		initData->api = init.api;
+		initData->api = INF_API_VULKAN;
 
 		new (&(initData->exec_path)) std::string(getExecPath());
 		new (&(initData->version))   std::string_view("Pre-Alpha");
@@ -88,7 +84,7 @@ namespace neo {
 	#endif // NEO_CONFIG_DIST   
 		NEO_INFO_LOG("Initializing NeoInfused version {}", initData->version);
 
-		inf::Loader::Load(init.api);
+		inf::Loader::Load(initData->api);
 
 		glfwSetErrorCallback([](int error, const char* description)
 		{
@@ -98,6 +94,7 @@ namespace neo {
 		NEO_ASSERT_FUNC(glfwInit(), "Failed to initialize glfw!");
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	}
+
 	void Shutdown(void)
 	{
 		NEO_INFO_LOG("Shutting down NeoInfused, Goodbye!");
@@ -108,7 +105,7 @@ namespace neo {
 		inf::Loader::Unload();
 
 		initData->exec_path.~basic_string();
-		delete initData;
+		free(initData);
 		initData = nullptr;
 	}
 

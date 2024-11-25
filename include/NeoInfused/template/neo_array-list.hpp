@@ -2,6 +2,7 @@
 #define NEO_TYPED_ARENA_HPP
 
 #include "../neo_core.hpp"
+#include "./neo_array-iterator.hpp"
 
 namespace neo {
 	namespace array_list {
@@ -10,140 +11,20 @@ namespace neo {
 		enum set_t { set };
 		enum create_elements_t { create_elements };
 
-		template<typename ArrayListT>
-		class iterator_t {
-			using T = ArrayListT::T_t;
-			using this_t = iterator_t<ArrayListT>;
-		public:
-			inline this_t& operator++(void) { m_Ptr++; return *this; }
-			inline this_t  operator++(int)  { m_Ptr++; return this_t(m_Ptr - 1); }
-
-			inline this_t& operator--(void) { m_Ptr--; return *this; }
-			inline this_t  operator--(int)  { m_Ptr--; return this_t(m_Ptr + 1); }
-
-			inline this_t& operator+=(size_t amount) { m_Ptr += amount; return *this; }
-			inline this_t& operator-=(size_t amount) { m_Ptr -= amount; return *this; }
-
-			[[nodiscard]] inline this_t operator+(size_t amount) const { return this_t(m_Ptr + amount); }
-			[[nodiscard]] inline this_t operator-(size_t amount) const { return this_t(m_Ptr - amount); }
-
-			[[nodiscard]] inline T* operator->(void) const { return m_Ptr; }
-			[[nodiscard]] inline T& operator*(void) const { return *m_Ptr; }
-			[[nodiscard]] inline T* get(void) { return m_Ptr; }
-			[[nodiscard]] inline ArrayListT::reverse_iterator_t reverse(void) { return m_Ptr; }
-
-			[[nodiscard]] inline bool operator==(const this_t& other)  const { return m_Ptr == other.m_Ptr; }
-			[[nodiscard]] inline auto operator<=>(const this_t& other) const { return m_Ptr <=> other.m_Ptr; }
-
-			iterator_t(T* ptr = nullptr)
-			: m_Ptr(ptr) {}
-		private:
-			T* m_Ptr;
-		};
-
-		template<typename ArrayListT>
-		class reverse_iterator_t {
-			using T = ArrayListT::T_t;
-			using this_t = reverse_iterator_t<ArrayListT>;
-		public:
-			inline this_t& operator++(void) { m_Ptr--; return *this; }
-			inline this_t  operator++(int)  { m_Ptr--; return this_t(m_Ptr + 1); }
-
-			inline this_t& operator--(void) { m_Ptr++; return *this; }
-			inline this_t  operator--(int)  { m_Ptr++; return this_t(m_Ptr - 1); }
-
-			inline this_t& operator+=(size_t amount) { m_Ptr -= amount; return *this; }
-			inline this_t& operator-=(size_t amount) { m_Ptr += amount; return *this; }
-
-			[[nodiscard]] inline this_t operator+(size_t amount) const { return this_t(m_Ptr - amount); }
-			[[nodiscard]] inline this_t operator-(size_t amount) const { return this_t(m_Ptr + amount); }
-
-			[[nodiscard]] inline T* operator->(void) const { return m_Ptr; }
-			[[nodiscard]] inline T& operator*(void) const { return *m_Ptr; }
-			[[nodiscard]] inline T* get(void) { return m_Ptr; }
-			[[nodiscard]] inline ArrayListT::iterator_t reverse(void) { return m_Ptr; }
-
-			[[nodiscard]] inline bool operator==(const this_t& other)  const { return m_Ptr == other.m_Ptr; }
-			[[nodiscard]] inline auto operator<=>(const this_t& other) const { return other.m_Ptr <=> m_Ptr; }
-
-			reverse_iterator_t(T* ptr = nullptr)
-			: m_Ptr(ptr) {}
-		private:
-			T* m_Ptr;
-		};
-
-		template<typename ArrayListT>
-		class const_iterator_t {
-			using T = ArrayListT::T_t;
-			using this_t = const_iterator_t<ArrayListT>;
-		public:
-			inline this_t& operator++(void) { m_Ptr++; return *this; }
-			inline this_t  operator++(int)  { m_Ptr++; return this_t(m_Ptr - 1); }
-
-			inline this_t& operator--(void) { m_Ptr--; return *this; }
-			inline this_t  operator--(int)  { m_Ptr--; return this_t(m_Ptr + 1); }
-
-			inline this_t& operator+=(size_t amount) { m_Ptr += amount; return *this; }
-			inline this_t& operator-=(size_t amount) { m_Ptr -= amount; return *this; }
-
-			[[nodiscard]] inline this_t operator+(size_t amount) const { return this_t(m_Ptr + amount); }
-			[[nodiscard]] inline this_t operator-(size_t amount) const { return this_t(m_Ptr - amount); }
-
-			[[nodiscard]] inline const T* operator->(void) const { return m_Ptr; }
-			[[nodiscard]] inline const T& operator*(void) const { return *m_Ptr; }
-			[[nodiscard]] inline const T* get(void) { return m_Ptr; }
-			[[nodiscard]] inline ArrayListT::const_reverse_iterator_t reverse(void) { return m_Ptr; }
-
-			[[nodiscard]] inline bool operator==(const this_t& other) const  { return m_Ptr == other.m_Ptr; }
-			[[nodiscard]] inline auto operator<=>(const this_t& other) const { return m_Ptr <=> other.m_Ptr; }
-
-			const_iterator_t(const T* const ptr = nullptr)
-			: m_Ptr(ptr) {}
-		private:
-			const T* m_Ptr;
-		};
-
-		template<typename ArrayListT>
-		class const_reverse_iterator_t {
-			using T = ArrayListT::T_t;
-			using this_t = const_reverse_iterator_t<ArrayListT>;
-		public:
-			inline this_t& operator++(void) { m_Ptr--; return *this; }
-			inline this_t  operator++(int)  { m_Ptr--; return this_t(m_Ptr + 1); }
-
-			inline this_t& operator--(void) { m_Ptr++; return *this; }
-			inline this_t  operator--(int)  { m_Ptr++; return this_t(m_Ptr - 1); }
-
-			inline this_t& operator+=(size_t amount) { m_Ptr -= amount; return *this; }
-			inline this_t& operator-=(size_t amount) { m_Ptr += amount; return *this; }
-
-			[[nodiscard]] inline this_t operator+(size_t amount) const { return this_t(m_Ptr - amount); }
-			[[nodiscard]] inline this_t operator-(size_t amount) const { return this_t(m_Ptr + amount); }
-
-			[[nodiscard]] inline const T* operator->(void) const { return m_Ptr; }
-			[[nodiscard]] inline const T& operator*(void)  const { return *m_Ptr; }
-			[[nodiscard]] inline const T* get(void) { return m_Ptr; }
-			[[nodiscard]] inline ArrayListT::const_iterator_t reverse(void) { return m_Ptr; }
-
-			[[nodiscard]] inline bool operator==(const this_t& other)  const { return m_Ptr == other.m_Ptr; }
-			[[nodiscard]] inline auto operator<=>(const this_t& other) const { return other.m_Ptr <=> m_Ptr; }
-
-			const_reverse_iterator_t(const T* ptr = nullptr)
-			: m_Ptr(ptr) {}
-		private:
-			const T* m_Ptr;
-		};
-
 		template<typename T>
 		class array_list_t {
 		public:
-			using iterator_t = iterator_t<array_list_t>;
-			using reverse_iterator_t = reverse_iterator_t<array_list_t>;
-			using const_iterator_t = const_iterator_t<array_list_t>;
-			using const_reverse_iterator_t = const_reverse_iterator_t<array_list_t>;
+			using iterator_t = array::iterator_t<array_list_t>;
+			using reverse_iterator_t = array::reverse_iterator_t<array_list_t>;
+			using const_iterator_t = array::const_iterator_t<array_list_t>;
+			using const_reverse_iterator_t = array::const_reverse_iterator_t<array_list_t>;
 			using T_t = T;
 		public:
-			inline array_list_t(size_t capacity = 4, size_t size = 0)
+			inline array_list_t(void)
+			: m_Capacity(0), m_Size(0), m_Buffer(nullptr)
+			{}
+
+			inline array_list_t(size_t capacity, size_t size = 0)
 			: m_Capacity(capacity), m_Size(size), m_Buffer(tmalloc<T>(capacity))
 			{}
 
@@ -154,7 +35,7 @@ namespace neo {
 					this->emplace_d();
 			}
 
-			inline array_list_t(copy_t, const T* buffer, size_t size)
+			inline array_list_t(const T* buffer, size_t size)
 			: m_Capacity(size), m_Size(0), m_Buffer(tmalloc<T>(size))
 			{
 				while (m_Size < size)
@@ -174,12 +55,14 @@ namespace neo {
 			{}
 
 			inline array_list_t(const std::initializer_list<T>& list)
-			: array_list_t(copy, list.begin(), list.size())
+			: array_list_t(list.begin(), list.size())
 			{}
 
-			inline ~array_list_t(void) { if (!m_Capacity) return; clear(); free(m_Buffer); }
+			inline ~array_list_t(void) { if (!m_Capacity) return; this->clear(); free(m_Buffer); }
 
-			inline array_list_t(const array_list_t& other) : array_list_t(copy, other.m_Buffer, other.m_Size) {}
+			inline array_list_t(const array_list_t& other)
+			: array_list_t(other.m_Buffer, other.m_Size) {}
+
 			inline array_list_t& operator=(const array_list_t& other)
 			{
 				if (m_Capacity < other.m_Capacity)
@@ -202,6 +85,7 @@ namespace neo {
 			}
 
 			inline array_list_t& operator=(array_list_t&& other) {
+				this->clear();
 				free(m_Buffer);
 				memcpy(this, &other, sizeof(array_list_t));
 				memset(&other, 0, sizeof(array_list_t));
@@ -247,7 +131,7 @@ namespace neo {
 			inline size_t emplace(ArgsT&&... __args)
 			{
 				if (m_Size == m_Capacity)
-					this->reallocate(m_Capacity * 2);
+					this->reallocate(m_Capacity * 2 + 1);
 				new (m_Buffer + m_Size) T(std::forward<ArgsT>(__args)...);
 				return m_Size++;
 			}
@@ -259,7 +143,12 @@ namespace neo {
 				return m_Size++;
 			}
 
-			inline void pop(void) { if (m_Size) m_Buffer[--m_Size].~T(); }
+			inline bool pop(void)
+			{
+				if (m_Size)
+					m_Buffer[--m_Size].~T();
+				return m_Size;
+			}
 
 			[[nodiscard]] inline iterator_t begin(void) { return m_Buffer; }
 			[[nodiscard]] inline const_iterator_t begin(void) const { return m_Buffer; }
@@ -301,6 +190,7 @@ namespace neo {
 			[[nodiscard]] inline size_t capacity(void) const { return m_Capacity; }
 			[[nodiscard]] inline size_t size(void) const { return m_Size; }
 			[[nodiscard]] inline bool empty(void) const { return !m_Size; }
+			[[nodiscard]] inline bool full(void) const { return m_Size == m_Capacity; }
 		private:
 			size_t m_Capacity, m_Size;
 			T* m_Buffer;

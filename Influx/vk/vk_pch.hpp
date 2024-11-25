@@ -6,7 +6,7 @@
 #include "neo_pch.hpp"
 #include "NeoInfused/neo_core.hpp"
 #include "NeoInfused/template/neo_array-list.hpp"
-#include "NeoInfused/template/neo_linked-list.hpp"
+#include "NeoInfused/template/neo_double-list.hpp"
 #include "vk_core.hpp"
 
 #endif // VK_PCH_HPP

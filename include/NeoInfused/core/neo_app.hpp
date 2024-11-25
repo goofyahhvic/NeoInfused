@@ -1,31 +1,47 @@
 #if !defined(NEO_APP_HPP)
 #define NEO_APP_HPP
 
-#include "../data_structures/neo_layer-storage.hpp"
 #include "neo_window.hpp"
 #include "neo_timer.hpp"
 
+enum neo_app_system_type_t : uint8_t {
+	NEO_SYSTEMTYPE_NONE = 0,
+	NEO_SYSTEMTYPE_INIT,
+	NEO_SYSTEMTYPE_SHUTDOWN,
+	NEO_SYSTEMTYPE_UPDATE,
+	NEO_SYSTEMTYPE_DRAW,
+	NEO_SYSTEMTYPE_ONEVENT
+};
+
 namespace neo {
-	class app_t {
-	public:
-		typedef bool (*loop_condition_fn)(void);
-	public:
-		app_t(loop_condition_fn loop_condition = [](void) -> bool { return !app_t::Get().windows.empty(); });
-		~app_t(void) noexcept(false);
-		void run(void);
+	namespace app {
+		using system_type_t = neo_app_system_type_t;
 
-		[[nodiscard]] static app_t& Get(void);
+		struct systems_t {
+			neo::array_list_t<void(*)(void)> init;
+			neo::array_list_t<void(*)(void)> shutdown;
 
-		inline window_t* add_window(uint32_t width = 1280, uint32_t height = 720, const char* title = "Untitled") { return windows.emplace_back(width, height, title); }
-		inline bool remove_window(window_t* window) { return windows.pop(window); }
-	public:
-		loop_condition_fn loop_condition;
-		window::storage_t windows;
-		layer::storage_t layers;
-	};
+			neo::array_list_t<void(*)(void)> update;
+			neo::array_list_t<void(*)(void)> draw;
+			neo::array_list_t<void(*)(event_t&)> on_event;
+		};
 
-	[[nodiscard]] inline window::storage_t& GetWindows(void) { return app_t::Get().windows; }
-	[[nodiscard]] inline layer::storage_t&  GetLayers(void) { return app_t::Get().layers; }
-}
+		class app_t {
+		public:
+		public:
+			inline app_t(void) { Init(); };
+			inline ~app_t(void) noexcept(false) { Shutdown(); }
+			void run(void);
+
+			void add_system(system_type_t type, void* fn);
+			inline const systems_t& systems(void) const { return m_Systems; }
+		public:
+			bool should_close = false;
+		private:
+			systems_t m_Systems;
+		};
+	} // namespace app 
+	using app_t = app::app_t;
+} // namespace neo
 
 #endif // NEO_APP_HPP

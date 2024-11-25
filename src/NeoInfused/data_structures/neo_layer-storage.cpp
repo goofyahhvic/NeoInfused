@@ -4,7 +4,7 @@
 namespace neo {
 	namespace layer {
 		bool storage_t::_Greater(layer_t* left, layer_t* right)
-		{ return left->m_Priority > right->m_Priority; }
+		{ return left->priority > right->priority; }
 
 		storage_t::~storage_t(void)
 		{
@@ -38,7 +38,7 @@ namespace neo {
 
 		void storage_t::set_priority(layer_t* layer, int32_t new_priority)
 		{
-			layer->m_Priority = new_priority;
+			layer->priority = new_priority;
 			this->_resort();
 		}
 	} // namespace layer
