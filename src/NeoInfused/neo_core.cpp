@@ -18,8 +18,8 @@ namespace neo {
 		case Type::UInt32: return 4u;
 		case Type::Int64:  return 8u;
 		case Type::UInt64: return 8u;
-		case Type::Float:  return sizeof(float);
-		case Type::Double: return sizeof(double);
+		case Type::Float:  return 4u;
+		case Type::Double: return 8u;
 		default:           return 0u;
 		}
 	}
@@ -33,11 +33,13 @@ namespace neo {
 		str[str.length() - 1] = ']';
 		return str;
 	}
+
 	std::string YearMonthDay(void)
 	{
 		const std::chrono::year_month_day ymd{ std::chrono::floor<std::chrono::days>(std::chrono::system_clock::now()) };
 		return NEO_FORMAT("[{0}]", ymd);
 	}
+
 	std::string DateAndTime(void)
 	{
 		std::time_t seconds = std::time(nullptr);

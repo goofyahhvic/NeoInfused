@@ -10,6 +10,8 @@
 #include "data_structures/neo_layer-storage.hpp"
 #include "template/neo_array-list.hpp"
 #include "template/neo_heap-object.hpp"
-#include "core/neo_app.hpp"
+
+#include "core/app/neo_app.hpp"
+#include "core/app/neo_window-system-set.hpp"
 
 #endif // NEOINFUSED_HPP

@@ -1,16 +1,15 @@
 #if !defined(NEO_APP_HPP)
 #define NEO_APP_HPP
 
-#include "neo_window.hpp"
-#include "neo_timer.hpp"
+#include "../neo_window.hpp"
+#include "../neo_timer.hpp"
 
 enum neo_app_system_type_t : uint8_t {
-	NEO_SYSTEMTYPE_NONE = 0,
-	NEO_SYSTEMTYPE_INIT,
-	NEO_SYSTEMTYPE_SHUTDOWN,
-	NEO_SYSTEMTYPE_UPDATE,
-	NEO_SYSTEMTYPE_DRAW,
-	NEO_SYSTEMTYPE_ONEVENT
+	NEO_APP_SYSTEM_TYPE_NONE = 0,
+	NEO_APP_SYSTEM_TYPE_INIT,
+	NEO_APP_SYSTEM_TYPE_SHUTDOWN,
+	NEO_APP_SYSTEM_TYPE_UPDATE,
+	NEO_APP_SYSTEM_TYPE_ON_EVENT
 };
 
 namespace neo {
@@ -22,23 +21,23 @@ namespace neo {
 			neo::array_list_t<void(*)(void)> shutdown;
 
 			neo::array_list_t<void(*)(void)> update;
-			neo::array_list_t<void(*)(void)> draw;
 			neo::array_list_t<void(*)(event_t&)> on_event;
 		};
 
+		class app_t;
+
+		inline app_t* g_Instance = nullptr;
+
 		class app_t {
 		public:
-		public:
-			inline app_t(void) { Init(); };
-			inline ~app_t(void) noexcept(false) { Shutdown(); }
+			inline app_t(void) { g_Instance = this; Init(); };
+			inline ~app_t(void) noexcept(false) { Shutdown(); g_Instance = nullptr; }
 			void run(void);
 
 			void add_system(system_type_t type, void* fn);
-			inline const systems_t& systems(void) const { return m_Systems; }
 		public:
 			bool should_close = false;
-		private:
-			systems_t m_Systems;
+			systems_t systems;
 		};
 	} // namespace app 
 	using app_t = app::app_t;

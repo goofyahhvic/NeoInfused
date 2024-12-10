@@ -3,23 +3,28 @@
 
 #include "inf_loader.hpp"
 
-struct GLFWwindow;
+namespace neo {
+	namespace window { class window_t; }
+	using window_t = window::window_t;
+} // namespace neo
 
 namespace inf {
 	class window_surface_t {
 	public:
-		window_surface_t(GLFWwindow* window);
+		window_surface_t(neo::window_t* window);
 		void destroy(void);
 		inline ~window_surface_t(void) { this->destroy(); }
 
 		window_surface_t(const window_surface_t&) = delete;
 		window_surface_t& operator=(const window_surface_t&) = delete;
 
-		inline glm::uvec2 size(void) const { return Loader::get_window_surface_size(m_Surface); }
-		inline uint32_t  width(void) const { return Loader::get_window_surface_size(m_Surface).x; }
-		inline uint32_t height(void) const { return Loader::get_window_surface_size(m_Surface).y; }
+		[[nodiscard]] inline glm::uvec2 size(void) const { return Loader::get_window_surface_size(m_Surface); }
+		[[nodiscard]] inline uint32_t  width(void) const { return Loader::get_window_surface_size(m_Surface).x; }
+		[[nodiscard]] inline uint32_t height(void) const { return Loader::get_window_surface_size(m_Surface).y; }
 
 		inline operator bool(void) const { return m_Surface; }
+	public:
+		neo::window_t* window;
 	private:
 		Loader::window_surface_t* m_Surface;
 	};

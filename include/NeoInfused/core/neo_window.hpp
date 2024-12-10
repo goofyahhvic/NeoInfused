@@ -10,6 +10,13 @@ namespace neo {
 	namespace window {
 		class window_t {
 		public:
+			window_t(uint32_t width, uint32_t height, const char* title);
+			void destroy(void);
+			inline ~window_t(void) { this->destroy(); }
+
+			window_t(const window_t&) = delete;
+			window_t& operator=(const window_t&) = delete;
+
 			void focus(void);
 			[[nodiscard]] inline bool focused(void) const { return m_Focus; }
 
@@ -20,26 +27,14 @@ namespace neo {
 			void set_title(const char* title);
 			[[nodiscard]] const char* title(void) const;
 
+			[[nodiscard]] inline GLFWwindow* native(void) { return m_Window; }
 			inline operator bool(void) const { return m_Window; }
-
-			// inf::window_surface_t surface
-			// bool should_close
-		public:
-			window_t(uint32_t width, uint32_t height, const char* title);
-			void destroy(void);
-			inline ~window_t(void) { this->destroy(); }
-
-			window_t(const window_t&) = delete;
-			window_t& operator=(const window_t&) = delete;
 
 			static void _SetGLFWCallbacks(GLFWwindow* _window);
 		private:
 			GLFWwindow* m_Window;
 			uint32_t m_Width, m_Height;
 			bool m_Focus = true;
-		public:
-			inf::window_surface_t surface;
-			bool should_close = false;
 		};
 		using storage_t = double_list_t<window_t>;
 	} // namespace window

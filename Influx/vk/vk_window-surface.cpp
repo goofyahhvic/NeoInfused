@@ -47,7 +47,7 @@ namespace vk {
 		int window_width = 0, window_height = 0;
 		glfwGetWindowSize(window, &window_height, &window_height);
 
-		VkSwapchainCreateInfoKHR create_info = {};
+		VkSwapchainCreateInfoKHR create_info {};
 		create_info.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
 		create_info.surface = surface;
 
@@ -85,6 +85,9 @@ namespace vk {
 		create_info.presentMode = pickPresentMode(swapchain_support.present_modes);
 		create_info.clipped = VK_TRUE;
 		create_info.oldSwapchain = VK_NULL_HANDLE;
+
+		INFVK_INFO_LOG("Creating window surface:" INFVK_LOG_CONTINUE
+		"w: {}, h: {}", create_info.imageExtent.width, create_info.imageExtent.height);
 
 		if (vkCreateSwapchainKHR(Core::g_LogicalDevice, &create_info, nullptr, &swapchain_info.swapchain) != VK_SUCCESS)
 		{
@@ -129,11 +132,37 @@ namespace vk {
 		_this->images.reallocate(image_count, image_count);
 		vkGetSwapchainImagesKHR(Core::g_LogicalDevice, _this->swapchain, &image_count, _this->images.ptr());
 
+		_this->image_views.reallocate(image_count);
+		for (size_t i = 0; i < image_count; i++)
+		{
+			VkImageViewCreateInfo create_info {};
+			create_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+			create_info.image = _this->images[i];
+
+			create_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
+			create_info.format = _this->format;
+
+			create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+			create_info.subresourceRange.baseMipLevel = 0;
+			create_info.subresourceRange.levelCount = 1;
+			create_info.subresourceRange.baseArrayLayer = 0;
+			create_info.subresourceRange.layerCount = 1;
+
+			if (vkCreateImageView(Core::g_LogicalDevice, &create_info, nullptr, &_this->image_views[i]) != VK_SUCCESS)
+			{
+				g_ErrorCallback(INF_ERROR_NONE, "Failed to create image views!", nullptr);
+				return nullptr;
+			}
+		}
+
 		return _this;
 	}
 
 	void DestroyWindowSurface(window_surface_t* _this)
 	{
+		for (auto image_view : _this->image_views)
+			vkDestroyImageView(Core::g_LogicalDevice, image_view, nullptr);
+
 		vkDestroySwapchainKHR(Core::g_LogicalDevice, _this->swapchain, nullptr);
 		vkDestroySurfaceKHR(Core::g_Instance, _this->surface, nullptr);
 		delete _this;

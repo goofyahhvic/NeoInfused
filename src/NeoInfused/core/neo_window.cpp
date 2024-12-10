@@ -1,28 +1,23 @@
 #include "neo_pch.hpp"
 #include "NeoInfused/core/neo_window.hpp"
 
-#include "NeoInfused/core/neo_app.hpp"
 #include "influx/inf_loader.hpp"
 
 namespace neo {
 	window_t::window_t(uint32_t width, uint32_t height, const char* title)
 	: m_Window(glfwCreateWindow(width, height, title, nullptr, nullptr)),
-	m_Width(width), m_Height(height),
-	surface(m_Window)
+	m_Width(width), m_Height(height)
 	{
 		NEO_ASSERT(m_Window, "Failed to create glfw window!");
-		NEO_ASSERT(surface, "Failed to create window surface!");
 		glfwSetWindowUserPointer(m_Window, this);
 
 		window_t::_SetGLFWCallbacks(m_Window);
 	}
 	void window_t::destroy(void)
 	{
-		if (surface)
-			surface.destroy();
-
 		if (!m_Window)
 			return;
+
 		glfwDestroyWindow(m_Window);
 		m_Window = nullptr;
 	}
@@ -30,6 +25,7 @@ namespace neo {
 	void window_t::focus(void)
 	{
 		glfwFocusWindow(m_Window);
+		m_Focus = true;
 	}
 
 	void window_t::set_size(uint32_t width, uint32_t height)
@@ -38,6 +34,7 @@ namespace neo {
 		m_Width = width;
 		m_Height = height;
 	}
+
 	void window_t::set_title(const char* title)
 	{
 		glfwSetWindowTitle(m_Window, title);
@@ -97,7 +94,6 @@ namespace neo {
 		glfwSetWindowCloseCallback(_window, [](GLFWwindow* window)
 		{
 			window_t* __window = (window_t*)glfwGetWindowUserPointer(window);
-			__window->should_close = true;
 			event::g_Queue.emplace(event::window_close_t{
 				NEO_WINDOW_CLOSE_EVENT,
 				__window,

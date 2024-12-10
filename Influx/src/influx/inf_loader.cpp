@@ -25,6 +25,8 @@ namespace inf {
 		if (set_error_callback = lib.fn<set_error_callback_fn>("SetErrorCallback"))
 			set_error_callback([](error::type_t type, const char* msg, void* data)
 			{
+				// temporary... although it's been like this since
+				// the addition of the error callback :p
 				throw std::runtime_error(msg);
 			});
 

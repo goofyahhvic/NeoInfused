@@ -11,11 +11,11 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 {
 #if !defined(NEO_CONFIG_DIST)
     if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
-        VK_ERROR_LOG("{}", pCallbackData->pMessage);
+        INFVK_ERROR_LOG("{}", pCallbackData->pMessage);
     else if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
-        VK_WARN_LOG("{}", pCallbackData->pMessage);
+        INFVK_WARN_LOG("{}", pCallbackData->pMessage);
     else if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)
-        VK_INFO_LOG("{}", pCallbackData->pMessage);
+        INFVK_INFO_LOG("{}", pCallbackData->pMessage);
 #endif
 
     return VK_FALSE;
