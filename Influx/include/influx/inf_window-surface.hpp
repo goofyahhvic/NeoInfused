@@ -18,15 +18,16 @@ namespace inf {
 		window_surface_t(const window_surface_t&) = delete;
 		window_surface_t& operator=(const window_surface_t&) = delete;
 
-		[[nodiscard]] inline glm::uvec2 size(void) const { return Loader::get_window_surface_size(m_Surface); }
-		[[nodiscard]] inline uint32_t  width(void) const { return Loader::get_window_surface_size(m_Surface).x; }
-		[[nodiscard]] inline uint32_t height(void) const { return Loader::get_window_surface_size(m_Surface).y; }
+		[[nodiscard]] inline glm::uvec2 size(void) const { return *m_Size; }
+		[[nodiscard]] inline uint32_t  width(void) const { return m_Size->x; }
+		[[nodiscard]] inline uint32_t height(void) const { return m_Size->y; }
 
 		inline operator bool(void) const { return m_Surface; }
 	public:
 		neo::window_t* window;
 	private:
 		Loader::window_surface_t* m_Surface;
+		const glm::uvec2* m_Size;
 	};
 } // namespace inf
 

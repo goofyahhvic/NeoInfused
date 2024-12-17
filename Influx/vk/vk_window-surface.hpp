@@ -3,10 +3,10 @@
 
 namespace vk {
 	struct window_surface_t {
-		VkSurfaceKHR surface = VK_NULL_HANDLE;
-		VkSwapchainKHR swapchain = VK_NULL_HANDLE;
-		VkFormat format = VK_FORMAT_UNDEFINED;
-		glm::uvec2 size = { 0, 0 };
+		VkSurfaceKHR surface;
+		VkSwapchainKHR swapchain;
+		VkFormat format;
+		glm::uvec2 size;
 		neo::array_list_t<VkImage> images;
 		neo::array_list_t<VkImageView> image_views;
 	};

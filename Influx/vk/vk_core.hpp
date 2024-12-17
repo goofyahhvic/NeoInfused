@@ -64,10 +64,12 @@ namespace vk {
 
         inline VkQueue g_GraphicsQueue = VK_NULL_HANDLE;
         inline VkQueue g_PresentQueue  = VK_NULL_HANDLE;
-    }
+    } // namespace Core
+
+    std::filesystem::path GetExecPath(void);
 
     using error_callback_fn = inf::error::callback_fn;
     inline error_callback_fn g_ErrorCallback = nullptr;
-}
+} // namespace vk
 
 #endif // VK_CORE_HPP

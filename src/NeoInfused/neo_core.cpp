@@ -49,10 +49,10 @@ namespace neo {
 		return NEO_FORMAT("[{0}][{1}]", ymd, str);
 	}
 	
-	static std::string getExecPath(void)
+	static std::filesystem::path getExecPath(void)
 	{
 	#if defined(NEO_PLATFORM_LINUX)
-		return std::filesystem::canonical("/proc/self/exe").string();
+		return std::filesystem::canonical("/proc/self/exe");
 	#elif defined(NEO_PLATFORM_WINDOWS)
 		char exec_path_buffer[MAX_PATH];
 		GetModuleFileNameA(nullptr, exec_path_buffer, MAX_PATH);
@@ -64,22 +64,23 @@ namespace neo {
 
 	struct InitData {
 		inf::renderer_api_t api;
-		std::string exec_path;
-		std::string_view version, exec_dir, exec_name;
+		std::filesystem::path exec_path, exec_dir, exec_name;
+		std::string_view version;
 	};
 	static InitData* initData = nullptr;
 
 	void Init(void)
 	{
 		NEO_ASSERT(!initData, "Already has initialized NeoInfused!");
-		initData = (InitData*)malloc(sizeof(InitData));
+		initData = tmalloc<InitData>(1);
 
 		initData->api = INF_API_VULKAN;
 
-		new (&(initData->exec_path)) std::string(getExecPath());
-		new (&(initData->version))   std::string_view("Pre-Alpha");
-		new (&(initData->exec_dir))  std::string_view(initData->exec_path.substr(0, INDEX + 1));
-		new (&(initData->exec_name)) std::string_view(initData->exec_path.substr(INDEX + 1, initData->exec_path.find_last_of('.')));
+		new (&(initData->version)) std::string_view("Pre-Alpha");
+
+		new (&(initData->exec_path)) std::filesystem::path(getExecPath());
+		new (&(initData->exec_dir))  std::filesystem::path(initData->exec_path.parent_path());
+		new (&(initData->exec_name)) std::filesystem::path(initData->exec_path.filename());
 
 	#if !defined (NEO_CONFIG_DIST)
 		NEO_DATE_TIME_LOG << '\n';
@@ -106,22 +107,24 @@ namespace neo {
 
 		inf::Loader::Unload();
 
-		initData->exec_path.~basic_string();
+		initData->exec_path.~path();
+		initData->exec_name.~path();
+		initData->exec_dir.~path();
 		free(initData);
 		initData = nullptr;
 	}
 
-	const std::string& ExecPath(void)
+	const std::filesystem::path& ExecPath(void)
 	{
 		return initData->exec_path;
 	}
 
-	std::string_view ExecDir(void)
+	const std::filesystem::path& ExecDir(void)
 	{
 		return initData->exec_dir;
 	}
 
-	std::string_view ExecName(void)
+	const std::filesystem::path& ExecName(void)
 	{
 		return initData->exec_name;
 	}

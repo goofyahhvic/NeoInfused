@@ -180,11 +180,11 @@ namespace vk {
         if (VALIDATION_LAYERS_ENABLED && !validationLayersSupported())
             g_ErrorCallback(INF_ERROR_NONE, "Validation Layers requested, but not supported!", nullptr);
 
-        VkApplicationInfo app_info {};
+        VkApplicationInfo app_info{};
         app_info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
         app_info.pEngineName = "NeoInfused";
 
-        VkInstanceCreateInfo create_info {};
+        VkInstanceCreateInfo create_info{};
         create_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
         create_info.pApplicationInfo = &app_info;
 
@@ -196,6 +196,7 @@ namespace vk {
             for (uint32_t i = 0; i < required_extension_count; i++)
                 extensions.emplace(required_extensions[i]);
         }
+
         VkDebugUtilsMessengerCreateInfoEXT debug_create_info{};
         if (VALIDATION_LAYERS_ENABLED)
         {
@@ -263,7 +264,7 @@ namespace vk {
     static const float priorities[] = { 1.0f };
     static VkDeviceQueueCreateInfo createQueueCreateInfo(uint32_t index, uint32_t count = 1, const float* _priorities = priorities)
     {
-        VkDeviceQueueCreateInfo create_info = {};
+        VkDeviceQueueCreateInfo create_info{};
         create_info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
         create_info.queueFamilyIndex = index;
         create_info.queueCount = count;
@@ -279,12 +280,12 @@ namespace vk {
         if (indices.graphics != indices.present)
             queue_create_infos.emplace(createQueueCreateInfo(indices.present));
 
-        VkDeviceCreateInfo create_info = {};
+        VkDeviceCreateInfo create_info{};
         create_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
         create_info.queueCreateInfoCount = (uint32_t)queue_create_infos.size();
         create_info.pQueueCreateInfos = queue_create_infos.ptr();
 
-        VkPhysicalDeviceFeatures device_features = {};
+        VkPhysicalDeviceFeatures device_features{};
         create_info.pEnabledFeatures = &device_features;
 
         create_info.enabledExtensionCount = (uint32_t)requiredDeviceExtensions.size();
@@ -296,7 +297,19 @@ namespace vk {
         vkGetDeviceQueue(g_LogicalDevice, indices.graphics, 0, &g_GraphicsQueue);
         vkGetDeviceQueue(g_LogicalDevice, indices.present,  0, &g_PresentQueue);
     }
-}
+
+    std::filesystem::path GetExecPath(void)
+    {
+    #if defined(NEO_PLATFORM_LINUX)
+        return std::filesystem::canonical("/proc/self/exe");
+    #elif defined(NEO_PLATFORM_WINDOWS)
+        char exec_path_buffer[MAX_PATH];
+        GetModuleFileNameA(nullptr, exec_path_buffer, MAX_PATH);
+        return exec_path_buffer;
+    #endif
+    }
+} // namespace vk 
+
 using namespace vk;
 EXPORT_FN void SetErrorCallback(error_callback_fn error_callback)
 {
@@ -315,10 +328,17 @@ EXPORT_FN void InitAPI(void)
 
 EXPORT_FN void ShutdownAPI(void)
 {
-    vkDestroyDevice(Core::g_LogicalDevice, nullptr);
-    vkDestroySurfaceKHR(Core::g_Instance, Core::g_InitSurface, nullptr);
+    if (Core::g_LogicalDevice)
+        vkDestroyDevice(Core::g_LogicalDevice, nullptr);
+
+    if (Core::g_InitSurface)
+        vkDestroySurfaceKHR(Core::g_Instance, Core::g_InitSurface, nullptr);
+
     if (Core::VALIDATION_LAYERS_ENABLED)
         DestroyDebugUtilsMessengerEXT(Core::g_Instance, Core::g_DebugMessenger, nullptr);
-    vkDestroyInstance(Core::g_Instance, nullptr);
+
+    if (Core::g_Instance)
+        vkDestroyInstance(Core::g_Instance, nullptr);
+
     glfwTerminate();
 }

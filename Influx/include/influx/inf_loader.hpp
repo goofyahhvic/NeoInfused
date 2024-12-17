@@ -21,6 +21,12 @@ namespace inf {
 		typedef void (*shutdown_api_fn)(void);
 		inline shutdown_api_fn shutdown_api = nullptr;
 
+		typedef void (*build_shader_fn)(const std::filesystem::path& shader);
+		inline build_shader_fn build_shader = nullptr;
+
+		typedef void (*set_shader_output_dir_fn)(std::filesystem::path&& dir);
+		inline set_shader_output_dir_fn set_shader_output_dir = nullptr;
+
 		struct window_surface_t;
 
 		typedef window_surface_t* (*create_window_surface_fn)(GLFWwindow* window);
@@ -29,7 +35,7 @@ namespace inf {
 		typedef void (*destroy_window_surface_fn)(window_surface_t* surface);
 		inline destroy_window_surface_fn destroy_window_surface = nullptr;
 
-		typedef glm::uvec2 (*get_window_surface_size_fn)(window_surface_t* surface);
+		typedef const glm::uvec2* (*get_window_surface_size_fn)(window_surface_t* surface);
 		inline get_window_surface_size_fn get_window_surface_size = nullptr;
 
 		typedef void (*set_error_callback_fn)(error::callback_fn error_callback);

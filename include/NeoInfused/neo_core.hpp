@@ -35,9 +35,9 @@
 #endif // NEO_CONFIG_DIST
 
 #if defined(NEO_PLATFORM_LINUX)
-#define C_STR c_str()
+#define C_STR c_str
 #elif defined(NEO_PLATFORM_WINDOWS)
-#define C_STR string().c_str()
+#define C_STR string().c_str
 #endif // NEO_PLATFORM_LINUX
 
 #if !defined(NEO_CONFIG_DIST)
@@ -114,9 +114,9 @@ namespace neo {
 	void Init(void);
 	void Shutdown(void);
 
-	const std::string& ExecPath(void);
-	std::string_view ExecDir(void);
-	std::string_view ExecName(void);
+	const std::filesystem::path& ExecPath(void);
+	const std::filesystem::path& ExecDir(void);
+	const std::filesystem::path& ExecName(void);
 
 } // namespace neo
 

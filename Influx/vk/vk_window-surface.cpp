@@ -7,8 +7,8 @@ namespace vk {
 	static VkSurfaceFormatKHR pickSurfaceFormat(const neo::array_list_t<VkSurfaceFormatKHR>& formats)
 	{
 		for (auto it = formats.begin(); it != formats.end(); it++)
-			if (it->format == VK_FORMAT_R8G8B8A8_SRGB &&
-				it->colorSpace == VK_COLORSPACE_SRGB_NONLINEAR_KHR)
+			if (it->format == VK_FORMAT_R32G32B32A32_SFLOAT
+			&& it->colorSpace == VK_COLOR_SPACE_ADOBERGB_NONLINEAR_EXT)
 				return *it;
 		return formats[0];
 	}
@@ -41,7 +41,7 @@ namespace vk {
 
 	static swapchain_info_t createSwapchain(GLFWwindow* window, VkSurfaceKHR surface, swapchain_support_t& swapchain_support)
 	{
-		swapchain_info_t swapchain_info;
+		swapchain_info_t swapchain_info{};
 		swapchain_info.format = pickSurfaceFormat(swapchain_support.formats);
 
 		int window_width = 0, window_height = 0;
@@ -52,17 +52,16 @@ namespace vk {
 		create_info.surface = surface;
 
 		create_info.imageFormat = swapchain_info.format.format;
+		create_info.imageColorSpace = swapchain_info.format.colorSpace;
 
 		create_info.imageExtent = pickResolution(swapchain_support.capabilities, window_width, window_height);
 		swapchain_info.extent = create_info.imageExtent;
 
-		create_info.imageColorSpace = pickSurfaceFormat(swapchain_support.formats).colorSpace;
-
 		create_info.imageArrayLayers = 1;
 		create_info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-		if (swapchain_support.capabilities.maxImageCount > 0 &&
-			swapchain_support.capabilities.minImageCount + 1 > swapchain_support.capabilities.maxImageCount)
+		if (swapchain_support.capabilities.maxImageCount > 0
+		&& swapchain_support.capabilities.minImageCount + 1 > swapchain_support.capabilities.maxImageCount)
 			create_info.minImageCount = swapchain_support.capabilities.maxImageCount;
 		else 
 			create_info.minImageCount = swapchain_support.capabilities.minImageCount + 1;
@@ -101,6 +100,7 @@ namespace vk {
 	window_surface_t* CreateWindowSurface(GLFWwindow* window)
 	{
 		window_surface_t* _this = new window_surface_t;
+		memset(_this, 0, sizeof(window_surface_t));
 
 		if (glfwCreateWindowSurface(Core::g_Instance, window, nullptr, &_this->surface) != VK_SUCCESS)
 		{
@@ -132,10 +132,10 @@ namespace vk {
 		_this->images.reallocate(image_count, image_count);
 		vkGetSwapchainImagesKHR(Core::g_LogicalDevice, _this->swapchain, &image_count, _this->images.ptr());
 
-		_this->image_views.reallocate(image_count);
+		_this->image_views.reallocate(image_count, image_count);
 		for (size_t i = 0; i < image_count; i++)
 		{
-			VkImageViewCreateInfo create_info {};
+			VkImageViewCreateInfo create_info{};
 			create_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 			create_info.image = _this->images[i];
 
@@ -172,4 +172,4 @@ namespace vk {
 EXPORT_FN vk::window_surface_t* CreateWindowSurface(GLFWwindow* window) { return vk::CreateWindowSurface(window); }
 EXPORT_FN void DestroyWindowSurface(vk::window_surface_t* _this) { return vk::DestroyWindowSurface(_this); }
 
-EXPORT_FN glm::uvec2 GetWindowSurfaceSize(vk::window_surface_t* _this) { return _this->size; }
+EXPORT_FN const glm::uvec2* GetWindowSurfaceSize(vk::window_surface_t* _this) { return &_this->size; }

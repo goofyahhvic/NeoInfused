@@ -8,6 +8,6 @@ namespace inf {
 		struct { uint8_t r, g, b, a; };
 		uint32_t rgba;
 	};
-}
+} // namespace inf
 
 #endif // INF_CORE_HPP

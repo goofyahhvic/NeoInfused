@@ -15,8 +15,12 @@ namespace inf {
 		default:
 			NEO_WARN_LOG("Unknown Renderering API requested!");
 		}
+
 		init_api = lib.fn<init_api_fn>("InitAPI");
 		shutdown_api = lib.fn<shutdown_api_fn>("ShutdownAPI");
+
+		build_shader = lib.fn<build_shader_fn>("BuildShader");
+		set_shader_output_dir = lib.fn<set_shader_output_dir_fn>("SetShaderOutputDir");
 
 		create_window_surface   = lib.fn<create_window_surface_fn>("CreateWindowSurface");
 		destroy_window_surface  = lib.fn<destroy_window_surface_fn>("DestroyWindowSurface");

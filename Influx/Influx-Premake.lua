@@ -119,3 +119,4 @@ project "Influx-vk"
         symbols "off"
         runtime "Release"
         defines { "NEO_CONFIG_DIST" }
+
