@@ -210,6 +210,7 @@ namespace vk {
         {
             create_info.enabledLayerCount = 0;
         }
+        
         create_info.enabledExtensionCount = (uint32_t)extensions.size();
         create_info.ppEnabledExtensionNames = extensions.ptr();
 

@@ -85,9 +85,6 @@ namespace vk {
 		create_info.clipped = VK_TRUE;
 		create_info.oldSwapchain = VK_NULL_HANDLE;
 
-		INFVK_INFO_LOG("Creating window surface:" INFVK_LOG_CONTINUE
-		"w: {}, h: {}", create_info.imageExtent.width, create_info.imageExtent.height);
-
 		if (vkCreateSwapchainKHR(Core::g_LogicalDevice, &create_info, nullptr, &swapchain_info.swapchain) != VK_SUCCESS)
 		{
 			g_ErrorCallback(INF_ERROR_NONE, "Failed to create window surface!", nullptr);
@@ -124,6 +121,7 @@ namespace vk {
 			
 			_this->size.x = swapchain_info.extent.width;
 			_this->size.y = swapchain_info.extent.height;
+			INFVK_TRACE_LOG("Created swapchain [ w: {}, h: {} ]", _this->size.x, _this->size.y);
 		}
 
 		uint32_t image_count;
@@ -131,6 +129,7 @@ namespace vk {
 
 		_this->images.reallocate(image_count, image_count);
 		vkGetSwapchainImagesKHR(Core::g_LogicalDevice, _this->swapchain, &image_count, _this->images.ptr());
+
 
 		_this->image_views.reallocate(image_count, image_count);
 		for (size_t i = 0; i < image_count; i++)

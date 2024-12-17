@@ -70,6 +70,8 @@ namespace vk {
 
     using error_callback_fn = inf::error::callback_fn;
     inline error_callback_fn g_ErrorCallback = nullptr;
+
+    inline const char* g_VulkanSDK = getenv("VULKAN_SDK");
 } // namespace vk
 
 #endif // VK_CORE_HPP

@@ -27,6 +27,9 @@ namespace inf {
 		typedef void (*set_shader_output_dir_fn)(std::filesystem::path&& dir);
 		inline set_shader_output_dir_fn set_shader_output_dir = nullptr;
 
+		typedef void (*set_shader_compiler_path_fn)(std::filesystem::path&& glslc);
+		inline set_shader_compiler_path_fn set_shader_compiler_path = nullptr;
+
 		struct window_surface_t;
 
 		typedef window_surface_t* (*create_window_surface_fn)(GLFWwindow* window);

@@ -21,6 +21,7 @@ namespace inf {
 
 		build_shader = lib.fn<build_shader_fn>("BuildShader");
 		set_shader_output_dir = lib.fn<set_shader_output_dir_fn>("SetShaderOutputDir");
+		set_shader_compiler_path = lib.fn<set_shader_compiler_path_fn>("SetShaderCompilerPath");
 
 		create_window_surface   = lib.fn<create_window_surface_fn>("CreateWindowSurface");
 		destroy_window_surface  = lib.fn<destroy_window_surface_fn>("DestroyWindowSurface");

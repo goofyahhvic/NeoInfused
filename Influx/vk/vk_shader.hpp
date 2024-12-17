@@ -8,6 +8,7 @@ namespace vk {
 		void Build(const std::filesystem::path& shader_file);
 
 		inline std::filesystem::path g_OutputDir;
+		inline std::filesystem::path g_ShaderCompiler;
 	}
 }
 
