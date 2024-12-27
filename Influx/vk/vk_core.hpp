@@ -32,16 +32,17 @@
 #define INFVK_LOG_CONTINUE "\n\t\t   "
 
 #include "influx/inf_error.hpp"
+#include "influx/inf_core.hpp"
 
 namespace vk {
-    struct QueueFamilyIndices {
-        uint32_t graphics = UINT32_MAX,
-                 present = UINT32_MAX;
+    struct queue_family_indices_t {
+        uint32_t graphics = -1u,
+                 present = -1u;
 
-        inline operator bool (void) const { return graphics != UINT32_MAX && present != UINT32_MAX; }
+        inline operator bool (void) const { return graphics != -1u && present != -1u; }
     };
 
-    namespace Core {
+    namespace core {
         void InitializeGLFW(void);
         void CreateInstance(void);
         void CreateDebugMessenger(void);
@@ -60,11 +61,11 @@ namespace vk {
         inline VkPhysicalDevice         g_PhysicalDevice = VK_NULL_HANDLE;
         inline VkDevice                 g_LogicalDevice  = VK_NULL_HANDLE;
 
-        QueueFamilyIndices GetQueueFamilies(VkPhysicalDevice device);
+        queue_family_indices_t GetQueueFamilies(VkPhysicalDevice device);
 
         inline VkQueue g_GraphicsQueue = VK_NULL_HANDLE;
         inline VkQueue g_PresentQueue  = VK_NULL_HANDLE;
-    } // namespace Core
+    } // namespace core
 
     std::filesystem::path GetExecPath(void);
 

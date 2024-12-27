@@ -71,48 +71,19 @@
 #define NEO_LOG_CONTINUE "\n\t\t"
 
 #define NEO_BIT(x) (1u << x)
+constexpr uint64_t NEO_INVALID_HANDLE = -1ui64;
 
 using namespace std::chrono_literals;
 
 namespace inf { using renderer_api_t = unsigned char; }
 
 namespace neo {
-	using byte_t = unsigned char;
-
-	enum class Type: unsigned char {
-		None = 0,
-		Byte,        UByte,
-		Char = Byte, UChar = UByte,
-		Int8 = Byte, UInt8 = UByte,
-		Int16,       UInt16,
-		Int32,       UInt32,
-		Int64,       UInt64,
-		Float,
-		Double
-	};
-	uint32_t SizeOf(Type type);
-
-	template<typename T>
-	inline T* tmalloc(size_t size)
-	{
-		return (T*)malloc(size * sizeof(T));
-	}
-
-	template<typename T>
-	inline T* trealloc(T* buffer, size_t size)
-	{
-		return (T*)realloc(buffer, size * sizeof(T));
-	}
-
 	std::string HoursMinutesSeconds(void);
 	std::string YearMonthDay(void);
 	std::string DateAndTime(void);
 
-	inline int32_t Round32(float num) { return (int32_t)floor(num + 0.5f); }
-	inline int64_t Round64(double num) { return (int64_t)floor(num + 0.5f); }
-
-	void Init(void);
-	void Shutdown(void);
+	void InitCore(void);
+	void ShutdownCore(void);
 
 	const std::filesystem::path& ExecPath(void);
 	const std::filesystem::path& ExecDir(void);

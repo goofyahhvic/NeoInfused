@@ -30,8 +30,8 @@ namespace neo {
 
 		class app_t {
 		public:
-			inline app_t(void) { g_Instance = this; Init(); };
-			inline ~app_t(void) noexcept(false) { Shutdown(); g_Instance = nullptr; }
+			inline app_t(void) { g_Instance = this; InitCore(); };
+			inline ~app_t(void) noexcept(false) { ShutdownCore(); g_Instance = nullptr; }
 			void run(void);
 
 			void add_system(system_type_t type, void* fn);

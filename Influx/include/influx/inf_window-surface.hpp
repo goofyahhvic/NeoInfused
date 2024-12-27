@@ -23,6 +23,7 @@ namespace inf {
 		[[nodiscard]] inline uint32_t height(void) const { return m_Size->y; }
 
 		inline operator bool(void) const { return m_Surface; }
+		inline Loader::window_surface_t* native(void) { return m_Surface; }
 	public:
 		neo::window_t* window;
 	private:

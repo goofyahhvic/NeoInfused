@@ -1,7 +1,7 @@
 #if !defined(NEO_TYPED_ARENA_HPP)
 #define NEO_TYPED_ARENA_HPP
 
-#include "../neo_core.hpp"
+#include "NeoInfused/core/neo_utils.hpp"
 #include "./neo_array-iterator.hpp"
 
 namespace neo {
@@ -189,6 +189,7 @@ namespace neo {
 
 			[[nodiscard]] inline size_t capacity(void) const { return m_Capacity; }
 			[[nodiscard]] inline size_t size(void) const { return m_Size; }
+			[[nodiscard]] inline size_t free_space(void) const { return m_Capacity - m_Size; }
 			[[nodiscard]] inline bool empty(void) const { return !m_Size; }
 			[[nodiscard]] inline bool full(void) const { return m_Size == m_Capacity; }
 		private:

@@ -9,6 +9,8 @@ namespace vk {
 		glm::uvec2 size;
 		neo::array_list_t<VkImage> images;
 		neo::array_list_t<VkImageView> image_views;
+		VkViewport viewport;
+		VkRect2D scissor;
 	};
 
 	window_surface_t* CreateWindowSurface(GLFWwindow* window);

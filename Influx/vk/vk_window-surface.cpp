@@ -66,7 +66,7 @@ namespace vk {
 		else 
 			create_info.minImageCount = swapchain_support.capabilities.minImageCount + 1;
 
-		QueueFamilyIndices indices = Core::GetQueueFamilies(Core::g_PhysicalDevice);
+		queue_family_indices_t indices = core::GetQueueFamilies(core::g_PhysicalDevice);
 		uint32_t indices_arr[] = { indices.graphics, indices.present };
 
 		if (indices.graphics != indices.present)
@@ -85,9 +85,9 @@ namespace vk {
 		create_info.clipped = VK_TRUE;
 		create_info.oldSwapchain = VK_NULL_HANDLE;
 
-		if (vkCreateSwapchainKHR(Core::g_LogicalDevice, &create_info, nullptr, &swapchain_info.swapchain) != VK_SUCCESS)
+		if (vkCreateSwapchainKHR(core::g_LogicalDevice, &create_info, nullptr, &swapchain_info.swapchain) != VK_SUCCESS)
 		{
-			g_ErrorCallback(INF_ERROR_NONE, "Failed to create window surface!", nullptr);
+			g_ErrorCallback(INF_OBJECT_CREATION_FAILURE, "Failed to create window surface!", nullptr);
 			swapchain_info.swapchain = nullptr;
 		}
 
@@ -96,50 +96,49 @@ namespace vk {
 
 	window_surface_t* CreateWindowSurface(GLFWwindow* window)
 	{
-		window_surface_t* _this = new window_surface_t;
-		memset(_this, 0, sizeof(window_surface_t));
+		window_surface_t* surface = new window_surface_t;
+		memset(surface, 0, sizeof(window_surface_t));
 
-		if (glfwCreateWindowSurface(Core::g_Instance, window, nullptr, &_this->surface) != VK_SUCCESS)
+		if (glfwCreateWindowSurface(core::g_Instance, window, nullptr, &surface->surface) != VK_SUCCESS)
 		{
-			delete _this;
-			g_ErrorCallback(INF_ERROR_NONE, "Failed to create window surface!", nullptr);
+			delete surface;
+			g_ErrorCallback(INF_OBJECT_CREATION_FAILURE, "Failed to create window surface!", nullptr);
 			return nullptr;
 		}
 
-		swapchain_support_t swapchain_support(Core::g_PhysicalDevice, _this->surface);
+		swapchain_support_t swapchain_support(core::g_PhysicalDevice, surface->surface);
 		if (!swapchain_support)
 		{
-			delete _this;
+			delete surface;
 			g_ErrorCallback(INF_ERROR_NONE, "Swapchain is not compatible with window surface!", nullptr);
 			return nullptr;
 		}
 
 		{
-			swapchain_info_t swapchain_info = createSwapchain(window, _this->surface, swapchain_support);
-			_this->swapchain = swapchain_info.swapchain;
-			_this->format = swapchain_info.format.format;
+			swapchain_info_t swapchain_info = createSwapchain(window, surface->surface, swapchain_support);
+			surface->swapchain = swapchain_info.swapchain;
+			surface->format = swapchain_info.format.format;
 			
-			_this->size.x = swapchain_info.extent.width;
-			_this->size.y = swapchain_info.extent.height;
-			INFVK_TRACE_LOG("Created swapchain [ w: {}, h: {} ]", _this->size.x, _this->size.y);
+			surface->size.x = swapchain_info.extent.width;
+			surface->size.y = swapchain_info.extent.height;
+			INFVK_TRACE_LOG("Created swapchain [ w: {}, h: {} ]", surface->size.x, surface->size.y);
 		}
 
 		uint32_t image_count;
-		vkGetSwapchainImagesKHR(Core::g_LogicalDevice, _this->swapchain, &image_count, nullptr);
+		vkGetSwapchainImagesKHR(core::g_LogicalDevice, surface->swapchain, &image_count, nullptr);
 
-		_this->images.reallocate(image_count, image_count);
-		vkGetSwapchainImagesKHR(Core::g_LogicalDevice, _this->swapchain, &image_count, _this->images.ptr());
+		surface->images.reallocate(image_count, image_count);
+		vkGetSwapchainImagesKHR(core::g_LogicalDevice, surface->swapchain, &image_count, surface->images.ptr());
 
-
-		_this->image_views.reallocate(image_count, image_count);
+		surface->image_views.reallocate(image_count, image_count);
 		for (size_t i = 0; i < image_count; i++)
 		{
 			VkImageViewCreateInfo create_info{};
 			create_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-			create_info.image = _this->images[i];
+			create_info.image = surface->images[i];
 
 			create_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
-			create_info.format = _this->format;
+			create_info.format = surface->format;
 
 			create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 			create_info.subresourceRange.baseMipLevel = 0;
@@ -147,28 +146,70 @@ namespace vk {
 			create_info.subresourceRange.baseArrayLayer = 0;
 			create_info.subresourceRange.layerCount = 1;
 
-			if (vkCreateImageView(Core::g_LogicalDevice, &create_info, nullptr, &_this->image_views[i]) != VK_SUCCESS)
+			if (vkCreateImageView(core::g_LogicalDevice, &create_info, nullptr, &surface->image_views[i]) != VK_SUCCESS)
 			{
 				g_ErrorCallback(INF_ERROR_NONE, "Failed to create image views!", nullptr);
 				return nullptr;
 			}
 		}
 
-		return _this;
+		surface->viewport.x = 0.0f;
+		surface->viewport.y = 0.0f;
+		surface->viewport.width = surface->size.x;
+		surface->viewport.height = surface->size.y;
+		surface->viewport.minDepth = 0.0f;
+		surface->viewport.maxDepth = 1.0f;
+
+		surface->scissor.offset.x = 0;
+		surface->scissor.offset.y = 0;
+		surface->scissor.extent.width = surface->size.x;
+		surface->scissor.extent.height = surface->size.y;
+
+		return surface;
 	}
 
 	void DestroyWindowSurface(window_surface_t* _this)
 	{
 		for (auto image_view : _this->image_views)
-			vkDestroyImageView(Core::g_LogicalDevice, image_view, nullptr);
+			vkDestroyImageView(core::g_LogicalDevice, image_view, nullptr);
 
-		vkDestroySwapchainKHR(Core::g_LogicalDevice, _this->swapchain, nullptr);
-		vkDestroySurfaceKHR(Core::g_Instance, _this->surface, nullptr);
+		vkDestroySwapchainKHR(core::g_LogicalDevice, _this->swapchain, nullptr);
+		vkDestroySurfaceKHR(core::g_Instance, _this->surface, nullptr);
 		delete _this;
 	}
+
+} // namespace vk
+using namespace vk;
+
+EXPORT_FN window_surface_t* CreateWindowSurface(GLFWwindow* window)
+{
+	return vk::CreateWindowSurface(window);
 }
 
-EXPORT_FN vk::window_surface_t* CreateWindowSurface(GLFWwindow* window) { return vk::CreateWindowSurface(window); }
-EXPORT_FN void DestroyWindowSurface(vk::window_surface_t* _this) { return vk::DestroyWindowSurface(_this); }
+EXPORT_FN void DestroyWindowSurface(vk::window_surface_t* _this)
+{
+	return vk::DestroyWindowSurface(_this);
+}
 
-EXPORT_FN const glm::uvec2* GetWindowSurfaceSize(vk::window_surface_t* _this) { return &_this->size; }
+EXPORT_FN const glm::uvec2* GetWindowSurfaceSize(vk::window_surface_t* _this)
+{
+	return &_this->size;
+}
+
+EXPORT_FN void SetWindowSurfaceViewport(window_surface_t* surface,
+										float x, float y, float w, float h)
+{
+	surface->viewport.x = x;
+	surface->viewport.y = y;
+	surface->viewport.width = w;
+	surface->viewport.height = h;
+}
+
+EXPORT_FN void SetWindowSurfaceScissor(window_surface_t* surface,
+									   int32_t x, int32_t y, int32_t w, int32_t h)
+{
+	surface->scissor.offset.x = x;
+	surface->scissor.offset.y = y;
+	surface->scissor.extent.width = w;
+	surface->scissor.extent.height = h;
+}

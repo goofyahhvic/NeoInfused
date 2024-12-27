@@ -1,29 +1,10 @@
 #include "neo_pch.hpp"
 #include "NeoInfused/neo_core.hpp"
 
-#include "NeoInfused/core/neo_window.hpp"
+#include "NeoInfused/core/neo_utils.hpp"
 #include "influx/inf_loader.hpp"
 
 namespace neo {
-	uint32_t SizeOf(Type type)
-	{
-		switch (type)
-		{
-		case Type::None:   return 0u;
-		case Type::Int8:   return 1u;
-		case Type::UInt8:  return 1u;
-		case Type::Int16:  return 2u;
-		case Type::UInt16: return 2u;
-		case Type::Int32:  return 4u;
-		case Type::UInt32: return 4u;
-		case Type::Int64:  return 8u;
-		case Type::UInt64: return 8u;
-		case Type::Float:  return 4u;
-		case Type::Double: return 8u;
-		default:           return 0u;
-		}
-	}
-
 	std::string HoursMinutesSeconds(void)
 	{
 		std::time_t seconds = std::time(nullptr);
@@ -62,17 +43,17 @@ namespace neo {
 
 #define INDEX initData->exec_path.find_last_of('/')
 
-	struct InitData {
+	struct init_data_t {
 		inf::renderer_api_t api;
 		std::filesystem::path exec_path, exec_dir, exec_name;
 		std::string_view version;
 	};
-	static InitData* initData = nullptr;
+	static init_data_t* initData = nullptr;
 
-	void Init(void)
+	void InitCore(void)
 	{
 		NEO_ASSERT(!initData, "Already has initialized NeoInfused!");
-		initData = tmalloc<InitData>(1);
+		initData = tmalloc<init_data_t>(1);
 
 		initData->api = INF_API_VULKAN;
 
@@ -98,7 +79,7 @@ namespace neo {
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	}
 
-	void Shutdown(void)
+	void ShutdownCore(void)
 	{
 		NEO_INFO_LOG("Shutting down NeoInfused, Goodbye!");
 

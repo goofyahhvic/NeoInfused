@@ -88,7 +88,7 @@ namespace vk {
         create_info->pfnUserCallback = debugCallback;
     }
 
-    QueueFamilyIndices Core::GetQueueFamilies(VkPhysicalDevice device)
+    queue_family_indices_t core::GetQueueFamilies(VkPhysicalDevice device)
     {
         uint32_t queue_family_count = 0;
         vkGetPhysicalDeviceQueueFamilyProperties(device, &queue_family_count, nullptr);
@@ -96,14 +96,14 @@ namespace vk {
         neo::array_list_t<VkQueueFamilyProperties> queue_families(queue_family_count, queue_family_count);
         vkGetPhysicalDeviceQueueFamilyProperties(device, &queue_family_count, queue_families.ptr());
 
-        QueueFamilyIndices indices;
+        queue_family_indices_t indices;
         for (uint32_t i = 0; i < queue_family_count; i++)
         {
             if (queue_families[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
                 indices.graphics = i;
 
             VkBool32 present_support = false;
-            vkGetPhysicalDeviceSurfaceSupportKHR(device, i, Core::g_InitSurface, &present_support);
+            vkGetPhysicalDeviceSurfaceSupportKHR(device, i, core::g_InitSurface, &present_support);
             if (present_support)
                 indices.present = i;
 
@@ -148,13 +148,13 @@ namespace vk {
         if (!deviceFeatures.geometryShader)
             return 0;
 
-        if (!Core::GetQueueFamilies(device))
+        if (!core::GetQueueFamilies(device))
             return 0;
 
         if (!areRequiredDeviceExtensionsSupported(device))
             return 0;
 
-        if (!swapchain_support_t(device, Core::g_InitSurface))
+        if (!swapchain_support_t(device, core::g_InitSurface))
             return 0;
 
         if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
@@ -163,7 +163,7 @@ namespace vk {
         return deviceProperties.limits.maxImageDimension2D;
     }
 
-    void Core::InitializeGLFW(void)
+    void core::InitializeGLFW(void)
     {
         glfwSetErrorCallback([](int error, const char* description)
         {
@@ -175,7 +175,7 @@ namespace vk {
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     }
 
-    void Core::CreateInstance(void)
+    void core::CreateInstance(void)
     {
         if (VALIDATION_LAYERS_ENABLED && !validationLayersSupported())
             g_ErrorCallback(INF_ERROR_NONE, "Validation Layers requested, but not supported!", nullptr);
@@ -215,10 +215,10 @@ namespace vk {
         create_info.ppEnabledExtensionNames = extensions.ptr();
 
         if (vkCreateInstance(&create_info, nullptr, &g_Instance) != VK_SUCCESS)
-            g_ErrorCallback(INF_ERROR_NONE, "Failed to create instance!", nullptr);
+            g_ErrorCallback(INF_OBJECT_CREATION_FAILURE, "Failed to create instance!", nullptr);
     }
 
-    void Core::CreateDebugMessenger(void)
+    void core::CreateDebugMessenger(void)
     {
         if (!VALIDATION_LAYERS_ENABLED)
             return;
@@ -227,18 +227,18 @@ namespace vk {
         populateDebugMessengerCreateInfo(&create_info);
 
         if (CreateDebugUtilsMessengerEXT(g_Instance, &create_info, nullptr, &g_DebugMessenger) != VK_SUCCESS)
-            g_ErrorCallback(INF_ERROR_NONE, "Failed to set up debug messenger!", nullptr);
+            g_ErrorCallback(INF_OBJECT_CREATION_FAILURE, "Failed to set up debug messenger!", nullptr);
     }
 
-    void Core::CreateInitializationSurface(void)
+    void core::CreateInitializationSurface(void)
     {
         GLFWwindow* init_window = glfwCreateWindow(1, 1, "", nullptr, nullptr);
         if (glfwCreateWindowSurface(g_Instance, init_window, nullptr, &g_InitSurface) != VK_SUCCESS)
-            g_ErrorCallback(INF_ERROR_NONE, "Failed to create Vulkan initialization surface!", nullptr);
+            g_ErrorCallback(INF_OBJECT_CREATION_FAILURE, "Failed to create Vulkan initialization surface!", nullptr);
         glfwDestroyWindow(init_window);
     }
 
-    void Core::PickPhysicalDevice(void)
+    void core::PickPhysicalDevice(void)
     {
         uint32_t device_count;
         vkEnumeratePhysicalDevices(g_Instance, &device_count, nullptr);
@@ -273,9 +273,9 @@ namespace vk {
         return create_info;
     }
 
-    void Core::CreateLogicalDevice(void)
+    void core::CreateLogicalDevice(void)
     {
-        QueueFamilyIndices indices = GetQueueFamilies(g_PhysicalDevice);
+        queue_family_indices_t indices = GetQueueFamilies(g_PhysicalDevice);
         neo::array_list_t<VkDeviceQueueCreateInfo> queue_create_infos;
         queue_create_infos.emplace(createQueueCreateInfo(indices.graphics));
         if (indices.graphics != indices.present)
@@ -293,7 +293,7 @@ namespace vk {
         create_info.ppEnabledExtensionNames = requiredDeviceExtensions.ptr();
 
         if (vkCreateDevice(g_PhysicalDevice, &create_info, nullptr, &g_LogicalDevice) != VK_SUCCESS)
-            g_ErrorCallback(INF_ERROR_NONE, "Failed to create logical device!", nullptr);
+            g_ErrorCallback(INF_OBJECT_CREATION_FAILURE, "Failed to create logical device!", nullptr);
 
         vkGetDeviceQueue(g_LogicalDevice, indices.graphics, 0, &g_GraphicsQueue);
         vkGetDeviceQueue(g_LogicalDevice, indices.present,  0, &g_PresentQueue);
@@ -319,27 +319,27 @@ EXPORT_FN void SetErrorCallback(error_callback_fn error_callback)
 
 EXPORT_FN void InitAPI(void)
 {
-    Core::InitializeGLFW();
-    Core::CreateInstance();
-    Core::CreateDebugMessenger();
-    Core::CreateInitializationSurface();
-    Core::PickPhysicalDevice();
-    Core::CreateLogicalDevice();
+    core::InitializeGLFW();
+    core::CreateInstance();
+    core::CreateDebugMessenger();
+    core::CreateInitializationSurface();
+    core::PickPhysicalDevice();
+    core::CreateLogicalDevice();
 }
 
 EXPORT_FN void ShutdownAPI(void)
 {
-    if (Core::g_LogicalDevice)
-        vkDestroyDevice(Core::g_LogicalDevice, nullptr);
+    if (core::g_LogicalDevice)
+        vkDestroyDevice(core::g_LogicalDevice, nullptr);
 
-    if (Core::g_InitSurface)
-        vkDestroySurfaceKHR(Core::g_Instance, Core::g_InitSurface, nullptr);
+    if (core::g_InitSurface)
+        vkDestroySurfaceKHR(core::g_Instance, core::g_InitSurface, nullptr);
 
-    if (Core::VALIDATION_LAYERS_ENABLED)
-        DestroyDebugUtilsMessengerEXT(Core::g_Instance, Core::g_DebugMessenger, nullptr);
+    if (core::VALIDATION_LAYERS_ENABLED)
+        DestroyDebugUtilsMessengerEXT(core::g_Instance, core::g_DebugMessenger, nullptr);
 
-    if (Core::g_Instance)
-        vkDestroyInstance(Core::g_Instance, nullptr);
+    if (core::g_Instance)
+        vkDestroyInstance(core::g_Instance, nullptr);
 
     glfwTerminate();
 }

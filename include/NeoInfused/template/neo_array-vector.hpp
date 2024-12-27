@@ -1,7 +1,7 @@
 #if !defined(NEO_ARRAY_VECTOR_HPP)
 #define NEO_ARRAY_VECTOR_HPP
 
-#include "../neo_core.hpp"
+#include "NeoInfused/core/neo_utils.hpp"
 #include "./neo_array-iterator.hpp"
 
 namespace neo {
@@ -187,6 +187,9 @@ namespace neo {
 	} // namespace array_vec
 	template<typename T>
 	using array_vec_t = array_vec::array_vec_t<T>;
+
+	using bytes_t = neo::array_vec_t<byte_t>;
+	using ubytes_t = neo::array_vec_t<ubyte_t>;
 } // namespace neo
 
 #endif // NEO_ARRAY_VECTOR_HPP

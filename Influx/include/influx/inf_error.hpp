@@ -2,7 +2,7 @@
 #define INF_ERROR_TYPES_HPP
 
 enum inf_error_type_t : uint16_t {
-	INF_ERROR_NONE = 0, INF_GLFW_ERROR
+	INF_ERROR_NONE = 0, INF_GLFW_ERROR, INF_OBJECT_CREATION_FAILURE
 };
 
 namespace inf {

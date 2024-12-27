@@ -1,7 +1,7 @@
 #if !defined(NEO_LINKED_LIST_HPP)
 #define NEO_LINKED_LIST_HPP
 
-#include "../neo_core.hpp"
+#include "NeoInfused/core/neo_utils.hpp"
 #include "neo_double-list-iterator.hpp"
 #include "neo_list-node.hpp"
 

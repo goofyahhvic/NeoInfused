@@ -1,7 +1,7 @@
 #if !defined(NEO_EVENT_HPP)
 #define NEO_EVENT_HPP
 
-#include "NeoInfused/neo_core.hpp"
+#include "NeoInfused/core/neo_utils.hpp"
 #include "NeoInfused/template/neo_array-list.hpp"
 
 enum neo_event_type_t : uint8_t {

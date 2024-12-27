@@ -1,6 +1,8 @@
 #if !defined(NEO_SINGLE_LIST_ITERATOR_HPP)
 #define NEO_SINGLE_LIST_ITERATOR_HPP
 
+#include "NeoInfused/core/neo_utils.hpp"
+
 namespace neo {
 	namespace list {
 		template<typename ListT>
