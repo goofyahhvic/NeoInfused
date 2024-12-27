@@ -91,16 +91,16 @@ namespace vk {
 		return module;
 	}
 
-	shader::handle_t shader::Create(const shader::create_info_t& info)
+	shader::handle_t shader::Create(const std::filesystem::path& filename, stage_t stage)
 	{
 		shader::handle_t shader = shader::g_Shaders.emplace();
 		g_Shaders[shader].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 
-		g_Shaders[shader].module = shader::CreateModule(info.filename);
+		g_Shaders[shader].module = shader::CreateModule(filename);
 		if (!g_Shaders[shader].module)
 			return NEO_INVALID_HANDLE;
 
-		g_Shaders[shader].stage = shader::StageToVkType(info.stage);
+		g_Shaders[shader].stage = shader::StageToVkType(stage);
 		g_Shaders[shader].pName = "main";
 
 		g_Shaders[shader].pSpecializationInfo = nullptr;
@@ -280,9 +280,9 @@ namespace vk {
 } // namespace vk
 using namespace vk;
 
-EXPORT_FN shader::handle_t CreateShader(const shader::create_info_t& info)
+EXPORT_FN shader::handle_t CreateShader(const std::filesystem::path& filename, stage_t stage)
 {
-	return shader::Create(info);
+	return shader::Create(filename, stage);
 }
 
 EXPORT_FN void DestroyShader(shader::handle_t shader)

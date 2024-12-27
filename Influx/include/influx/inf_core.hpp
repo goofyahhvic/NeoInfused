@@ -14,10 +14,6 @@ enum inf_shader_stage_t : uint8_t {
 namespace inf {
 	namespace shader {
 		using stage_t = inf_shader_stage_t;
-		struct create_info_t {
-			std::filesystem::path filename;
-			stage_t stage;
-		};
 	} // namespace shader
 	using shader_stage_t = shader::stage_t;
 

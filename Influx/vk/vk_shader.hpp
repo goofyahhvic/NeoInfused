@@ -9,7 +9,6 @@ namespace vk {
 		using stage_t = inf::shader::stage_t;
 		VkShaderStageFlagBits StageToVkType(stage_t stage);
 
-		using create_info_t = inf::shader::create_info_t;
 		using shader_t = VkPipelineShaderStageCreateInfo;
 		using handle_t = uint64_t;
 
@@ -23,7 +22,7 @@ namespace vk {
 
 		VkShaderModule CreateModule(const std::filesystem::path& shader_file);
 
-		handle_t Create(const create_info_t& info);
+		handle_t Create(const std::filesystem::path& filename, stage_t stage);
 		void Destroy(handle_t shader);
 
 		pipeline_t* CreatePipeline(window_surface_t* surface);

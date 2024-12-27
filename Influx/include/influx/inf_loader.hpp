@@ -30,7 +30,7 @@ namespace inf {
 	// shader
 		using shader_handle_t = uint64_t;
 
-		typedef shader_handle_t (*create_shader_fn)(const shader::create_info_t& info);
+		typedef shader_handle_t (*create_shader_fn)(const std::filesystem::path& filename, shader::stage_t stage);
 		inline create_shader_fn create_shader = nullptr;
 
 		typedef void (*destroy_shader_fn)(shader_handle_t handle);
