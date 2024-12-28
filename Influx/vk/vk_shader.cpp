@@ -280,7 +280,7 @@ namespace vk {
 } // namespace vk
 using namespace vk;
 
-EXPORT_FN shader::handle_t CreateShader(const std::filesystem::path& filename, stage_t stage)
+EXPORT_FN shader::handle_t CreateShader(const std::filesystem::path& filename, shader::stage_t stage)
 {
 	return shader::Create(filename, stage);
 }
@@ -290,7 +290,7 @@ EXPORT_FN void DestroyShader(shader::handle_t shader)
 	return shader::Destroy(shader);
 }
 
-EXPORT_FN shader::pipeline_t* CreateShaderPipeline(window_surface_t* surface)
+EXPORT_FN shader::pipeline_t* CreateGraphicsPipeline(window_surface_t* surface)
 {
 	return shader::CreatePipeline(surface);
 }
@@ -309,12 +309,12 @@ EXPORT_FN void AttachShadersToPipeline(
 	return shader::AttachToPipeline_M(pipeline, shaders);
 }
 
-EXPORT_FN void InitShaderPipeline(shader::pipeline_t* pipeline)
+EXPORT_FN void InitGraphicsPipeline(shader::pipeline_t* pipeline)
 {
 	return shader::InitPipeline(pipeline);
 }
 
-EXPORT_FN void DestroyShaderPipeline(shader::pipeline_t* pipeline)
+EXPORT_FN void DestroyGraphicsPipeline(shader::pipeline_t* pipeline)
 {
 	return shader::DestroyPipeline(pipeline);
 }

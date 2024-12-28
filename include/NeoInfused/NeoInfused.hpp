@@ -12,6 +12,8 @@
 #include "template/neo_heap-object.hpp"
 
 #include "core/app/neo_app.hpp"
-#include "core/app/neo_window-system-set.hpp"
+#include "core/app/neo_core-subsystem.hpp"
+#include "core/app/neo_window-subsystem.hpp"
+#include "influx/inf_renderer.hpp"
 
 #endif // NEOINFUSED_HPP

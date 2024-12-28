@@ -36,22 +36,22 @@ namespace inf {
 		typedef void (*destroy_shader_fn)(shader_handle_t handle);
 		inline destroy_shader_fn destroy_shader = nullptr;
 
-		struct shader_pipeline_t;
+		struct graphics_pipeline_t;
 		
-		typedef shader_pipeline_t* (*create_shader_pipeline_fn)(window_surface_t* surface);
-		inline create_shader_pipeline_fn create_shader_pipeline = nullptr;
+		typedef graphics_pipeline_t* (*create_graphics_pipeline_fn)(window_surface_t* surface);
+		inline create_graphics_pipeline_fn create_graphics_pipeline = nullptr;
 
-		typedef void (*destroy_shader_pipeline_fn)(shader_pipeline_t* pipeline);
-		inline destroy_shader_pipeline_fn destroy_shader_pipeline = nullptr;
+		typedef void (*destroy_graphics_pipeline_fn)(graphics_pipeline_t* pipeline);
+		inline destroy_graphics_pipeline_fn destroy_graphics_pipeline = nullptr;
 
-		typedef void (*attach_shader_to_pipeline_fn)(shader_pipeline_t* pipeline, shader_handle_t);
+		typedef void (*attach_shader_to_pipeline_fn)(graphics_pipeline_t* pipeline, shader_handle_t);
 		inline attach_shader_to_pipeline_fn attach_shader_to_pipeline = nullptr;
 
-		typedef void (*attach_shaders_to_pipeline_fn)(shader_pipeline_t* pipeline, const std::initializer_list<shader_handle_t>& shaders);
+		typedef void (*attach_shaders_to_pipeline_fn)(graphics_pipeline_t* pipeline, const std::initializer_list<shader_handle_t>& shaders);
 		inline attach_shaders_to_pipeline_fn attach_shaders_to_pipeline = nullptr;
 
-		typedef void (*init_shader_pipeline_fn)(shader_pipeline_t* pipeline);
-		inline init_shader_pipeline_fn init_shader_pipeline = nullptr;
+		typedef void (*init_shader_pipeline_fn)(graphics_pipeline_t* pipeline);
+		inline init_shader_pipeline_fn init_graphics_pipeline = nullptr;
 
 		typedef void (*set_shader_output_dir_fn)(std::filesystem::path&& dir);
 		inline set_shader_output_dir_fn set_shader_output_dir = nullptr;

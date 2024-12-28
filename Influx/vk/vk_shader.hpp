@@ -38,8 +38,7 @@ namespace vk {
 	} // namespace shader
 	using shader_t = shader::shader_t;
 	using shader_handle_t = shader::handle_t;
-	using shader_create_info_t = shader::create_info_t;
-	using shader_pipeline_t = shader::pipeline_t;
+	using graphics_pipeline_t = shader::pipeline_t;
 } // namespace vk
 
 #endif // VK_SHADER_HPP
